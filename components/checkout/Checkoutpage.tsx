@@ -102,7 +102,7 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
         const city = citys?.find((city: any) => city.countyName === data.city)
         const dimentions = calcularPaquete(cart!)
         const request = await axios.post('https://testservices.wschilexpress.com/rating/api/v1.0/rates/courier', {
-          "originCountyCode": storeData.locations![0].countyCoverageCode,
+          "originCountyCode": storeData?.locations?.length ? storeData.locations[0].countyCoverageCode : '',
           "destinationCountyCode": city?.countyCode,
           "package": {
               "weight": dimentions.weight,
@@ -203,7 +203,7 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
   return (
     <>
       {
-        ((chilexpress.active && chilexpress.coberturaKey !== '' && chilexpress.cotizadorKey !== '' && chilexpress.enviosKey !== '' && chilexpress.cardNumber !== '') && ((payment.transbank.active && payment.transbank.commerceCode !== '' && payment.transbank.apiKey !== '') || (payment.mercadoPago.active && payment.mercadoPago.accessToken !== '' && payment.mercadoPago.publicKey !== '') || (payment.mercadoPagoPro.active && payment.mercadoPagoPro.accessToken !== '' && payment.mercadoPagoPro.publicKey !== ''))) && storeData.locations?.length && storeData.locations[0].countyCoverageCode !== '' && storeData.locations[0].streetName !== '' && storeData.locations[0].streetNumber !== '' && storeData.nameContact !== ''
+        ((chilexpress.active && chilexpress.coberturaKey !== '' && chilexpress.cotizadorKey !== '' && chilexpress.enviosKey !== '' && chilexpress.cardNumber !== '') && ((payment.transbank.active && payment.transbank.commerceCode !== '' && payment.transbank.apiKey !== '') || (payment.mercadoPago.active && payment.mercadoPago.accessToken !== '' && payment.mercadoPago.publicKey !== '') || (payment.mercadoPagoPro.active && payment.mercadoPagoPro.accessToken !== '' && payment.mercadoPagoPro.publicKey !== ''))) && storeData?.locations?.length && storeData.locations[0].countyCoverageCode !== '' && storeData.locations[0].streetName !== '' && storeData.locations[0].streetNumber !== '' && storeData.nameContact !== ''
           ? (
             <div style={{ backgroundColor: design.checkoutPage.bgColor, color: design.checkoutPage.textColor }}>
               <EditData contactMouse={contactMouse} setContactOpacity={setContactOpacity} setContactView={setContactView} contactView={contactView} contactOpacity={contactOpacity} setContactMouse={setContactMouse} inputChange={inputChange} sell={sell} style={style} />
