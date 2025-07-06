@@ -192,7 +192,7 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
                   });
               })
             } else {
-              setError('Has ingresado un correo invalido')
+              setError('Debes ingresar un correo valido')
             }
           } else {
             setError('Debes llenar todos los datos')
@@ -251,7 +251,11 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
             fbq('track', 'AddPaymentInfo', { first_name: clientRef.current.firstName, last_name: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone && clientRef.current.phone !== '' ? `56${clientRef.current.phone}` : undefined, content_name: service?._id, currency: "clp", value: price, contents: { id: service?._id, item_price: price, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}` }, { eventID: newEventId })
             localStorage.setItem('pay', JSON.stringify(response.data))
             localStorage.setItem('service2', JSON.stringify(service))
+          } else {
+            setError('Debes ingresar un correo valido')
           }
+        } else {
+          setError('Debes llenar todos los datos')
         }
         window.location.href = link
       }
@@ -292,7 +296,11 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
             currentClient.services![0].payStatus = 'Pago no realizado'
             await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient)
           }
+        } else {
+          setError('Debes ingresar un correo valido')
         }
+      } else {
+        setError('Debes llenar todos los datos')
       }
     }
   }
@@ -486,6 +494,11 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
                                                     <Input placeholder="Documento de identidad" inputChange={(e: any) => setIdentificationNumber(e.target.value)} value={identificationNumber} style={style} />
                                                   </div>
                                                 </div>
+                                                {
+                                                  error !== ''
+                                                    ? <p className='text-white bg-red-500 px-2 py-1 w-fit'>{error}</p>
+                                                    : ''
+                                                }
                                                 <Button type="submit" style={style} width='150'>Suscribirme</Button>
                                               </form>
                                             </>
@@ -540,6 +553,11 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
                                                           pay === 'WebPay Plus'
                                                             ? (
                                                               <form action={url} method="POST" id='formTransbank' className='mt-2'>
+                                                                {
+                                                                  error !== ''
+                                                                    ? <p className='px-2 py-1 bg-red-500 text-white w-fit'>{error}</p>
+                                                                    : ''
+                                                                }
                                                                 <input type="hidden" name="token_ws" value={token} />
                                                                 <Button style={style} action={async (e: any) => {
                                                                   e.preventDefault()
@@ -592,6 +610,11 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
                                                           <input type='radio' className='my-auto' checked={pay === 'MercadoPagoPro'} />
                                                           <p>MercadoPago</p>
                                                         </button>
+                                                        {
+                                                          error !== ''
+                                                            ? <p className='px-2 py-1 bg-red-500 text-white w-fit'>{error}</p>
+                                                            : ''
+                                                        }
                                                         {
                                                           pay === 'MercadoPagoPro'
                                                             ? <Button action={mercadoSubmit} style={style} loading={submitLoading} config='mt-2' width='250'>Pagar con MercadoPago</Button>
