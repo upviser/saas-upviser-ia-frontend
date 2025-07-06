@@ -122,6 +122,7 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
                 Cookies.set('phone', sell.phone.toString())
               }
               Cookies.set('address', sell.address)
+              Cookies.set('number', sell.number)
               if (sell.details) {
                 Cookies.set('details', sell.details)
               }
@@ -282,6 +283,7 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
                 Cookies.set('phone', sell.phone.toString())
               }
               Cookies.set('address', sell.address)
+              Cookies.set('number', sell.number)
               if (sell.details) {
                 Cookies.set('details', sell.details)
               }
@@ -408,6 +410,7 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
                       Cookies.set('phone', sell.phone.toString())
                     }
                     Cookies.set('address', sell.address)
+                    Cookies.set('number', sell.number)
                     if (sell.details) {
                       Cookies.set('details', sell.details)
                     }
