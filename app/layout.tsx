@@ -49,7 +49,7 @@ export default async function RootLayout({
   return (
     <html lang="es" className={myFont.className}>
       <head>
-        <link rel="icon" href={storeData.favicon} />
+        <link rel="icon" href={storeData?.favicon} />
       </head>
       <body className="overflow-x-hidden">
         <Providers>
