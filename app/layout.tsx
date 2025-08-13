@@ -14,16 +14,23 @@ const myFont = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: `${process.env.NEXT_PUBLIC_NAME}`,
-    template: `%s | ${process.env.NEXT_PUBLIC_NAME}`
+    default: 'Sitio web',
+    template: `%s`
   },
   twitter: {
     card: 'summary_large_image'
   }
 }
 
+export const revalidate = 3600
+
 async function fetchIntegrations () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`, { next: { revalidate: 3600 } })
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`)
+  return res.json()
+}
+
+async function fetchStoreData () {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`)
   return res.json()
 }
 
@@ -33,12 +40,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const integrations = await fetchIntegrations()
+  const integrationsData = fetchIntegrations()
+
+  const storeDataData = fetchStoreData()
+
+  const [integrations, storeData] = await Promise.all([integrationsData, storeDataData])
 
   return (
     <html lang="es" className={myFont.className}>
       <head>
-        <link rel="icon" href={process.env.NEXT_PUBLIC_FAVICON} />
+        <link rel="icon" href={storeData.favicon} />
       </head>
       <body className="overflow-x-hidden">
         <Providers>
