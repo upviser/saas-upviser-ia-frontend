@@ -145,11 +145,11 @@ export default async function CategoryPage({ params }: { params: { category: str
           } else if (content.content === 'Llamadas') {
             return <Calls key={content.content} content={content} calls={calls} style={style} index={index} />
           } else if (content.content === 'Checkout') {
-            return <Checkout key={content.content} content={content} services={services} payment={payment} storeData={storeData} style={style} index={index} integrations={undefined} />
+            return <Checkout key={content.content} content={content} services={services} payment={payment} storeData={storeData} style={style} index={index} integrations={integrations} />
           } else if (content.content === 'Lead 2') {
             return <Lead2 key={content.content} content={content} forms={forms} index={index} services={services} storeData={storeData} style={style} />
           } else if (content.content === 'Planes') {
-            return <Plans key={content.content} content={content} services={services} index={index} payment={payment} style={style} forms={forms} />
+            return <Plans key={content.content} content={content} services={services} index={index} payment={payment} style={style} forms={forms} integrations={integrations} />
           } else if (content.content === 'Preguntas frecuentes') {
             return <Faq key={content.content} content={content} services={services} index={index} style={style} />
           } else if (content.content === 'Lead 3') {
