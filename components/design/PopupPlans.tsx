@@ -120,7 +120,7 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
   }
 
   useEffect(() => {
-    if (integrations.apiPixelId && integrations.apiPixelId !== '') {
+    if (integrations?.apiPixelId && integrations.apiPixelId !== '') {
       const interval = setInterval(() => {
         if (typeof fbq === 'function' && plan?._id) {
           viewCheckout()
