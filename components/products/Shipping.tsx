@@ -79,6 +79,8 @@ export const Shipping: React.FC<Props> = ({ setShipping, sell, setSell, chilexpr
         setShipping(request.data.data.courierServiceOptions)
         setSell({ ...sell, city: e.target.value })
         sellRef.current = { ...sell, city: e.target.value }
+        console.log(city?.countyName)
+        console.log(sell.address)
         const res = await axios.post('http://testservices.wschilexpress.com/georeference/api/v1.0/streets/search', {
           "countyName": city?.countyName,
           "streetName": sell.address,

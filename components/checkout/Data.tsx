@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { H2, Input } from '../ui'
 import { Shipping } from '../products'
 import { ISell } from '@/interfaces'
@@ -52,7 +52,7 @@ export const Data: React.FC<Props> = ({ status, sell, setContactView, setContact
                 <h2 className='font-semibold text-xl sm:text-3xl'>Dirección de envío</h2>
                 <div className='bg-neutral-100 p-4 flex gap-2 justify-between dark:bg-neutral-800' style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', backgroundColor: design.checkoutPage.detailsColor }}>
                   <div className='flex flex-col gap-2'>
-                    <p>Dirección: {sell?.address ? sell.address : 'Se nececita una dirección'}</p>
+                    <p>Dirección: {sell?.address ? sell.address : 'Se nececita una dirección'} {sell.number}</p>
                     <p>Detalles: {sell?.details ? sell.details : '-'}</p>
                     <p>Región: {sell?.region ? sell.region : 'Se necesita una región'}</p>
                     <p>Ciudad: {sell?.city ? sell.city : 'Se necesita una ciudad'}</p>

@@ -200,7 +200,7 @@ export const Block3 = ({ content, index, calls, forms, design, payment, style, s
                 : ''
             }
             {
-              (content.info.buttonLink === 'Abrir popup' || calls.find(call => call._id === content.info.buttonLink) || forms.find(form => form._id === content.info.buttonLink)) || (content.info.buttonLink !== '' || content.info.button !== '')
+              (content.info.buttonLink === 'Abrir popup' || calls.find(call => call._id === content.info.buttonLink) || forms.find(form => form._id === content.info.buttonLink)) || ((content.info.buttonLink && content.info.buttonLink !== '') || (content.info.button && content.info.button !== ''))
                 ? (
                   <div ref={buttonRef} className={`${buttonLoaded ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 flex`}>
                     <div className='w-fit m-auto flex gap-4 flex-wrap'>
@@ -214,7 +214,7 @@ export const Block3 = ({ content, index, calls, forms, design, payment, style, s
                               setPopup({ ...popup, view: 'flex', opacity: 'opacity-1' })
                             }, 10);
                           }} config='mx-auto lg:m-0' style={style}>{content.info.button}</Button>
-                          : content.info.buttonLink !== '' || content.info.button !== ''
+                          : (content.info.buttonLink && content.info.buttonLink !== '') || (content.info.button && content.info.button !== '')
                             ? content.info.buttonLink === 'Abrir Whatsapp'
                               ? <button className={`w-fit flex text-center py-2 px-6 font-medium`} style={{ backgroundColor: style.primary, color: style.button, borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }} onClick={() => window.open(`https://wa.me/+56${storeData?.phone}`)}>{content.info.button}</button>
                               : <Link href={`${content.info.buttonLink}`} className='mx-auto lg:m-0'><Button style={style}>{content.info.button}</Button></Link>
@@ -230,7 +230,7 @@ export const Block3 = ({ content, index, calls, forms, design, payment, style, s
                               setPopup({ ...popup, view: 'flex', opacity: 'opacity-1' })
                             }, 10);
                           }} config='mx-auto' style={style} content={content}>{content.info.button2}</ButtonSecondary>
-                          : content.info.buttonLink2 && content.info.buttonLink2 !== '' || content.info.button2 && content.info.button2 !== ''
+                          : (content.info.buttonLink2 && content.info.buttonLink2 !== '') || (content.info.button2 && content.info.button2 !== '')
                             ? <Link href={`${content.info.buttonLink2}`} className='mx-auto'><ButtonSecondary style={style} content={content}>{content.info.button2}</ButtonSecondary></Link>
                             : ''
                       }

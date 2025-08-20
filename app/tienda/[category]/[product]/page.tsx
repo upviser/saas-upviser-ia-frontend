@@ -177,7 +177,7 @@ export default async function ({ params }: { params: { product: string } }) {
             return <Cate key={content.content} categories={categories} style={style} content={content} />
           } else if (content.content === 'Carrusel productos') {
             if (products.length) {
-              return <Prod key={content.content} products={products} title={content.info.title!} filter={content.info.products!} categories={categories} style={style} content={content} />
+              return <Prod key={content.content} products={products} product={product} title={content.info.title!} filter={content.info.products!} categories={categories} style={style} content={content} />
             }
           }
         })

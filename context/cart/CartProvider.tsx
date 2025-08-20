@@ -19,6 +19,7 @@ const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
     if (status === 'authenticated') {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`)
       if (response.data.cart) {
+        localStorage.setItem('cart', JSON.stringify(response.data.cart))
         setCart(response.data.cart)
       }
     } else {

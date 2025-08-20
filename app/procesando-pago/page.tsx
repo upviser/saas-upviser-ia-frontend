@@ -73,6 +73,7 @@ export default function PayProcess () {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/commit`, { token: tokenWs })
         if (response.data.status === 'AUTHORIZED') {
           const shippingData = JSON.parse(localStorage.getItem('shippingData')!)
+          console.log(shippingData)
           const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`)
           const request = await axios.post('http://testservices.wschilexpress.com/transport-orders/api/v1.0/transport-orders', shippingData, {
             headers: {

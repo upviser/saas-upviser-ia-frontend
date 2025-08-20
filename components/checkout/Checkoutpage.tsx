@@ -70,18 +70,16 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
 
   const { data: session, status } = useSession()
 
-  const user = session?.user as { firstName: string, lastName: string, email: string, _id: string }
-
   const router = useRouter()
 
   const getClientData = async () => {
     if (status === 'authenticated') {
       const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`)
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${user.email}`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${session?.user?.email}`)
       const data: IClient = response.data
       if (data) {
-        setSell({...sell, address: data.address ? data.address : '', city: data.city ? data.city : '', email: data.email, firstName: data.firstName ? data.firstName : '', lastName: data.lastName ? data.lastName : '', phone: data.phone ? Number(data.phone) : undefined, region: data.region ? data.region : '', total: cart?.reduce((bef: any, curr: any) => bef + curr.price * curr.quantity, 0), cart: cart!})
-        sellRef.current = {...sell, address: data.address ? data.address : '', city: data.city ? data.city : '', email: data.email, firstName: data.firstName ? data.firstName : '', lastName: data.lastName ? data.lastName : '', phone: data.phone ? Number(data.phone) : undefined, region: data.region ? data.region : '', total: cart?.reduce((bef: any, curr: any) => bef + curr.price * curr.quantity, 0), cart: cart!}
+        setSell({...sell, address: data.address ? data.address : '', number: data.number ? data.number : '', city: data.city ? data.city : '', email: data.email, firstName: data.firstName ? data.firstName : '', lastName: data.lastName ? data.lastName : '', phone: data.phone ? Number(data.phone) : undefined, region: data.region ? data.region : '', total: cart?.reduce((bef: any, curr: any) => bef + curr.price * curr.quantity, 0), cart: cart!})
+        sellRef.current = {...sell, address: data.address ? data.address : '', number: data.number ? data.number : '', city: data.city ? data.city : '', email: data.email, firstName: data.firstName ? data.firstName : '', lastName: data.lastName ? data.lastName : '', phone: data.phone ? Number(data.phone) : undefined, region: data.region ? data.region : '', total: cart?.reduce((bef: any, curr: any) => bef + curr.price * curr.quantity, 0), cart: cart!}
         setClientId(data._id!)
       }
       if (data.city && data.region) {
@@ -125,7 +123,7 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
         setShipping(request.data.data.courierServiceOptions)
         const respo = await axios.post('http://testservices.wschilexpress.com/georeference/api/v1.0/streets/search', {
           "countyName": city?.countyName,
-          "streetName": sell.address,
+          "streetName": sellRef.current.address,
           "pointsOfInterestEnabled": true,
           "streetNameEnabled": true,
           "roadType": 0
@@ -153,9 +151,9 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
   }
 
   useEffect(() => {
-    if (integrations?.apiPixelId && integrations.apiPixelId !== '' && cart?.length) {
+    if (integrations?.apiPixelId && integrations.apiPixelId !== '') {
       const interval = setInterval(() => {
-        if (typeof fbq === 'function') {
+        if (typeof fbq === 'function' && session?.user?.email !== '') {
           getClientData()
           clearInterval(interval)
         }
@@ -212,8 +210,8 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
         ((chilexpress.active && chilexpress.coberturaKey !== '' && chilexpress.cotizadorKey !== '' && chilexpress.enviosKey !== '' && chilexpress.cardNumber !== '') && ((payment.transbank.active && payment.transbank.commerceCode !== '' && payment.transbank.apiKey !== '') || (payment.mercadoPago.active && payment.mercadoPago.accessToken !== '' && payment.mercadoPago.publicKey !== '') || (payment.mercadoPagoPro.active && payment.mercadoPagoPro.accessToken !== '' && payment.mercadoPagoPro.publicKey !== ''))) && storeData?.locations?.length && storeData.locations[0].countyCoverageCode !== '' && storeData.locations[0].streetName !== '' && storeData.locations[0].streetNumber !== '' && storeData.nameContact !== ''
           ? (
             <div style={{ backgroundColor: design.checkoutPage.bgColor, color: design.checkoutPage.textColor }}>
-              <EditData contactMouse={contactMouse} setContactOpacity={setContactOpacity} setContactView={setContactView} contactView={contactView} contactOpacity={contactOpacity} setContactMouse={setContactMouse} inputChange={inputChange} sell={sell} style={style} />
-              <EditShipping shippingMouse={shippingMouse} setShippingOpacity={setShippingOpacity} setShippingView={setShippingView} shippingView={shippingView} shippingOpacity={shippingOpacity} setShippingMouse={setShippingMouse} sell={sell} inputChange={inputChange} setSell={setSell} setShipping={setShipping} chilexpress={chilexpress} style={style} sellRef={sellRef} />
+              <EditData contactMouse={contactMouse} setContactOpacity={setContactOpacity} setContactView={setContactView} contactView={contactView} contactOpacity={contactOpacity} setContactMouse={setContactMouse} inputChange={inputChange} sell={sell} style={style} session={session} />
+              <EditShipping shippingMouse={shippingMouse} setShippingOpacity={setShippingOpacity} setShippingView={setShippingView} shippingView={shippingView} shippingOpacity={shippingOpacity} setShippingMouse={setShippingMouse} sell={sell} inputChange={inputChange} setSell={setSell} setShipping={setShipping} chilexpress={chilexpress} style={style} sellRef={sellRef} session={session} setDest={setDest} />
               <ResumePhone cart={cart} sell={sell} style={style} design={design} />
               <div className='mt-28 flex p-4 xl:mt-0'>
                 <form className='w-[1280px] m-auto block xl:flex' id='formBuy'>
@@ -269,7 +267,7 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
           )
           : (
             <div className="flex w-full h-full">
-              <p className="text-xl m-auto">Pagina de pago no habilitada</p>
+              <p className="text-xl m-auto mt-20">Pagina de pago no habilitada</p>
             </div>
           )
       }
