@@ -4,14 +4,8 @@ import { ICartProduct } from '../../interfaces'
 import CartContext from './CartContext'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
-import { useSearchParams } from 'next/navigation'
 
 const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
-
-  const searchParams = useSearchParams();
-  const number = searchParams.get('number');
-  const messengerId = searchParams.get('messengerId');
-  const instagramId = searchParams.get('instagramId');
 
   const [cart, setCart] = useState<ICartProduct[]>()
   const [cartView, setCartView] = useState('hidden')
@@ -22,6 +16,12 @@ const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const user = session?.user as { firstName: string, lastName: string, email: string, _id: string, cart: ICartProduct[] }
 
   const getCart = async () => {
+    const currentUrl = window.location.href
+    const url = new URL(currentUrl)
+    const params = new URLSearchParams(url.search)
+    const number = params.get('number')
+    const messengerId = params.get('messengerId');
+    const instagramId = params.get('instagramId');
     if (number || messengerId || instagramId) {
       if (number) {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart/${number}`)
