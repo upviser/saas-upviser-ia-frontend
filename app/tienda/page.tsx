@@ -158,7 +158,6 @@ export default async function ShopPage() {
                 }
               } else if (content.content === 'Productos') {
                 if (products.length) {
-                  console.log('hola')
                   return <Products key={content.content} products={products} style={style} content={content} />
                 }
               } else if (content.content === 'Categorias 2') {
