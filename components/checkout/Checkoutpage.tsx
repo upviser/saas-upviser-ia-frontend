@@ -36,7 +36,7 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
     shipping: 0,
     pay: '',
     state: 'Pedido realizado',
-    total: cart!.reduce((bef, curr) => curr.quantityOffers?.length ? bef + offer(curr) : bef + curr.price * curr.quantity, 0),
+    total: cart?.reduce((bef: any, curr: any) => bef + curr.price * curr.quantity, 0),
     fbp: Cookies.get('_fbp'),
     fbc: Cookies.get('_fbc'),
     shippingMethod: '',
