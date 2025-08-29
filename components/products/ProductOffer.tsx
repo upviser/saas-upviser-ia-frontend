@@ -1,15 +1,20 @@
 "use client"
-import React, { useState } from 'react'
-import { ICartProduct, IProductsOffer } from '../../interfaces'
+import React, { useContext, useState } from 'react'
+import { ICartProduct, IProduct, IProductsOffer } from '../../interfaces'
 import { NumberFormat } from '../../utils'
-import { Button2AddToCart, Select } from '../ui'
+import { Button2AddToCart, ButtonAddToCart, ButtonNone, Select } from '../ui'
 import Image from 'next/image'
+import CartContext from '@/context/cart/CartContext'
 
 interface Props {
   offer: IProductsOffer
+  style: any
+  product: IProduct
 }
 
-export const ProductOffer: React.FC<Props> = ({ offer }) => {
+export const ProductOffer: React.FC<Props> = ({ offer, style, product }) => {
+
+  const { cart } = useContext(CartContext)
 
   const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
     name: offer.productsSale[0].name,
@@ -46,11 +51,11 @@ export const ProductOffer: React.FC<Props> = ({ offer }) => {
   }
 
   return (
-    <div className='flex'>
+    <div className='flex gap-2'>
       {
         tempCartProduct.variation
-          ? <Image className='w-24 h-24 mr-1 mt-auto mb-auto mobile2:w-28 mobile2:h-28 mobile:w-32 mobile:mr-2 mobile:h-32' src={tempCartProduct.variation.image!} alt={`Producto ${tempCartProduct.name}`} width={100} height={100} />
-          : <Image className='w-24 h-24 mr-1 mt-auto mb-auto mobile2:w-28 mobile2:h-28 mobile:w-32 mobile:mr-2 mobile:h-32' src={tempCartProduct.image!} alt={`Producto ${tempCartProduct.name}`} width={100} height={100} />
+          ? <Image className='w-24 h-24 mt-auto mb-auto mobile2:w-28 mobile2:h-28 mobile:w-32 mobile:h-32' style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }} src={tempCartProduct.variation.image!} alt={`Producto ${tempCartProduct.name}`} width={100} height={100} />
+          : <Image className='w-24 h-24 mt-auto mb-auto mobile2:w-28 mobile2:h-28 mobile:w-32 mobile:h-32' src={tempCartProduct.image!} alt={`Producto ${tempCartProduct.name}`} width={100} height={100} />
       }
       <div className='mt-auto mb-auto flex flex-col gap-1'>
         {
@@ -72,7 +77,7 @@ export const ProductOffer: React.FC<Props> = ({ offer }) => {
         </div>
         {
           tempCartProduct.variation !== undefined
-            ? <Select name={tempCartProduct.name} selectChange={variationChange}>
+            ? <Select name={tempCartProduct.name} selectChange={variationChange} style={style}>
               {
                 offer.productsSale.map(product => {
                   if (tempCartProduct.name === product.name) {
@@ -84,7 +89,11 @@ export const ProductOffer: React.FC<Props> = ({ offer }) => {
             </Select>
             : ''
         }
-        <Button2AddToCart tempCartProduct={tempCartProduct} />
+        {
+          cart?.find(prod => prod.name === product.name)
+            ? <ButtonAddToCart tempCartProduct={tempCartProduct} style={style} idProduct={product._id} />
+            : <ButtonNone style={style}>Añadir al carrito</ButtonNone>
+        }
       </div>
     </div>
   )
