@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import axios from "axios"
 import { calcularPaquete, offer, verificarStockCarrito } from "@/utils"
 import { ButtonPay, Data, EditData, EditShipping, Resume, ResumePhone, ShippingPay } from "."
+import { Metadata } from "next"
 
 declare const fbq: Function
 
