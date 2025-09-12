@@ -63,6 +63,11 @@ async function fetchIntegrations () {
   return res.json()
 }
 
+async function fetchDomain () {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`)
+  return res.json()
+}
+
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   
   const designData = fetchDesign()
@@ -89,10 +94,12 @@ export default async function MainLayout({ children }: { children: React.ReactNo
 
   const integrationsData = fetchIntegrations()
 
-  const [design, storeData, funnels, politics, calls, forms, payment, services, style, categories, products, integrations] = await Promise.all([designData, storeDataData, funnelsData, politicsData, callsData, formsData, paymentData, servicesData, styleData, categoriesData, productsData, integrationsData])
+  const domainData = fetchDomain()
+
+  const [design, storeData, funnels, politics, calls, forms, payment, services, style, categories, products, integrations, domain] = await Promise.all([designData, storeDataData, funnelsData, politicsData, callsData, formsData, paymentData, servicesData, styleData, categoriesData, productsData, integrationsData, domainData])
   
   return (
-    <AllNavbar design={design} storeData={storeData} funnels={funnels} politics={politics} calls={calls} forms={forms} payment={payment} services={services} style={style} categories={categories} products={products} integrations={integrations}>
+    <AllNavbar design={design} storeData={storeData} funnels={funnels} politics={politics} calls={calls} forms={forms} payment={payment} services={services} style={style} categories={categories} products={products} integrations={integrations} domain={domain}>
       { children }
     </AllNavbar>
   )

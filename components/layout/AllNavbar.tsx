@@ -23,6 +23,7 @@ interface Props {
     categories: ICategory[]
     products?: IProduct[]
     integrations: any
+    domain: any
 }
 
 declare global {
@@ -33,7 +34,7 @@ declare global {
 
 declare const fbq: Function
 
-export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design, storeData, funnels, politics, calls, forms, payment, services, style, categories, products, integrations }) => {
+export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design, storeData, funnels, politics, calls, forms, payment, services, style, categories, products, integrations, domain }) => {
 
   const [load, setLoad] = useState(false)
   const [popup, setPopup] = useState({ view: 'hidden', opacity: 'opacity-0', mouse: false })
@@ -70,7 +71,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
     const newEventId = new Date().getTime().toString()
     await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/page`, { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), eventId: newEventId })
     if (typeof fbq === 'function') {
-      fbq('track', 'PageView', { content_name: funnel?.service, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}` }, { eventID: newEventId })
+      fbq('track', 'PageView', { content_name: funnel?.service, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
     }
     if (!load) {
       setLoad(true)
@@ -195,7 +196,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                                     }
                                   </div>
                                   <div className="p-6 w-full lg:w-7/12">
-                                    <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === design.popup?.content)!} tags={calls.find(call => call._id === design.popup?.content)?.tags!} meeting={calls.find(call => call._id === design.popup?.content)?.nameMeeting!} payment={payment} style={style} />
+                                    <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === design.popup?.content)!} tags={calls.find(call => call._id === design.popup?.content)?.tags!} meeting={calls.find(call => call._id === design.popup?.content)?.nameMeeting!} payment={payment} style={style} domain={domain} />
                                   </div>
                                 </div>
                               )
@@ -259,7 +260,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                                         fbc: Cookies.get('_fbc'),
                                         content_name: clientData.services?.length && clientData.services[0].service !== '' ? clientData.services[0].service : undefined,
                                         contents: { id: clientData.services?.length && clientData.services[0].service !== '' ? clientData.services[0].service : undefined, quantity: 1 },
-                                        event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}`
+                                        event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}`
                                       }, { eventID: newEventId })
                                     }
                                     if (form?.action === 'Ir a una pagina') {

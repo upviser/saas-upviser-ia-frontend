@@ -10,7 +10,7 @@ import Link from 'next/link'
 
 declare const fbq: Function
 
-export const Lead2 = ({ content, forms, step, index, services, storeData, style }: { content: IDesign, forms: IForm[], step?: string, index: any, services: IService[], storeData: IStoreData, style?: any }) => {
+export const Lead2 = ({ content, forms, step, index, services, storeData, style, domain }: { content: IDesign, forms: IForm[], step?: string, index: any, services: IService[], storeData: IStoreData, style?: any, domain: any }) => {
 
   const [client, setClient] = useState<IClient>({ email: '', tags: forms.find(form => form._id === content.form)?.tags, forms: [{ form: forms.find(form => form._id === content.form)?._id! }] })
   const [message, setMessage] = useState('')
@@ -350,7 +350,7 @@ export const Lead2 = ({ content, forms, step, index, services, storeData, style 
                           fbc: Cookies.get('_fbc'),
                           content_name: service?._id,
                           contents: { id: service?._id, quantity: 1 },
-                          event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}`
+                          event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}`
                         }, { eventID: newEventId })
                       }
                     } else {
@@ -378,7 +378,7 @@ export const Lead2 = ({ content, forms, step, index, services, storeData, style 
                           fbc: Cookies.get('_fbc'),
                           content_name: client.services?.length && client.services[0].service !== '' ? client.services[0].service : undefined,
                           contents: { id: client.services?.length && client.services[0].service !== '' ? client.services[0].service : undefined, quantity: 1 },
-                          event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}`
+                          event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}`
                         }, { eventID: newEventId })
                       }
                     }

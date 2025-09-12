@@ -21,8 +21,9 @@ const PageBuySuccess = () => {
   const updateClient = async () => {
     if (localStorage.getItem('pay')) {
       const pay = JSON.parse(localStorage.getItem('pay')!)
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/domain`)
       if (typeof fbq === 'function') {
-        fbq('track', 'Purchase', { first_name: pay.firstName, last_name: pay.lastName, email: pay.email, phone: pay.phone && pay.phone !== '' ? `56${pay.phone}` : undefined, content_name: pay.service, currency: "clp", value: pay.price, contents: { id: pay.service, item_price: pay.price, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pay.pathname}` }, { eventID: pay.eventId })
+        fbq('track', 'Purchase', { first_name: pay.firstName, last_name: pay.lastName, email: pay.email, phone: pay.phone && pay.phone !== '' ? `56${pay.phone}` : undefined, content_name: pay.service, currency: "clp", value: pay.price, contents: { id: pay.service, item_price: pay.price, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${res.data.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${res.data.domain}`}${pay.pathname}` }, { eventID: pay.eventId })
       }
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { email: pay.email, firstName: pay.firstName, lastName: pay.lastName, phone: pay.phone, address: pay.address, departament: pay.details, region: pay.region, city: pay.city, tags: ['clientes'] })
       socket.emit('newNotification', { title: 'Nuevo pago recibido:', description: '', url: '/pagos', view: false })

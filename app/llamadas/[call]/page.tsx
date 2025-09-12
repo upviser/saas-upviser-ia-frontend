@@ -30,6 +30,11 @@ async function fetchStyle () {
   return res.json()
 }
 
+async function fetchDomain () {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`)
+  return res.json()
+}
+
 export default async function Page({ params }: { params: { call: string } }) {
 
   const callData = fetchCall(params.call)
@@ -44,11 +49,13 @@ export default async function Page({ params }: { params: { call: string } }) {
 
   const styleData = fetchStyle()
 
-  const [call, calls, services, payment, storeData, style] = await Promise.all([callData, callsData, servicesData, paymentData, storeDataData, styleData])
+  const domainData = fetchDomain()
+
+  const [call, calls, services, payment, storeData, style, domain] = await Promise.all([callData, callsData, servicesData, paymentData, storeDataData, styleData, domainData])
 
   return (
     <>
-      <Call calls={calls} content={{ content: '', info: { titleForm: 'Logo principal', video: 'Sin logo' }, meeting: call._id }} services={services} payment={payment} storeData={storeData} index={0} style={style} />
+      <Call calls={calls} content={{ content: '', info: { titleForm: 'Logo principal', video: 'Sin logo' }, meeting: call._id }} services={services} payment={payment} storeData={storeData} index={0} style={style} domain={domain} />
     </>
   )
 }

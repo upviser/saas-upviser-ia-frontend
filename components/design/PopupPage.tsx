@@ -19,9 +19,10 @@ interface Props {
     payment: IPayment
     style?: any
     storeData: IStoreData
+    domain: any
 }
 
-export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, calls, forms, payment, style, storeData }) => {
+export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, calls, forms, payment, style, storeData, domain }) => {
 
   const [message, setMessage] = useState('')
   const [clientData, setClientData] = useState<IClient>({ email: '' })
@@ -115,7 +116,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                                       }
                                     </div>
                                     <div className="p-6 w-full lg:w-7/12">
-                                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === content)!} tags={calls.find(call => call._id === content)?.tags!} meeting={calls.find(call => call._id === content)?.nameMeeting!} payment={payment} style={style} />
+                                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === content)!} tags={calls.find(call => call._id === content)?.tags!} meeting={calls.find(call => call._id === content)?.nameMeeting!} payment={payment} style={style} domain={domain} />
                                     </div>
                                   </div>
                                 </div>
@@ -179,7 +180,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                                         fbc: Cookies.get('_fbc'),
                                         content_name: clientData.services?.length && clientData.services[0].service !== '' ? clientData.services[0].service : undefined,
                                         contents: { id: clientData.services?.length && clientData.services[0].service !== '' ? clientData.services[0].service : undefined, quantity: 1 },
-                                        event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}`
+                                        event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}`
                                       }, { eventID: newEventId })
                                       if (form?.action === 'Ir a una pagina') {
                                         localStorage.setItem('popup', design.popup?.title!)
@@ -312,7 +313,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                       }
                     </div>
                     <div className="p-6 md:p-8 w-full lg:w-7/12">
-                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === content)!} tags={calls.find(call => call._id === content)?.tags!} meeting={calls.find(call => call._id === content)?.nameMeeting!} payment={payment} />
+                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === content)!} tags={calls.find(call => call._id === content)?.tags!} meeting={calls.find(call => call._id === content)?.nameMeeting!} payment={payment} domain={domain} />
                     </div>
                   </div>
                 </div>

@@ -13,11 +13,12 @@ interface Props {
     forms?: IForm[]
     step?: string
     services?: IService[]
+    domain: any
 }
 
 declare const fbq: Function
 
-export const Form: React.FC<Props> = ({ content, index, style, forms, step, services }) => {
+export const Form: React.FC<Props> = ({ content, index, style, forms, step, services, domain }) => {
   const [question, setQuestion] = useState(-1);
   const contentRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [client, setClient] = useState<IClient>({ email: '', tags: forms?.find(form => form._id === content.form)?.tags, forms: [{ form: forms?.find(form => form._id === content.form)?._id! }] })
@@ -227,7 +228,7 @@ export const Form: React.FC<Props> = ({ content, index, style, forms, step, serv
                           fbc: Cookies.get('_fbc'),
                           content_name: client.services?.length && client.services[0].service !== '' ? client.services[0].service : undefined,
                           contents: { id: client.services?.length && client.services[0].service !== '' ? client.services[0].service : undefined, quantity: 1 },
-                          event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}`
+                          event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}`
                         }, { eventID: newEventId })
                       }
                     } else {
@@ -255,7 +256,7 @@ export const Form: React.FC<Props> = ({ content, index, style, forms, step, serv
                           fbc: Cookies.get('_fbc'),
                           content_name: client.services?.length && client.services[0].service !== '' ? client.services[0].service : undefined,
                           contents: { id: client.services?.length && client.services[0].service !== '' ? client.services[0].service : undefined, quantity: 1 },
-                          event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}`
+                          event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}`
                         }, { eventID: newEventId })
                       }
                     }

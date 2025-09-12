@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { Design, ICall, IDesign, IForm, IPayment, IStoreData } from '@/interfaces'
 import { PopupPage } from './PopupPage'
 
-export const Block1 = ({ content, index, calls, forms, design, payment, style, storeData }: { content: IDesign, index: any, forms: IForm[], calls: ICall[], design: Design, payment: IPayment, style?: any, storeData: IStoreData }) => {
+export const Block1 = ({ content, index, calls, forms, design, payment, style, storeData, domain }: { content: IDesign, index: any, forms: IForm[], calls: ICall[], design: Design, payment: IPayment, style?: any, storeData: IStoreData, domain: any }) => {
 
   const [popup, setPopup] = useState({ view: 'hidden', opacity: 'opacity-0', mouse: false })
   const [cont, setCont] = useState('')
@@ -118,7 +118,7 @@ export const Block1 = ({ content, index, calls, forms, design, payment, style, s
 
   return (
     <>
-      <PopupPage popup={popup} setPopup={setPopup} content={cont} design={design} calls={calls} forms={forms} payment={payment} style={style} storeData={storeData} />
+      <PopupPage popup={popup} setPopup={setPopup} content={cont} design={design} calls={calls} forms={forms} payment={payment} style={style} storeData={storeData} domain={domain} />
       <div key={content.content} className={`py-10 md:py-20 w-full px-4 flex`} style={{ background: `${content.info.typeBackground === 'Degradado' ? content.info.background : content.info.typeBackground === 'Color' ? content.info.background : ''}` }}>
         <div className={`w-full flex max-w-[1280px] m-auto ${content.info?.image && content.info.image !== '' ? 'gap-8 lg:gap-16' : ''} flex-col text-center md:flex-row md:text-left`}>
           <div className="w-full m-auto flex flex-col gap-3 md:w-1/2">

@@ -16,11 +16,12 @@ interface Props {
     forms?: IForm[]
     storeData?: IStoreData
     step?: string
+    domain: any
 }
 
 declare const fbq: Function
 
-export const Lead3: React.FC<Props> = ({ content, index, style, services, forms, storeData, step }) => {
+export const Lead3: React.FC<Props> = ({ content, index, style, services, forms, storeData, step, domain }) => {
   
   const [question, setQuestion] = useState(-1);
   const contentRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -438,7 +439,7 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
                           fbc: Cookies.get('_fbc'),
                           content_name: service?._id,
                           contents: { id: service?._id, quantity: 1 },
-                          event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}`
+                          event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}`
                         }, { eventID: newEventId })
                       }
                     } else {
@@ -466,7 +467,7 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
                           fbc: Cookies.get('_fbc'),
                           content_name: client.services?.length && client.services[0].service !== '' ? client.services[0].service : undefined,
                           contents: { id: client.services?.length && client.services[0].service !== '' ? client.services[0].service : undefined, quantity: 1 },
-                          event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}`
+                          event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}`
                         }, { eventID: newEventId })
                       }
                     }

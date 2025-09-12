@@ -8,7 +8,7 @@ import { NumberFormat } from '@/utils'
 import Link from 'next/link'
 import Image from 'next/image'
 
-export const Call = ({ calls, content, step, services, payment, storeData, index, style }: { calls: ICall[], content: IDesign, step?: string, services: IService[], payment: IPayment, storeData?: IStoreData, index: number, style?: any }) => {
+export const Call = ({ calls, content, step, services, payment, storeData, index, style, domain }: { calls: ICall[], content: IDesign, step?: string, services: IService[], payment: IPayment, storeData?: IStoreData, index: number, style?: any, domain: any }) => {
 
   const [newClient, setNewClient] = useState<IClient>({ email: '', meetings: [{ meeting: calls.find(call => call._id === content.meeting)?._id! }] })
   const [calendar, setCalendar] = useState(false)
@@ -263,7 +263,7 @@ export const Call = ({ calls, content, step, services, payment, storeData, index
               </div>
             </div>
             <div className={`${calendar ? 'opacity-1' : 'opacity-0'} transition-opacity duration-500 p-6 w-full lg:w-7/12`}>
-              <Calendar newClient={newClient} setNewClient={setNewClient} call={calls.find(call => call._id === content.meeting)!} tags={calls.find(call => call._id === content.meeting)?.tags!} meeting={calls.find(call => call._id === content.meeting)?._id!} payment={payment} services={services} style={style} content={content} />
+              <Calendar newClient={newClient} setNewClient={setNewClient} call={calls.find(call => call._id === content.meeting)!} tags={calls.find(call => call._id === content.meeting)?.tags!} meeting={calls.find(call => call._id === content.meeting)?._id!} payment={payment} services={services} style={style} content={content} domain={domain} />
             </div>
           </div>
         </div>

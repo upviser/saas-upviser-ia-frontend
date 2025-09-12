@@ -34,6 +34,11 @@ async function fetchIntegrations () {
   return res.json()
 }
 
+async function fetchDomain () {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`)
+  return res.json()
+}
+
 export const metadata: Metadata = {
   title: 'Finalizar compra',
   twitter: {
@@ -55,9 +60,11 @@ export default async function Page () {
 
   const integrationsData = fetchIntegrations()
 
-  const [storeData, chilexpress, style, payment, design, integrations] = await Promise.all([storeDataData, chilexpressData, styleData, paymentData, designData, integrationsData])
+  const domainData = fetchDomain()
+
+  const [storeData, chilexpress, style, payment, design, integrations, domain] = await Promise.all([storeDataData, chilexpressData, styleData, paymentData, designData, integrationsData, domainData])
 
   return (
-    <CheckoutPage storeData={storeData} chilexpress={chilexpress} style={style} payment={payment} design={design} integrations={integrations} />
+    <CheckoutPage storeData={storeData} chilexpress={chilexpress} style={style} payment={payment} design={design} integrations={integrations} domain={domain} />
   )
 }

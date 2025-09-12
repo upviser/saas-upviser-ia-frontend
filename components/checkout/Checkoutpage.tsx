@@ -19,9 +19,10 @@ interface Props {
   payment?: any
   design: Design
   integrations: any
+  domain: any
 }
 
-export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, payment, design, integrations }) => {
+export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, payment, design, integrations, domain }) => {
 
   const {cart, setCart} = useContext(CartContext)
   
@@ -190,7 +191,7 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
     if (e.target.name === 'pay' && e.target.value === 'WebPay Plus') {
       const pago = {
         amount: sell.total,
-        returnUrl: `${process.env.NEXT_PUBLIC_WEB_URL}/procesando-pago`
+        returnUrl: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}/procesando-pago`
       }
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/create`, pago)
       setToken(response.data.token)

@@ -60,8 +60,14 @@ async function fetchIntegrations () {
   return res.json()
 }
 
+async function fetchDomain () {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`)
+  return res.json()
+}
+
 export async function generateMetadata() {
   const design: Design = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, { next: { revalidate: 3600 } }).then((res) => res.json())
+  const domain: any = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, { next: { revalidate: 3600 } }).then((res) => res.json())
   const home = design.pages?.find(page => page.page === 'Inicio')
   return {
     title: home?.metaTitle && home?.metaTitle !== '' ? home?.metaTitle : '',
@@ -69,7 +75,7 @@ export async function generateMetadata() {
     openGraph: {
       title: home?.metaTitle && home?.metaTitle !== '' ? home?.metaTitle : '',
       description: home?.metaDescription && home?.metaDescription !== '' ? home?.metaDescription : '',
-      url: `${process.env.NEXT_PUBLIC_WEB_URL}/`,
+      url: domain.domain === 'upviser.cl' ? `${process.env.NEXT_PUBLIC_WEB_URL}/` : `https://${domain.domain}/`,
       images: [home?.image && home.image !== '' ? home.image : '']
     }
   }
@@ -97,7 +103,9 @@ export default async function Home() {
 
   const integrationsData = fetchIntegrations()
 
-  const [design, forms, calls, services, storeData, payment, style, categories, products, integrations] = await Promise.all([designData, formsData, callsData, servicesData, storeDataData, paymentData, styleData, categoriesData, productsData, integrationsData])
+  const domainData = fetchDomain()
+
+  const [design, forms, calls, services, storeData, payment, style, categories, products, integrations, domain] = await Promise.all([designData, formsData, callsData, servicesData, storeDataData, paymentData, styleData, categoriesData, productsData, integrationsData, domainData])
 
   return (
     <div className="flex flex-col">
@@ -109,49 +117,49 @@ export default async function Home() {
                 {
                   page.design.map((content: any, index: any) => {
                     if (content.content === 'Carrusel') {
-                      return <Slider key={content.content} info={content.info} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} />
+                      return <Slider key={content.content} info={content.info} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} domain={domain} />
                     } else if (content.content === 'Bloque 1') {
-                      return <Block1 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} />
+                      return <Block1 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} domain={domain} />
                     } else if (content.content === 'Bloque 2') {
-                      return <Block2 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} />
+                      return <Block2 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} domain={domain} />
                     } else if (content.content === 'Bloque 3') {
-                      return <Block3 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} />
+                      return <Block3 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} domain={domain} />
                     } else if (content.content === 'Bloque 4') {
-                      return <Block4 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} />
+                      return <Block4 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} domain={domain} />
                     } else if (content.content === 'Bloque 5') {
-                      return <Block5 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} />
+                      return <Block5 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} domain={domain} />
                     } else if (content.content === 'Contacto') {
                       return <ContactPage key={content.content} info={ content.info } index={index} style={style} />
                     } else if (content.content === 'Suscripción') {
                       return <Subscribe key={content.content} info={ content.info } style={style} />
                     } else if (content.content === 'Lead 1') {
-                      return <Lead1 key={content.content} content={content} forms={forms} index={index} services={services} style={style} />
+                      return <Lead1 key={content.content} content={content} forms={forms} index={index} services={services} style={style} domain={domain} />
                     } else if (content.content === 'Video') {
-                      return <Video key={content.content} content={content} index={index} storeData={storeData} />
+                      return <Video key={content.content} content={content} index={index} storeData={storeData} style={style} />
                     } else if (content.content === 'Agendar llamada') {
-                      return <Call key={content.content} calls={calls} content={content} services={services} payment={payment} storeData={storeData} index={index} style={style} />
+                      return <Call key={content.content} calls={calls} content={content} services={services} payment={payment} storeData={storeData} index={index} style={style} domain={domain} />
                     } else if (content.content === 'Bloque 7') {
                       return <Block7 key={content.content} content={content} />
                     } else if (content.content === 'Llamadas') {
                       return <Calls key={content.content} content={content} calls={calls} style={style} index={index} />
                     } else if (content.content === 'Checkout') {
-                      return <Checkout key={content.content} content={content} services={services} payment={payment} storeData={storeData} style={style} index={index} integrations={integrations} />
+                      return <Checkout key={content.content} content={content} services={services} payment={payment} storeData={storeData} style={style} index={index} integrations={integrations} domain={domain} />
                     } else if (content.content === 'Lead 2') {
-                      return <Lead2 key={content.content} content={content} forms={forms} index={index} services={services} storeData={storeData} style={style} />
+                      return <Lead2 key={content.content} content={content} forms={forms} index={index} services={services} storeData={storeData} style={style} domain={domain} />
                     } else if (content.content === 'Servicios') {
                       return <Services key={content.content} content={content} services={services} index={index} style={style} />
                     } else if (content.content === 'Planes') {
-                      return <Plans key={content.content} content={content} services={services} index={index} payment={payment} style={style} forms={forms} integrations={integrations} />
+                      return <Plans key={content.content} content={content} services={services} index={index} payment={payment} style={style} forms={forms} integrations={integrations} domain={domain} />
                     } else if (content.content === 'Preguntas frecuentes') {
                       return <Faq key={content.content} content={content} services={services} index={index} />
                     } else if (content.content === 'Lead 3') {
-                      return <Lead3 key={content.content} content={content} services={services} index={index} style={style} forms={forms} storeData={storeData} />
+                      return <Lead3 key={content.content} content={content} services={services} index={index} style={style} forms={forms} storeData={storeData} domain={domain} />
                     } else if (content.content === 'Tabla comparativa') {
-                      return <Table key={content.content} content={content} services={services} index={index} payment={payment} style={style} integrations={integrations} />
+                      return <Table key={content.content} content={content} services={services} index={index} payment={payment} style={style} integrations={integrations} domain={domain} />
                     } else if (content.content === 'Bloques') {
                       return <Blocks key={content.content} content={content} index={index} style={style} storeData={storeData} />
                     } else if (content.content === 'Formulario') {
-                      return <Form key={content.content} content={content} index={index} style={style} forms={forms} />
+                      return <Form key={content.content} content={content} index={index} style={style} forms={forms} domain={domain} />
                     } else if (content.content === 'Reseñas') {
                       return <Reviews key={content.content} content={content} index={index} style={style} />
                     } else if (content.content === 'Carrusel de imagenes') {
