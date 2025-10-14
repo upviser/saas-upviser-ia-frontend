@@ -557,7 +557,7 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                                               setPay('WebPay Plus')
                                               const pago = {
                                                 amount: initializationRef.current.amount,
-                                                returnUrl: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}/procesando-pago`
+                                                returnUrl: `https://${domain.domain}/procesando-pago`
                                               }
                                               const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/create`, pago)
                                               setToken(response.data.token)

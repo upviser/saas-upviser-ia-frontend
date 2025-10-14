@@ -193,7 +193,7 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
     if (e.target.name === 'pay' && e.target.value === 'WebPay Plus') {
       const pago = {
         amount: sell.total,
-        returnUrl: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}/procesando-pago`
+        returnUrl: `https://${domain.domain}/procesando-pago`
       }
       const response = await apiClient.post('/pay/create', pago)
       setToken(response.data.token)

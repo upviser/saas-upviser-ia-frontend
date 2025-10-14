@@ -3,6 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import Account from '@/models/Account'
 import bcrypt from 'bcrypt'
 import { connectDB } from '@/database/db'
+import { NextRequest } from "next/server"
 
 const authOptions = {
   providers: [
@@ -49,6 +50,14 @@ const authOptions = {
   }
 }
 
-const handler = NextAuth(authOptions)
+const handler = async (req: NextRequest, res: any) => {
+  const host = req.headers.get('x-forwarded-host') || req.headers.get('host')
+  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'
+
+  // Asignamos la URL base dinámica antes de ejecutar NextAuth
+  process.env.NEXTAUTH_URL = `${protocol}://${host}`
+
+  return NextAuth(req, res, authOptions)
+}
 
 export { handler as GET, handler as POST }
