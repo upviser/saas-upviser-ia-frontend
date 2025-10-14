@@ -1,12 +1,13 @@
 import { Design, IFunnel, IPost } from "@/interfaces"
 import { MetadataRoute } from "next"
 import { getServerTenantId } from "@/utils"
+import { headers } from 'next/headers'
 
 
 export const revalidate = 3600
 
-async function fetchDesign () {
-  const tenantId = await getServerTenantId()
+async function fetchDesign (hostname: string) {
+  const tenantId = await getServerTenantId(hostname)
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -15,8 +16,8 @@ async function fetchDesign () {
   return res.json()
 }
 
-async function fetchFunnels () {
-  const tenantId = await getServerTenantId()
+async function fetchFunnels (hostname: string) {
+  const tenantId = await getServerTenantId(hostname)
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/funnels`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -25,8 +26,8 @@ async function fetchFunnels () {
   return res.json()
 }
 
-async function fetchPosts () {
-  const tenantId = await getServerTenantId()
+async function fetchPosts (hostname: string) {
+  const tenantId = await getServerTenantId(hostname)
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -36,12 +37,14 @@ async function fetchPosts () {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    const headersList = headers()
+    const hostname = headersList.get('host') || ''
 
-    const design: Design = await fetchDesign()
+    const design: Design = await fetchDesign(hostname)
 
-    const funnels: IFunnel[] = await fetchFunnels()
+    const funnels: IFunnel[] = await fetchFunnels(hostname)
 
-    const posts: IPost[] = await fetchPosts()
+    const posts: IPost[] = await fetchPosts(hostname)
 
     const pagesEntries: MetadataRoute.Sitemap = design.pages.filter(page => page.page !== 'Blog').map(page => ({
         url: `${process.env.NEXT_PUBLIC_WEB_URL}/${page.slug}`,

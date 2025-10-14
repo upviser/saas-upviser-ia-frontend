@@ -6,6 +6,7 @@ import MainLayout from "@/components/layout/MainLayout"
 import { GoogleAnalytics } from "@next/third-parties/google"
 import Script from "next/script"
 import { getServerTenantId } from "@/utils"
+import { headers } from 'next/headers'
 
 
 const myFont = localFont({
@@ -26,8 +27,8 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600
 
-async function fetchIntegrations () {
-  const tenantId = await getServerTenantId()
+async function fetchIntegrations (hostname: string) {
+  const tenantId = await getServerTenantId(hostname)
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -36,8 +37,8 @@ async function fetchIntegrations () {
   return res.json()
 }
 
-async function fetchStoredata () {
-  const tenantId = await getServerTenantId()
+async function fetchStoredata (hostname: string) {
+  const tenantId = await getServerTenantId(hostname)
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -51,10 +52,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = headers()
+  const hostname = headersList.get('host') || ''
 
-  const integrationsData = fetchIntegrations()
+  const integrationsData = fetchIntegrations(hostname)
 
-  const storeDataData = fetchStoredata()
+  const storeDataData = fetchStoredata(hostname)
 
   const [integrations, storeData] = await Promise.all([integrationsData, storeDataData])
 
@@ -65,7 +68,7 @@ export default async function RootLayout({
       </head>
       <body className="overflow-x-hidden">
         <Providers>
-          <MainLayout>
+          <MainLayout hostname={hostname}>
             <main>{children}</main>
           </MainLayout>
         </Providers>

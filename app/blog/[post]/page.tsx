@@ -2,10 +2,11 @@ import PagePost from "@/components/blog/PagePost"
 import { IPost } from "@/interfaces"
 import { Metadata } from "next"
 import { getServerTenantId } from "@/utils"
+import { headers } from 'next/headers'
 
 
-async function fetchPost (post: string) {
-  const tenantId = await getServerTenantId()
+async function fetchPost (post: string, hostname: string) {
+  const tenantId = await getServerTenantId(hostname)
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/${post}`, { 
     next: { revalidate: 3600 },
     headers: {
@@ -15,8 +16,8 @@ async function fetchPost (post: string) {
   return res.json()
 }
 
-async function fetchPosts () {
-  const tenantId = await getServerTenantId()
+async function fetchPosts (hostname: string) {
+  const tenantId = await getServerTenantId(hostname)
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, { 
     next: { revalidate: 3600 },
     headers: {
@@ -26,8 +27,8 @@ async function fetchPosts () {
   return res.json()
 }
 
-async function fetchStyle () {
-  const tenantId = await getServerTenantId()
+async function fetchStyle (hostname: string) {
+  const tenantId = await getServerTenantId(hostname)
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -41,7 +42,9 @@ export async function generateMetadata({
 }: {
   params: { post: string }
 }): Promise<Metadata> {
-  const tenantId = await getServerTenantId()
+  const headersList = headers()
+  const hostname = headersList.get('host') || ''
+  const tenantId = await getServerTenantId(hostname)
 
   const id = params.post
   const post: IPost = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/${id}`, { 
@@ -63,12 +66,14 @@ export async function generateMetadata({
 }
 
 export default async function Page ({ params }: { params: { post: string } }) {
+  const headersList = headers()
+  const hostname = headersList.get('host') || ''
   
-  const postData = fetchPost(params.post)
+  const postData = fetchPost(params.post, hostname)
 
-  const postsData = fetchPosts()
+  const postsData = fetchPosts(hostname)
 
-  const styleData = fetchStyle()
+  const styleData = fetchStyle(hostname)
 
   const [post, posts, style] = await Promise.all([postData, postsData, styleData])
 
