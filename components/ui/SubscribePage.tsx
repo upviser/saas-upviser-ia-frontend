@@ -1,6 +1,7 @@
 "use client"
 import axios from 'axios'
 import React, { useState } from 'react'
+import { getClientTenantId } from '@/utils'
 import { IInfo } from '@/interfaces'
 import { ButtonFunction, ButtonSubmit, H2, H3, Input, P, Spinner2 } from '.'
 import { usePathname } from 'next/navigation'
@@ -29,7 +30,12 @@ export const SubscribePage = ({ info, style }: { info: IInfo, style?: any }) => 
       setError('')
       if (emailRegex.test(subscribeData.email)) {
         const newEventId = new Date().getTime().toString()
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...subscribeData, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), page: pathname, eventId: newEventId })
+        const tenantId = await getClientTenantId()
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...subscribeData, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), page: pathname, eventId: newEventId }, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
         if (typeof fbq === 'function') {
           fbq('track', 'Lead', { email: subscribeData.email, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}` }, { eventID: newEventId })
         }

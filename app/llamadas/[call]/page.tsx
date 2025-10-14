@@ -1,37 +1,79 @@
 import { Call } from "@/components/design"
+import { getServerTenantId } from "@/utils"
+
 
 async function fetchCall (call: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/call-name/${call}`, { next: { revalidate: 3600 } })
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/call-name/${call}`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchCalls () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/calls`, { next: { revalidate: 3600 } })
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/calls`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchServices () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`, { next: { revalidate: 3600 } })
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchPayment () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`, { next: { revalidate: 3600 } })
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
-async function fetchStoreData () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, { next: { revalidate: 3600 } })
+async function fetchStoredata () {
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchStyle () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchDomain () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
@@ -45,7 +87,7 @@ export default async function Page({ params }: { params: { call: string } }) {
 
   const paymentData = fetchPayment()
 
-  const storeDataData = fetchStoreData()
+  const storeDataData = fetchStoredata()
 
   const styleData = fetchStyle()
 

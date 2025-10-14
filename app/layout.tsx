@@ -5,6 +5,8 @@ import Providers from "@/components/Providers"
 import MainLayout from "@/components/layout/MainLayout"
 import { GoogleAnalytics } from "@next/third-parties/google"
 import Script from "next/script"
+import { getServerTenantId } from "@/utils"
+
 
 const myFont = localFont({
   src: './fonts/RedHatDisplay-VariableFont_wght.ttf',
@@ -25,12 +27,22 @@ export const metadata: Metadata = {
 export const revalidate = 3600
 
 async function fetchIntegrations () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
-async function fetchStoreData () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`)
+async function fetchStoredata () {
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
@@ -42,7 +54,7 @@ export default async function RootLayout({
 
   const integrationsData = fetchIntegrations()
 
-  const storeDataData = fetchStoreData()
+  const storeDataData = fetchStoredata()
 
   const [integrations, storeData] = await Promise.all([integrationsData, storeDataData])
 

@@ -1,5 +1,6 @@
 "use client"
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 import React, { useEffect, useState } from 'react'
 import { City, ICartProduct, ISell, Region } from '../../interfaces'
 import { Select } from '../ui'
@@ -25,7 +26,12 @@ export const Shipping: React.FC<Props> = ({ setShipping, sell, setSell, chilexpr
   const [chile, setChile] = useState({ active: false, coberturaKey: '', cotizadorKey: '' })
 
     const requestRegions = async () => {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`)
+      const tenantId = await getClientTenantId()
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
         const request = await axios.get('https://testservices.wschilexpress.com/georeference/api/v1.0/regions', {
           headers: {
             'Cache-Control': 'no-cache',

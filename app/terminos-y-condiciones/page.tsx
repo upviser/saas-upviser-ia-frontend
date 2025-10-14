@@ -1,7 +1,14 @@
 import { H1 } from "@/components/ui"
+import { getServerTenantId } from "@/utils"
+
 
 async function fetchPolitics () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/politics`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/politics`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 

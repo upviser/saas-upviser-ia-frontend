@@ -1,9 +1,15 @@
 import { ICartProduct, IProduct } from "@/interfaces";
 import axios from "axios";
+import { getClientTenantId } from "@/utils";
 
 export const verificarStockCarrito = async (cart: ICartProduct[]): Promise<ICartProduct[]> => {
     try {
-      const { data: products }: { data: IProduct[] } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+      const tenantId = await getClientTenantId();
+      const { data: products }: { data: IProduct[] } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      });
 
       const carritoFiltrado = cart.filter(cartItem => {
         const productoBase = products.find(p => p.slug === cartItem.slug);

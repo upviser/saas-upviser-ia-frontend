@@ -1,6 +1,7 @@
 "use client"
 import { Button, H1, Input, Textarea } from "@/components/ui"
 import { ISell } from "@/interfaces"
+import { getClientTenantId } from "@/utils"
 import axios from "axios"
 import { useEffect, useState } from "react"
 import Image from 'next/image'
@@ -19,7 +20,12 @@ export default function Page () {
     const url = new URL(currentUrl)
     const params = new URLSearchParams(url.search)
     const sell = params.get('sell')
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell}`)
+    const tenantId = await getClientTenantId()
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell}`, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     if (res.data.cart.length) {
         setSell(res.data)
         let productsCart: any[] = []
@@ -34,7 +40,12 @@ export default function Page () {
   }, [])
 
   const getStyle = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/style`)
+    const tenantId = await getClientTenantId()
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     setStyle(res.data)
   }
 
@@ -156,7 +167,12 @@ export default function Page () {
                     e.preventDefault()
                     if (!loadingSubmit) {
                       setLoadingSubmit(true)
-                      products?.map(async (product) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/review/${product._id}`, product))
+                      const tenantId = await getClientTenantId()
+                      products?.map(async (product) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/review/${product._id}`, product, {
+                        headers: {
+                          'x-tenant-id': tenantId,
+                        }
+                      }))
                       setLoadingSubmit(false)
                     }
                   }} loading={loadingSubmit} style={style}>Enviar reseñas</Button>

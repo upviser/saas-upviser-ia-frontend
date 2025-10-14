@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 
 const productSchema = new Schema({
+  tenantId: { type: String, required: true },
   name: { type: String, required: true },
   description: { type: String, required: true },
   images: [{ public_id: { type: String }, url: { type: String } }],

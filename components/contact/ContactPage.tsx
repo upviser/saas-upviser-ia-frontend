@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { ButtonSubmit, H1, H2, H3, Input, P, Textarea } from '../ui'
 import Cookies from 'js-cookie'
 import { usePathname } from 'next/navigation'
+import { getClientTenantId } from '@/utils'
 
 declare const fbq: Function
 
@@ -131,8 +132,17 @@ export const ContactPage = ({ info, index, style }: { info: IInfo, index: any, s
       if (formContact.name !== '' && formContact.email !== '' && formContact.message !== '') {
         if (emailRegex.test(formContact.email)) {
           const newEventId = new Date().getTime().toString()
-          await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/contact`, { ...formContact, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), page: pathname, eventId: newEventId })
-          await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { firstName: formContact.name, email: formContact.email, tags: ['formulario-contacto'] })
+          const tenantId = await getClientTenantId()
+          await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/contact`, { ...formContact, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), page: pathname, eventId: newEventId }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
+          await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { firstName: formContact.name, email: formContact.email, tags: ['formulario-contacto'] }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           if (typeof fbq === 'function') {
             fbq('track', 'Contact', { first_name: formContact.name, email: formContact.email, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), event_source_url: `${process.env.NEXT_PUBLIC_WEB_URL}${pathname}` }, { eventID: newEventId })
           }

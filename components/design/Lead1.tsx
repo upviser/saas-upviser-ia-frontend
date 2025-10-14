@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Check, H1, H2, Input, P, Select } from '../ui'
 import { IClient, IDesign, IForm, IService, IStoreData } from '@/interfaces'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 import { usePathname, useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
 import Link from 'next/link'
@@ -38,8 +39,17 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
 
   const getFunnel = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`)
-      const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`)
+      const tenantId = await getClientTenantId()
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
+      const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
       const stepFind = respo.data.steps.find((ste: any) => ste.step === step)
       const service = services?.find(service => service._id === respo.data.service)
       if (res.data) {
@@ -220,7 +230,12 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
   }, []);
 
   const getClientData = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-data`)
+    const tenantId = await getClientTenantId()
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-data`, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     setData(res.data)
   }
 
@@ -353,13 +368,26 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
                       return
                     }
 
-                    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`)
+                    const tenantId = await getClientTenantId()
+                    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
+                      headers: {
+                        'x-tenant-id': tenantId,
+                      }
+                    })
                     if (!res.data.message) {
-                      const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`)
+                      const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`, {
+                        headers: {
+                          'x-tenant-id': tenantId,
+                        }
+                      })
                       const stepFind = respo.data.steps.find((ste: any) => ste.step === step)
                       const stepIndex = respo.data.steps.reverse().findIndex((ste: any) => ste.step === step)
                       const service = services?.find(service => service._id === respo.data.service)
-                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...client, funnels: [{ funnel: respo.data._id, step: stepFind._id }], services: stepIndex === 0 ? service?._id ? [{ service: service._id, step: service.steps[0]._id }] : [] : [] })
+                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...client, funnels: [{ funnel: respo.data._id, step: stepFind._id }], services: stepIndex === 0 ? service?._id ? [{ service: service._id, step: service.steps[0]._id }] : [] : [] }, {
+                        headers: {
+                          'x-tenant-id': tenantId,
+                        }
+                      })
                       const newEventId = new Date().getTime().toString()
                       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/lead`, {
                         firstName: client.firstName,
@@ -375,6 +403,10 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
                         step: stepFind._id,
                         page: pathname,
                         eventId: newEventId
+                      }, {
+                        headers: {
+                          'x-tenant-id': tenantId,
+                        }
                       })
                       
                       if (typeof fbq === 'function') {
@@ -391,7 +423,11 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
                         }, { eventID: newEventId })
                       }
                     } else {
-                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, client)
+                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, client, {
+                        headers: {
+                          'x-tenant-id': tenantId,
+                        }
+                      })
                       const newEventId = new Date().getTime().toString()
                       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/lead`, {
                         firstName: client.firstName,
@@ -404,6 +440,10 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
                         fbp: Cookies.get('_fbp'),
                         page: pathname,
                         eventId: newEventId
+                      }, {
+                        headers: {
+                          'x-tenant-id': tenantId,
+                        }
                       })
                       if (typeof fbq === 'function') {
                         fbq('track', 'Lead', {

@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Button, H3, Input } from '../ui'
 import { ISell } from '@/interfaces'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 
 interface Props {
     contactMouse: boolean
@@ -53,8 +54,17 @@ export const EditData: React.FC<Props> = ({ contactMouse, setContactOpacity, set
           e.preventDefault()
           if (!loading) {
             setLoading(true)
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${session?.user?._id}`, { firstName: sell.firstName, lastName: sell.lastName, phone: sell.phone })
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${session?.user?.email}`, { firstName: sell.firstName, lastName: sell.lastName, phone: sell.phone })
+            const tenantId = await getClientTenantId()
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${session?.user?._id}`, { firstName: sell.firstName, lastName: sell.lastName, phone: sell.phone }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${session?.user?.email}`, { firstName: sell.firstName, lastName: sell.lastName, phone: sell.phone }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             setContactOpacity('opacity-0')
             setTimeout(() => {
               setContactView('hidden')

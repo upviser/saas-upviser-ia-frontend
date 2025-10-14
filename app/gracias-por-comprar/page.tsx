@@ -5,7 +5,7 @@ import Cookies from 'js-cookie'
 import { io } from 'socket.io-client'
 import { H1 } from '@/components/ui'
 import { ISell } from '@/interfaces'
-import { offer } from '@/utils'
+import { offer, getClientTenantId } from '@/utils'
 import CartContext from '@/context/cart/CartContext'
 
 const socket = io(`${process.env.NEXT_PUBLIC_API_URL}/`, {
@@ -21,13 +21,26 @@ const PageBuySuccess = () => {
   const updateClient = async () => {
     if (localStorage.getItem('pay')) {
       const pay = JSON.parse(localStorage.getItem('pay')!)
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/domain`)
+      const tenantId = await getClientTenantId()
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/domain`, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
       if (typeof fbq === 'function') {
         fbq('track', 'Purchase', { first_name: pay.firstName, last_name: pay.lastName, email: pay.email, phone: pay.phone && pay.phone !== '' ? `56${pay.phone}` : undefined, content_name: pay.service, currency: "clp", value: pay.price, contents: { id: pay.service, item_price: pay.price, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${res.data.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${res.data.domain}`}${pay.pathname}` }, { eventID: pay.eventId })
       }
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { email: pay.email, firstName: pay.firstName, lastName: pay.lastName, phone: pay.phone, address: pay.address, departament: pay.details, region: pay.region, city: pay.city, tags: ['clientes'] })
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { email: pay.email, firstName: pay.firstName, lastName: pay.lastName, phone: pay.phone, address: pay.address, departament: pay.details, region: pay.region, city: pay.city, tags: ['clientes'] }, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
       socket.emit('newNotification', { title: 'Nuevo pago recibido:', description: '', url: '/pagos', view: false })
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nuevo pago recibido:', description: '', url: '/pagos', view: false })
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nuevo pago recibido:', description: '', url: '/pagos', view: false }, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
       localStorage.setItem('pay', '')
       localStorage.setItem('service', '')
       localStorage.setItem('service2', '')
@@ -39,7 +52,12 @@ const PageBuySuccess = () => {
         fbq('track', 'Purchase', {first_name: sell.firstName, last_name: sell.lastName, email: sell.email, phone: sell.phone ? `56${sell.phone}` : undefined,contents: sell.cart, currency: "CLP", value: sell.cart.reduce((bef, curr) => curr.quantityOffers?.length ? offer(curr) : bef + curr.price * curr.quantity, 0) + Number(sell.shipping)})
       }
       socket.emit('newNotification', { title: 'Nuevo pago recibido:', description: 'Venta de productos de la tienda', url: '/pagos', view: false })
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { email: sell.email, firstName: sell.firstName, lastName: sell.lastName, phone: sell.phone, address: sell.address, departament: sell.details, region: sell.region, city: sell.city, tags: sell.subscription ? ['Clientes', 'Suscriptores'] : ['Clientes'] })
+      const tenantId = await getClientTenantId()
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { email: sell.email, firstName: sell.firstName, lastName: sell.lastName, phone: sell.phone, address: sell.address, departament: sell.details, region: sell.region, city: sell.city, tags: sell.subscription ? ['Clientes', 'Suscriptores'] : ['Clientes'] }, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
       localStorage.setItem('sell', '')
       localStorage.setItem('cart', '')
       localStorage.setItem('shippingData', '')

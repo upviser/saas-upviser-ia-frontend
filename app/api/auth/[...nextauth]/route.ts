@@ -4,7 +4,7 @@ import Account from '@/models/Account'
 import bcrypt from 'bcrypt'
 import { connectDB } from '@/database/db'
 
-const handler = NextAuth({
+const authOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -27,18 +27,28 @@ const handler = NextAuth({
     })
   ],
   callbacks: {
-    jwt({ token, user }) {
-      if (user) token.user = user
+    jwt({ token, user }: { token: any, user: any }) {
+      if (user) {
+        token.user = user
+        // Asegurar que el tenantId esté disponible en el token
+        token.user.tenantId = user.tenantId
+      }
       return token
     },
-    session({ session, token }) {
+    session({ session, token }: { session: any, token: any }) {
       session.user = token.user as any
+      // Asegurar que el tenantId esté disponible en la sesión
+      if (token.user?.tenantId) {
+        session.user.tenantId = token.user.tenantId
+      }
       return session
-        }
+    }
   },
   pages: {
     signIn: '/login'
   }
-})
+}
+
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }

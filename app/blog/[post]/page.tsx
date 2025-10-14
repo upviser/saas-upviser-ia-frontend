@@ -1,19 +1,38 @@
 import PagePost from "@/components/blog/PagePost"
 import { IPost } from "@/interfaces"
 import { Metadata } from "next"
+import { getServerTenantId } from "@/utils"
+
 
 async function fetchPost (post: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/${post}`, { next: { revalidate: 3600 } })
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/${post}`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchPosts () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, { next: { revalidate: 3600 } })
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchStyle () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
@@ -22,9 +41,15 @@ export async function generateMetadata({
 }: {
   params: { post: string }
 }): Promise<Metadata> {
+  const tenantId = await getServerTenantId()
 
   const id = params.post
-  const post: IPost = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/${id}`, { next: { revalidate: 3600 } }).then((res) => res.json())
+  const post: IPost = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/${id}`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  }).then((res) => res.json())
 
   return {
     title: post.titleSeo && post.titleSeo !== '' ? post.titleSeo : post.title,

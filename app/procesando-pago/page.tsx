@@ -2,6 +2,7 @@
 import { Spinner } from '@/components/ui'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { getClientTenantId } from '@/utils'
 import React, { useEffect } from 'react'
 import { io } from 'socket.io-client'
 
@@ -24,9 +25,18 @@ export default function PayProcess () {
       const pay = JSON.parse(localStorage.getItem('pay')!)
       const sell = JSON.parse(localStorage.getItem('sell')!)
       if (pay) {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/commit`, { token: tokenWs })
+        const tenantId = await getClientTenantId()
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/commit`, { token: tokenWs }, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
         if (response.data.status === 'AUTHORIZED') {
-          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/pay/${pay._id}`, { state: 'Pago realizado' })
+          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/pay/${pay._id}`, { state: 'Pago realizado' }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           if (localStorage.getItem('service') && localStorage.getItem('service2')) {
             const service = JSON.parse(localStorage.getItem('service')!)
             const service2 = JSON.parse(localStorage.getItem('service2')!)
@@ -37,20 +47,40 @@ export default function PayProcess () {
                 : service.payStatus === 'Segundo pago iniciado'
                 ? 'Segundo pago realizado'
                 : '';
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: [service] })
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: [service] }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
           } else if (localStorage.getItem('meetingData')) {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/meeting`, JSON.parse(localStorage.getItem('meetingData')!))
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/meeting`, JSON.parse(localStorage.getItem('meetingData')!), {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             if (typeof fbq === 'function') {
               const meetingEvent = JSON.parse(localStorage.getItem('meetingEvent')!)
               fbq('track', 'schedule', { ...meetingEvent }, { eventID: meetingEvent.eventID })
             }
             socket.emit('newNotification', { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).nameMeeting, url: '/reuniones', view: false })
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).nameMeeting, url: '/reuniones', view: false })
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).nameMeeting, url: '/reuniones', view: false }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
           }
           router.push('/gracias-por-comprar')
         } else if (response.data.status === 'FAILED') {
-          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/pay/${pay._id}`, { state: 'Pago no realizado' })
-          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${pay.email}`)
+          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/pay/${pay._id}`, { state: 'Pago no realizado' }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${pay.email}`, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           const services = [...res.data.services];
           const serviceToUpdate = services.find(service => service.service === pay.service)
           if (serviceToUpdate) {
@@ -60,7 +90,11 @@ export default function PayProcess () {
               : serviceToUpdate.payStatus === 'Segundo pago iniciado'
               ? 'Segundo pago no realizado'
               : '';
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: serviceToUpdate })
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: serviceToUpdate }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
           }
           localStorage.setItem('pay', '')
           localStorage.setItem('service', '')
@@ -70,11 +104,20 @@ export default function PayProcess () {
           router.push('/pago-fallido')
         }
       } else if (sell) {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/commit`, { token: tokenWs })
+        const tenantId = await getClientTenantId()
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/commit`, { token: tokenWs }, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
         if (response.data.status === 'AUTHORIZED') {
           const shippingData = JSON.parse(localStorage.getItem('shippingData')!)
           console.log(shippingData)
-          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`)
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           const request = await axios.post('http://testservices.wschilexpress.com/transport-orders/api/v1.0/transport-orders', shippingData, {
             headers: {
               'Content-Type': 'application/json',
@@ -82,10 +125,18 @@ export default function PayProcess () {
               'Ocp-Apim-Subscription-Key': res.data.enviosKey
             }
           })
-          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell._id}`, { state: 'Pago realizado', shippingLabel: request.data.data.detail[0].label.labelData })
+          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell._id}`, { state: 'Pago realizado', shippingLabel: request.data.data.detail[0].label.labelData }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           router.push('/gracias-por-comprar')
         } else if (response.data.status === 'FAILED') {
-          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell._id}`, { state: 'Pago no realizado' })
+          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell._id}`, { state: 'Pago no realizado' }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           localStorage.setItem('sell', '')
           localStorage.setItem('cart', '')
           localStorage.setItem('shippingData', '')
@@ -95,9 +146,14 @@ export default function PayProcess () {
     } else if (status) {
       const pay = JSON.parse(localStorage.getItem('pay')!)
       const sell = JSON.parse(localStorage.getItem('sell')!)
+      const tenantId = await getClientTenantId()
       if (pay) {
         if (status === 'approved') {
-          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/pay/${pay._id}`, { state: 'Pago realizado' })
+          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/pay/${pay._id}`, { state: 'Pago realizado' }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           if (localStorage.getItem('service') && localStorage.getItem('service2')) {
             const service = JSON.parse(localStorage.getItem('service')!)
             const service2 = JSON.parse(localStorage.getItem('service2')!)
@@ -108,20 +164,40 @@ export default function PayProcess () {
                 : service.payStatus === 'Segundo pago iniciado'
                 ? 'Segundo pago realizado'
                 : '';
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: [service] })
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: [service] }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
           } else if (localStorage.getItem('meetingData')) {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/meeting`, JSON.parse(localStorage.getItem('meetingData')!))
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/meeting`, JSON.parse(localStorage.getItem('meetingData')!), {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             if (typeof fbq === 'function') {
               const meetingEvent = JSON.parse(localStorage.getItem('meetingEvent')!)
               fbq('track', 'schedule', { ...meetingEvent }, { eventID: meetingEvent.eventID })
             }
             socket.emit('newNotification', { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).nameMeeting, url: '/reuniones', view: false })
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).nameMeeting, url: '/reuniones', view: false })
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).nameMeeting, url: '/reuniones', view: false }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
           }
           router.push('/gracias-por-comprar')
         } else {
-          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/pay/${pay._id}`, { state: 'Pago no realizado' })
-          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${pay.email}`)
+          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/pay/${pay._id}`, { state: 'Pago no realizado' }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${pay.email}`, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           const services = [...res.data.services];
           const serviceToUpdate = services.find(service => service.service === pay.service)
           if (serviceToUpdate) {
@@ -131,7 +207,11 @@ export default function PayProcess () {
                 : serviceToUpdate.payStatus === 'Segundo pago iniciado'
                 ? 'Segundo pago no realizado'
                 : '';
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: serviceToUpdate })
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: serviceToUpdate }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
           }
           localStorage.setItem('pay', '')
           localStorage.setItem('service', '')
@@ -143,7 +223,11 @@ export default function PayProcess () {
       } else if (sell) {
         if (status === 'approved') {
           const shippingData = JSON.parse(localStorage.getItem('shippingData')!)
-          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`)
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           const request = await axios.post('http://testservices.wschilexpress.com/transport-orders/api/v1.0/transport-orders', shippingData, {
             headers: {
               'Content-Type': 'application/json',
@@ -151,10 +235,18 @@ export default function PayProcess () {
               'Ocp-Apim-Subscription-Key': res.data.enviosKey
             }
           })
-          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell._id}`, { state: 'Pago realizado', shippingLabel: request.data.data.detail[0].label.labelData })
+          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell._id}`, { state: 'Pago realizado', shippingLabel: request.data.data.detail[0].label.labelData }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           router.push('/gracias-por-comprar')
         } else {
-          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell._id}`, { state: 'Pago no realizado' })
+          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell._id}`, { state: 'Pago no realizado' }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           localStorage.setItem('sell', '')
           localStorage.setItem('cart', '')
           localStorage.setItem('shippingData', '')

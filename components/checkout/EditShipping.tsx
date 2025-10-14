@@ -4,6 +4,7 @@ import { Button, H3, Input } from '../ui'
 import { Shipping } from '../products'
 import { ISell } from '@/interfaces'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 
 interface Props {
     shippingMouse: boolean
@@ -55,8 +56,17 @@ export const EditShipping: React.FC<Props> = ({ shippingMouse, setShippingOpacit
             e.preventDefault()
             if (!loading) {
               setLoading(true)
-              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${session?.user?._id}`, { address: sell.address, number: sell.number, details: sell.details, city: sell.city, region: sell.region })
-              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${session?.user?.email}`, { address: sell.address, number: sell.number, details: sell.details, city: sell.city, region: sell.region })
+              const tenantId = await getClientTenantId()
+              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${session?.user?._id}`, { address: sell.address, number: sell.number, details: sell.details, city: sell.city, region: sell.region }, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
+              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${session?.user?.email}`, { address: sell.address, number: sell.number, details: sell.details, city: sell.city, region: sell.region }, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
               setShippingOpacity('opacity-0')
               setTimeout(() => {
                 setShippingView('hidden')

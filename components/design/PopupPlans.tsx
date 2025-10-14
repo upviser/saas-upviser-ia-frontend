@@ -4,7 +4,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, H3, Input, Select, Spinner } from '../ui';
 import { usePathname } from 'next/navigation';
 import { CardNumber, CardPayment, createCardToken, ExpirationDate, initMercadoPago, SecurityCode, StatusScreen } from '@mercadopago/sdk-react';
-import axios from 'axios';
+import axios from 'axios'
+import { getClientTenantId } from '@/utils';
 import Cookies from 'js-cookie'
 import { io } from 'socket.io-client'
 import { NumberFormat } from '@/utils';
@@ -79,15 +80,28 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
 
   const viewCheckout = async () => {
     if (content.info.video === 'Realizar pago') {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`)
+      const tenantId = await getClientTenantId()
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
       if (!res.data.message) {
-        const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`)
+        const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
         const stepFind = respo.data.steps.find((ste: any) => ste.step === step)
         setClient({ ...client, tags: services?.find(servi => servi._id === content.service?.service)?.tags?.length ? [...(services.find(servi => servi._id === content.service?.service)?.tags || []), 'clientes'] : ['clientes'], services: [{ service: content.service?.service, plan: plan?._id, step: service?.steps.find(step => `/${step.slug}` === pathname) ? service?.steps.find(step => `/${step.slug}` === pathname)?._id : '', price: typePrice === 'Mensual' ? plan?.price : typePrice === 'Anual' ? plan?.anualPrice : plan?.price }], funnels: [{ funnel: respo.data._id, step: stepFind._id }] })
         clientRef.current = { ...client, tags: services?.find(servi => servi._id === content.service?.service)?.tags?.length ? [...(services.find(servi => servi._id === content.service?.service)?.tags || []), 'clientes'] : ['clientes'], services: [{ service: content.service?.service, plan: plan?._id, step: service?.steps.find(step => `/${step.slug}` === pathname) ? service?.steps.find(step => `/${step.slug}` === pathname)?._id : '', price: typePrice === 'Mensual' ? plan?.price : typePrice === 'Anual' ? plan?.anualPrice : plan?.price }], funnels: [{ funnel: respo.data._id, step: stepFind._id }] }
         const newEventId = new Date().getTime().toString()
         if (pathname !== '/') {
-          await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, { page: pathname, funnel: respo.data._id, step: stepFind?._id, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: typePrice === 'Mensual' ? services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.price) / 100 * 119 : plan?.price : services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.anualPrice) / 100 * 119 : plan?.anualPrice, event_id: newEventId, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp') })
+          await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, { page: pathname, funnel: respo.data._id, step: stepFind?._id, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: typePrice === 'Mensual' ? services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.price) / 100 * 119 : plan?.price : services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.anualPrice) / 100 * 119 : plan?.anualPrice, event_id: newEventId, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp') }, {
+            headers: {
+              'x-tenant-id': tenantId,
+            }
+          })
           if (typeof fbq === 'function') {
             fbq('track', 'InitiateCheckout', { content_name: service?._id, currency: "clp", value: initializationRef.current.amount, contents: { id: service?._id, item_price: typePrice === 'Mensual' ? services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.price) / 100 * 119 : plan?.price : services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.anualPrice) / 100 * 119 : plan?.anualPrice, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
           }
@@ -107,9 +121,18 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
         }
       }
     } else {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`)
+      const tenantId = await getClientTenantId()
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
       if (!res.data.message) {
-        const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`)
+        const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
         const stepFind = respo.data.steps.find((ste: any) => ste.step === step)
         setClient({ ...client, tags: services?.find(servi => servi._id === content.service?.service)?.tags?.length ? [...(services.find(servi => servi._id === content.service?.service)?.tags || []), 'clientes'] : ['clientes'], services: [{ service: content.service?.service, plan: plan?._id, step: service?.steps.find(step => `/${step.slug}` === pathname) ? service?.steps.find(step => `/${step.slug}` === pathname)?._id : '', price: typePrice === 'Mensual' ? services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? (Number(plan?.price) / 100 * 119).toString() : plan?.price : services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? (Number(plan?.anualPrice) / 100 * 119).toString() : plan?.anualPrice }], funnels: [{ funnel: respo.data._id, step: stepFind?._id }] })
         clientRef.current = { ...client, tags: services?.find(servi => servi._id === content.service?.service)?.tags?.length ? [...(services.find(servi => servi._id === content.service?.service)?.tags || []), 'clientes'] : ['clientes'], services: [{ service: content.service?.service, plan: plan?._id, step: service?.steps.find(step => `/${step.slug}` === pathname) ? service?.steps.find(step => `/${step.slug}` === pathname)?._id : '', price: typePrice === 'Mensual' ? services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? (Number(plan?.price) / 100 * 119).toString() : plan?.price : services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? (Number(plan?.anualPrice) / 100 * 119).toString() : plan?.anualPrice }], funnels: [{ funnel: respo.data._id, step: stepFind?._id }] }

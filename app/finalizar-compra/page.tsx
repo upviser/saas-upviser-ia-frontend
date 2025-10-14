@@ -1,41 +1,78 @@
 import { CheckoutPage } from "@/components/checkout"
 import { IStoreData } from "@/interfaces"
 import { Metadata } from "next"
+import { getServerTenantId } from "@/utils"
+
 
 export const revalidate = 3600
 
-async function fetchStoreData () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`)
+async function fetchStoredata () {
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchChilexpress () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchStyle () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchPayment () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchDesign () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchIntegrations () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchDomain () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
@@ -48,7 +85,7 @@ export const metadata: Metadata = {
 
 export default async function Page () {
 
-  const storeDataData = fetchStoreData()
+  const storeDataData = fetchStoredata()
 
   const chilexpressData = fetchChilexpress()
 

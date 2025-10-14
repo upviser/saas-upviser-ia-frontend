@@ -4,57 +4,117 @@ import { Design } from '@/interfaces'
 import { Slider } from '@/components/home'
 import { Subscribe } from '@/components/ui'
 import { Block1, Block2, Block3, Block4, Block5, Block7, Blocks, Call, Calls, Checkout, Faq, Form, Lead1, Lead2, Lead3, Plans, Reviews, Services, SliderImages, Table, Video } from '@/components/design'
+import { getServerTenantId } from "@/utils"
+
 
 export const revalidate = 3600
 
 async function fetchDesign () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchForms () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/forms`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/forms`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchCalls () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/calls`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/calls`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchServices () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchPayment () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
-async function fetchStoreData () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`)
+async function fetchStoredata () {
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchStyle () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchIntegrations () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchDomain () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 export async function generateMetadata() {
-  const design: Design = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, { next: { revalidate: 3600 } }).then((res) => res.json())
-  const domain: any = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, { next: { revalidate: 3600 } }).then((res) => res.json())
+  const tenantId = await getServerTenantId()
+  
+  const design: Design = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  }).then((res) => res.json())
+  
+  const domain: any = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  }).then((res) => res.json())
   const home = design.pages?.find(page => page.page === 'Contacto')
   return {
     title: home?.metaTitle && home?.metaTitle !== '' ? home?.metaTitle : '',
@@ -78,7 +138,7 @@ export default async function Page () {
 
   const servicesData = fetchServices()
 
-  const storeDataData = fetchStoreData()
+  const storeDataData = fetchStoredata()
 
   const paymentData = fetchPayment()
 

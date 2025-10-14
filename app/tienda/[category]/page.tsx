@@ -9,66 +9,128 @@ import Prod from '@/components/home/Products'
 import Image from 'next/image'
 import { Metadata } from "next"
 import { ICategory } from "@/interfaces"
+import { getServerTenantId } from "@/utils"
+
 
 export const revalidate = 3600
 
 async function fetchCategory (category: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${category}`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${category}`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchCategories () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchProductsCategory (category: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products-category/${category}`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products-category/${category}`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchDesign () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchCalls () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/calls`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/calls`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchForms () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/forms`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/forms`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchServices () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
-async function fetchStoreData () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`)
+async function fetchStoredata () {
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchPayment () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchStyle () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchIntegrations () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
 async function fetchDomain () {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`)
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
   return res.json()
 }
 
@@ -77,10 +139,22 @@ export async function generateMetadata({
 }: {
   params: { category: string }
 }): Promise<Metadata> {
+  const tenantId = await getServerTenantId()
 
   const id = params.category
-  const category: ICategory = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${id}`, { next: { revalidate: 3600 } }).then((res) => res.json())
-  const domain: any = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, { next: { revalidate: 3600 } }).then((res) => res.json())
+  const category: ICategory = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${id}`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  }).then((res) => res.json())
+  
+  const domain: any = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, { 
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  }).then((res) => res.json())
  
   return {
     title: category.titleSeo !== '' ? category.titleSeo : category.category,
@@ -110,7 +184,7 @@ export default async function CategoryPage({ params }: { params: { category: str
 
   const servicesData = fetchServices()
 
-  const storeDataData = fetchStoreData()
+  const storeDataData = fetchStoredata()
 
   const paymentData = fetchPayment()
 

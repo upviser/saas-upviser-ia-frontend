@@ -3,6 +3,7 @@ import { Design, ICartProduct, ICategory, IProduct, ITypeVariation } from "@/int
 import { useEffect, useState } from "react"
 import { Information, NoReviewsProduct, ProductDetails, ProductInfo, ReviewsProduct } from "./"
 import axios from "axios"
+import { getClientTenantId } from '@/utils'
 import Cookies from 'js-cookie'
 import { H2 } from "../ui"
 
@@ -28,7 +29,12 @@ export default function PageProduct ({ product, design, products, categories, st
   const [popup, setPopup] = useState({ view: 'hidden', opacity: 'opacity-0', mouse: false })
 
   const viewContent = async () => {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/view-content`, { product: product, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc') })
+    const tenantId = await getClientTenantId()
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/view-content`, { product: product, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc') }, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     if (typeof fbq === 'function') {
       fbq('track', 'ViewContent', {content_name: product.name, content_category: product.category.category, currency: "clp", value: product.price, content_ids: [product._id], contents: { id: product._id, category: product.category.category, item_price: product.price, title: product.name }, event_id: res.data._id})
     }
@@ -50,7 +56,12 @@ export default function PageProduct ({ product, design, products, categories, st
   }, [])
 
   const updateData = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/product-data/${product._id}`)
+    const tenantId = await getClientTenantId()
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/product-data/${product._id}`, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     setLiveData({ beforePrice: res.data.beforePrice, price: res.data.price, stock: res.data.stock, variations: res.data.variations })
     setTempCartProduct({ ...tempCartProduct, stock: res.data.stock, price: res.data.price, beforePrice: res.data.beforePrice })
   }

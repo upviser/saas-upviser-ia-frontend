@@ -13,6 +13,7 @@ declare module "next-auth" {
       details?: string
       city?: string
       region?: string
+      tenantId: string;
     };
   }
 }

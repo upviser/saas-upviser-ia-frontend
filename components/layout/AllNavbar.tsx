@@ -9,6 +9,7 @@ import Image from 'next/image'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { Button, Calendar, Input, LinkButton } from '../ui'
+import { useApiClient } from '@/utils/clientHooks'
 
 interface Props {
     design: Design
@@ -36,6 +37,7 @@ declare const fbq: Function
 
 export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design, storeData, funnels, politics, calls, forms, payment, services, style, categories, products, integrations, domain }) => {
 
+  const { apiClient } = useApiClient()
   const [load, setLoad] = useState(false)
   const [popup, setPopup] = useState({ view: 'hidden', opacity: 'opacity-0', mouse: false })
   const [message, setMessage] = useState('')
@@ -69,13 +71,13 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
     const funnel = funnels.find(funnel => funnel.steps.some(step => step.slug !== '' ? `/${step.slug}` === pathname : false))
     const service = services.find(service => service.steps.some(step => step.slug !== '' ? `/${step.slug}` === pathname : false))
     const newEventId = new Date().getTime().toString()
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/page`, { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), eventId: newEventId })
+    await apiClient.post('/page', { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), eventId: newEventId })
     if (typeof fbq === 'function') {
       fbq('track', 'PageView', { content_name: funnel?.service, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
     }
     if (!load) {
       setLoad(true)
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/session`, { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id })
+      await apiClient.post('/session', { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id })
     }
   }
 
@@ -95,7 +97,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
   }, [pathname])
 
   const getClientData = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-data`)
+    const res = await apiClient.get('/client-data')
     setData(res.data)
   }
 
@@ -236,9 +238,9 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                                       return
                                     }
 
-                                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, clientData)
+                                    await apiClient.post('/clients', clientData)
                                     const newEventId = new Date().getTime().toString()
-                                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/lead`, {
+                                    await apiClient.post('/lead', {
                                       firstName: clientData.firstName,
                                       lastName: clientData.lastName,
                                       email: clientData.email,

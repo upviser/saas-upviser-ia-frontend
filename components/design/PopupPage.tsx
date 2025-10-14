@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Calendar, Input } from '../ui'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 import { usePathname, useRouter } from 'next/navigation'
 import { Design, ICall, IClient, IForm, IPayment, IStoreData } from '@/interfaces'
 import Cookies from 'js-cookie'
@@ -157,7 +158,12 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                                         return
                                       }
 
-                                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, clientData)
+                                      const tenantId = await getClientTenantId()
+                                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, clientData, {
+                                        headers: {
+                                          'x-tenant-id': tenantId,
+                                        }
+                                      })
                                       const newEventId = new Date().getTime().toString()
                                       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/lead`, {
                                         firstName: clientData.firstName,
@@ -170,6 +176,10 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                                         fbp: Cookies.get('_fbp'),
                                         page: pathname,
                                         eventId: newEventId
+                                      }, {
+                                        headers: {
+                                          'x-tenant-id': tenantId,
+                                        }
                                       })
                                       fbq('track', 'Lead', {
                                         first_name: clientData.firstName,
@@ -343,7 +353,12 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                         setLoading(false)
                         return
                       }
-                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, clientData)
+                      const tenantId = await getClientTenantId()
+                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, clientData, {
+                        headers: {
+                          'x-tenant-id': tenantId,
+                        }
+                      })
                       if (forms.find(form => form._id === content)?.action === 'Ir a una pagina') {
                         router.push(forms.find(form => form._id === content)?.redirect!)
                       } else if (forms.find(form => form._id === content)?.action === 'Mostrar mensaje') {

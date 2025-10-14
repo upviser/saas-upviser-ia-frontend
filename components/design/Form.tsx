@@ -5,6 +5,7 @@ import { Button, H1, H2, Input, P, Select } from '../ui'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { usePathname, useRouter } from 'next/navigation'
+import { useApiClient } from '@/utils/clientHooks'
 
 interface Props {
     content: IDesign
@@ -19,6 +20,7 @@ interface Props {
 declare const fbq: Function
 
 export const Form: React.FC<Props> = ({ content, index, style, forms, step, services, domain }) => {
+  const { apiClient } = useApiClient()
   const [question, setQuestion] = useState(-1);
   const contentRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [client, setClient] = useState<IClient>({ email: '', tags: forms?.find(form => form._id === content.form)?.tags, forms: [{ form: forms?.find(form => form._id === content.form)?._id! }] })
@@ -195,15 +197,15 @@ export const Form: React.FC<Props> = ({ content, index, style, forms, step, serv
                       return
                     }
 
-                    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`)
+                    const res = await apiClient.get(`/funnel-by-step${pathname}`)
                     if (!res.data.message) {
-                      const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`)
+                      const respo = await apiClient.get(`/funnel-name/${res.data}`)
                       const stepFind = respo.data.steps.find((ste: any) => ste.step === step)
                       const stepIndex = respo.data.steps.reverse().findIndex((ste: any) => ste.step === step)
                       const service = services?.find(service => service._id === respo.data.service)
-                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...client, funnels: [{ funnel: respo.data._id, step: stepFind._id }], services: stepIndex === 0 ? service?._id ? [{ service: service._id, step: service.steps[0]._id }] : [] : [] })
+                      await apiClient.post('/clients', { ...client, funnels: [{ funnel: respo.data._id, step: stepFind._id }], services: stepIndex === 0 ? service?._id ? [{ service: service._id, step: service.steps[0]._id }] : [] : [] })
                       const newEventId = new Date().getTime().toString()
-                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/lead`, {
+                      await apiClient.post('/lead', {
                         firstName: client.firstName,
                         lastName: client.lastName,
                         email: client.email,
@@ -232,9 +234,9 @@ export const Form: React.FC<Props> = ({ content, index, style, forms, step, serv
                         }, { eventID: newEventId })
                       }
                     } else {
-                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, client)
+                      await apiClient.post('/clients', client)
                       const newEventId = new Date().getTime().toString()
-                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/lead`, {
+                      await apiClient.post('/lead', {
                         firstName: client.firstName,
                         lastName: client.lastName,
                         email: client.email,

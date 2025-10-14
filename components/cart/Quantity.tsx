@@ -2,6 +2,7 @@ import CartContext from '@/context/cart/CartContext'
 import { ICartProduct, IProduct } from '@/interfaces'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
+import { getClientTenantId } from '@/utils'
 import React, { useContext } from 'react'
 
 export const Quantity = ({ product, style }: { product: ICartProduct, style: any }) => {
@@ -10,7 +11,7 @@ export const Quantity = ({ product, style }: { product: ICartProduct, style: any
 
   const { data: session, status } = useSession()
 
-  const user = session?.user as { firstName: string, lastName: string, email: string, _id: string, cart: [] }
+  const user = session?.user as { firstName: string, lastName: string, email: string, _id: string, cart?: [] }
 
   return (
     <>
@@ -30,7 +31,12 @@ export const Quantity = ({ product, style }: { product: ICartProduct, style: any
                       localStorage.setItem('cart', updateCart)
                       setCart(JSON.parse(localStorage.getItem('cart')!))
                       if (status === 'authenticated') {
-                        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) })
+                        const tenantId = await getClientTenantId()
+await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+  headers: {
+    'x-tenant-id': tenantId,
+  }
+})
                       }
                     }}>-</button>
                     : <button className='pt-1 pb-1 pl-3 pr-2 cursor-not-allowed text-sm' style={{ color: `${style?.primary}99` }}>-</button>
@@ -47,7 +53,12 @@ export const Quantity = ({ product, style }: { product: ICartProduct, style: any
                       localStorage.setItem('cart', updateCart)
                       setCart(JSON.parse(localStorage.getItem('cart')!))
                       if (status === 'authenticated') {
-                        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) })
+                        const tenantId = await getClientTenantId()
+await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+  headers: {
+    'x-tenant-id': tenantId,
+  }
+})
                       }
                     }}>+</button>
                     : <button className='pt-1 pb-1 pl-2 pr-3 cursor-not-allowed' style={{ color: `${style?.primary}99` }}>+</button>
@@ -65,7 +76,12 @@ export const Quantity = ({ product, style }: { product: ICartProduct, style: any
                   localStorage.setItem('cart', JSON.stringify(products))
                   setCart(products)
                   if (status === 'authenticated') {
-                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) })
+                    const tenantId = await getClientTenantId()
+await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+  headers: {
+    'x-tenant-id': tenantId,
+  }
+})
                   }
                 } else {
                   let products
@@ -76,7 +92,12 @@ export const Quantity = ({ product, style }: { product: ICartProduct, style: any
                   localStorage.setItem('cart', JSON.stringify(products))
                   setCart(products)
                   if (status === 'authenticated') {
-                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) })
+                    const tenantId = await getClientTenantId()
+await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+  headers: {
+    'x-tenant-id': tenantId,
+  }
+})
                   }
                 }
               }}>

@@ -1,21 +1,38 @@
 import { Design, IFunnel, IPost } from "@/interfaces"
 import { MetadataRoute } from "next"
+import { getServerTenantId } from "@/utils"
+
 
 export const revalidate = 3600
 
 async function fetchDesign () {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`)
-    return res.json()
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
+  return res.json()
 }
 
 async function fetchFunnels () {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/funnels`)
-    return res.json()
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/funnels`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
+  return res.json()
 }
 
 async function fetchPosts () {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`)
-    return res.json()
+  const tenantId = await getServerTenantId()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
+  return res.json()
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

@@ -2,7 +2,7 @@
 import { Table } from "@/components/design"
 import { Button, H1, H2, H3, Input, ShippingAccount, Spinner } from "@/components/ui"
 import { ISell } from "@/interfaces"
-import { NumberFormat } from "@/utils"
+import { NumberFormat, getClientTenantId } from "@/utils"
 import axios from "axios"
 import { signOut, useSession } from "next-auth/react"
 import { useEffect, useRef, useState } from "react"
@@ -26,7 +26,12 @@ export default function Page () {
 
   const getSells = async () => {
     setLoading(true)
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sells-client/${session?.user?.email}`)
+    const tenantId = await getClientTenantId()
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sells-client/${session?.user?.email}`, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     setSells(res.data)
     setLoading(false)
   }
@@ -36,7 +41,12 @@ export default function Page () {
   }, [])
 
   const getStyle = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/style`)
+    const tenantId = await getClientTenantId()
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     setStyle(res.data)
   }
 
@@ -145,9 +155,18 @@ export default function Page () {
             e.preventDefault()
             if (!loadingEdit) {
               setLoadingEdit(true)
-              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${account._id}`, account)
+              const tenantId = await getClientTenantId()
+              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${account._id}`, account, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
               const { _id, ...accountClient } = account
-              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${account.email}`, accountClient)
+              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${account.email}`, accountClient, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
               await signOut()
               setPopup({ ...popup, view: 'flex', opacity: 'opacity-0' })
               setTimeout(() => {

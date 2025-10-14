@@ -4,6 +4,7 @@ import { ICartProduct } from '../../interfaces'
 import CartContext from './CartContext'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 
 const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
@@ -13,7 +14,7 @@ const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [cartPc, setCartPc] = useState(true)
   const { data: session, status } = useSession()
 
-  const user = session?.user as { firstName: string, lastName: string, email: string, _id: string, cart: ICartProduct[] }
+  const user = session?.user as { firstName: string, lastName: string, email: string, _id: string, cart?: ICartProduct[] }
 
   const getCart = async () => {
     const currentUrl = window.location.href
@@ -22,23 +23,41 @@ const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const phone = params.get('phone')
     const messengerId = params.get('messengerId');
     const instagramId = params.get('instagramId');
+    const tenantId = await getClientTenantId()
+    
     if (phone || messengerId || instagramId) {
       if (phone) {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart/${phone}`)
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart/${phone}`, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
         localStorage.setItem('cart', JSON.stringify(res.data.cart.cart))
         setCart(res.data.cart.cart)
       } else if (messengerId) {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart/${messengerId}`)
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart/${messengerId}`, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
         localStorage.setItem('cart', JSON.stringify(res.data.cart.cart))
         setCart(res.data.cart.cart)
       } else if (instagramId) {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart/${instagramId}`)
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart/${instagramId}`, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
         localStorage.setItem('cart', JSON.stringify(res.data.cart.cart))
         setCart(res.data.cart.cart)
       }
     } else {
       if (status === 'authenticated') {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`)
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
         if (response.data.cart) {
           localStorage.setItem('cart', JSON.stringify(response.data.cart))
           setCart(response.data.cart)

@@ -2,6 +2,7 @@
 import React, { PropsWithChildren, useState, useEffect } from 'react'
 import DesignContext from './DesignContext'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 
 const DesignProvider: React.FC<PropsWithChildren> = ({ children }) => {
   
@@ -68,7 +69,12 @@ const DesignProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [load, setLoad] = useState(false)
 
   const getDesign = async () => {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/design`)
+    const tenantId = await getClientTenantId()
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     if (response.data) {
       setDesign(response.data)
       setLoad(true)

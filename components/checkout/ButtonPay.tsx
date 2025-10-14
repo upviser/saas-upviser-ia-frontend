@@ -2,6 +2,7 @@
 import { ICartProduct, IPayment, IProduct, ISell, IStoreData, IVariation } from '@/interfaces'
 import { calcularPaquete, offer } from '@/utils'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 import Link from 'next/link'
 import router from 'next/router'
 import React, { useMemo, useRef, useState } from 'react'
@@ -35,7 +36,12 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
         if (!submitLoading) {
           setSubmitLoading(true)
           if (sellRef.current.email !== '' && sellRef.current.firstName !== '' && sellRef.current.lastName !== '' && sellRef.current.phone !== '' && sellRef.current.address !== '' && sellRef.current.number !== '' && sellRef.current.region !== '' && sellRef.current.city !== '') {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`)
+            const tenantId = await getClientTenantId()
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             const dimentions = calcularPaquete(sell.cart)
             const shippingData = {
               "header": {
@@ -86,24 +92,44 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
               }]
             }
             localStorage.setItem('shippingData', JSON.stringify(shippingData))
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/sells`, sell)
+            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/sells`, sell, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             if (clientId !== '') {
-              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/clients/${clientId}`, sell)
+              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/clients/${clientId}`, sell, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
             }
             localStorage.setItem('sell', JSON.stringify(data))
             sell.cart.map(async (product: ICartProduct) => {
-              const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/${product.slug}`)
+              const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/${product.slug}`, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
               let prod: IProduct = res.data
               if (product.variation?.variation) {
                 if (product.variation.subVariation) {
                   if (product.variation.subVariation2) {
                     const variationIndex = prod.variations!.variations.findIndex((variation: IVariation) => variation.variation === product.variation?.variation && variation.subVariation === product.variation.subVariation && variation.subVariation2 === product.variation.subVariation2)
                     prod.variations!.variations[variationIndex].stock = prod.variations!.variations[variationIndex].stock - product.quantity!
-                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations })
+                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations }, {
+                      headers: {
+                        'x-tenant-id': tenantId,
+                      }
+                    })
                   } else {
                     const variationIndex = prod.variations!.variations.findIndex((variation: IVariation) => variation.variation === product.variation?.variation && variation.subVariation === product.variation.subVariation)
                     prod.variations!.variations[variationIndex].stock = prod.variations!.variations[variationIndex].stock - product.quantity!
-                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations })
+                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations }, {
+                      headers: {
+                        'x-tenant-id': tenantId,
+                      }
+                    })
                   }
                 } else {
                   const variationIndex = prod.variations!.variations.findIndex((variation: IVariation) => variation.variation === product.variation?.variation)
@@ -111,7 +137,11 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
                   await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations })
                 }
               } else {
-                await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity })
+                await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity }, {
+                  headers: {
+                    'x-tenant-id': tenantId,
+                  }
+                })
               }
             })
             if (saveData) {
@@ -200,7 +230,12 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
         if (!submitLoading) {
           setSubmitLoading(true)
           if (sellRef.current.email !== '' && sellRef.current.firstName !== '' && sellRef.current.lastName !== '' && sellRef.current.phone !== '' && sellRef.current.address !== '' && sellRef.current.number !== '' && sellRef.current.region !== '' && sellRef.current.city !== '') {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`)
+            const tenantId = await getClientTenantId()
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             const dimentions = calcularPaquete(sell.cart)
             const shippingData = {
               "header": {
@@ -251,24 +286,44 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
               }]
             }
             localStorage.setItem('shippingData', JSON.stringify(shippingData))
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/sells`, sell)
+            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/sells`, sell, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             if (clientId !== '') {
-              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/clients/${clientId}`, sell)
+              await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/clients/${clientId}`, sell, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
             }
             localStorage.setItem('sell', JSON.stringify(data))
             sell.cart.map(async (product) => {
-              const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/${product.slug}`)
+              const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/${product.slug}`, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
               let prod: IProduct = res.data
               if (product.variation?.variation) {
                 if (product.variation.subVariation) {
                   if (product.variation.subVariation2) {
                     const variationIndex = prod.variations!.variations.findIndex((variation: IVariation) => variation.variation === product.variation?.variation && variation.subVariation === product.variation.subVariation && variation.subVariation2 === product.variation.subVariation2)
                     prod.variations!.variations[variationIndex].stock = prod.variations!.variations[variationIndex].stock - product.quantity!
-                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations })
+                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations }, {
+                      headers: {
+                        'x-tenant-id': tenantId,
+                      }
+                    })
                   } else {
                     const variationIndex = prod.variations!.variations.findIndex((variation: IVariation) => variation.variation === product.variation?.variation && variation.subVariation === product.variation.subVariation)
                     prod.variations!.variations[variationIndex].stock = prod.variations!.variations[variationIndex].stock - product.quantity!
-                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations })
+                    await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations }, {
+                      headers: {
+                        'x-tenant-id': tenantId,
+                      }
+                    })
                   }
                 } else {
                   const variationIndex = prod.variations!.variations.findIndex((variation: IVariation) => variation.variation === product.variation?.variation)
@@ -276,7 +331,11 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
                   await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations })
                 }
               } else {
-                await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity })
+                await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity }, {
+                  headers: {
+                    'x-tenant-id': tenantId,
+                  }
+                })
               }
             })
             if (saveData) {
@@ -325,7 +384,12 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
                   console.log(response)
                   paymentIdRef.current = response.id
                   let currentSell = sellRef.current
-                  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`)
+                  const tenantId = await getClientTenantId()
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
                   const dimentions = calcularPaquete(sell.cart)
                   const shippingData = {
                     "header": {
@@ -382,29 +446,57 @@ export const ButtonPay = ({ sell, clientId, saveData, token, link, url, style, p
                       'Ocp-Apim-Subscription-Key': res.data.enviosKey
                     }
                   })
-                  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/sells`, { ...sellRef.current, state: 'Pago realizado', shippingLabel: request.data.data.detail[0].label.labelData })
-                  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentSell, tags: sellRef.current.subscription ? ['Clientes', 'Suscriptores'] : ['Clientes'] })
+                  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/sells`, { ...sellRef.current, state: 'Pago realizado', shippingLabel: request.data.data.detail[0].label.labelData }, {
+                    headers: {
+                      'x-tenant-id': tenantId,
+                    }
+                  })
+                  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentSell, tags: sellRef.current.subscription ? ['Clientes', 'Suscriptores'] : ['Clientes'] }, {
+                    headers: {
+                      'x-tenant-id': tenantId,
+                    }
+                  })
                   sellRef.current.cart.map(async (product: any) => {
-                    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/${product.slug}`)
+                    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/${product.slug}`, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
                     let prod: IProduct = res.data
                     if (product.variation?.variation) {
                       if (product.variation.subVariation) {
                         if (product.variation.subVariation2) {
                           const variationIndex = prod.variations!.variations.findIndex((variation: IVariation) => variation.variation === product.variation?.variation && variation.subVariation === product.variation.subVariation && variation.subVariation2 === product.variation.subVariation2)
                           prod.variations!.variations[variationIndex].stock = prod.variations!.variations[variationIndex].stock - product.quantity!
-                          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations })
+                          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations }, {
+                      headers: {
+                        'x-tenant-id': tenantId,
+                      }
+                    })
                         } else {
                           const variationIndex = prod.variations!.variations.findIndex((variation: IVariation) => variation.variation === product.variation?.variation && variation.subVariation === product.variation.subVariation)
                           prod.variations!.variations[variationIndex].stock = prod.variations!.variations[variationIndex].stock - product.quantity!
-                          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations })
+                          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations }, {
+                      headers: {
+                        'x-tenant-id': tenantId,
+                      }
+                    })
                         }
                       } else {
                         const variationIndex = prod.variations!.variations.findIndex((variation: IVariation) => variation.variation === product.variation?.variation)
                         prod.variations!.variations[variationIndex].stock = prod.variations!.variations[variationIndex].stock - product.quantity!
-                        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations })
+                        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity, variations: prod.variations }, {
+                      headers: {
+                        'x-tenant-id': tenantId,
+                      }
+                    })
                       }
                     } else {
-                      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity })
+                      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}`, { stock: prod.stock - product.quantity }, {
+                  headers: {
+                    'x-tenant-id': tenantId,
+                  }
+                })
                     }
                   })
                   const newEventId = new Date().getTime().toString()

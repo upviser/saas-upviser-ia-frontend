@@ -8,6 +8,7 @@ import Image from 'next/image'
 import CartContext from '@/context/cart/CartContext'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 import Cookies from 'js-cookie'
 
 declare const fbq: Function
@@ -85,11 +86,20 @@ export const ProductCard2Mini = ({ product }: { product: IProduct }) => {
         offerPrice = filter[0]
       }
     }
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/add-cart`, { product: tempCartProduct, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc') })
+    const tenantId = await getClientTenantId()
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/add-cart`, { product: tempCartProduct, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc') }, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     fbq('track', 'AddToCart', {content_name: tempCartProduct.name, content_type: tempCartProduct.category.category, currency: "clp", value: tempCartProduct.price * tempCartProduct.quantity, content_ids: `['${tempCartProduct._id}']`, contents: [{id: tempCartProduct._id, category: tempCartProduct.category.category, quantity: tempCartProduct.quantity, item_price: tempCartProduct.price, title: tempCartProduct.name}], event_id: res.data._id})
     if (status === 'authenticated') {
       const cartLocal = JSON.parse(localStorage.getItem('cart')!)
-      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: cartLocal })
+      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: cartLocal }, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
     }
     setTimeout(() => {
       setText('Añadir al carrito')
@@ -130,11 +140,20 @@ export const ProductCard2Mini = ({ product }: { product: IProduct }) => {
         offerPrice = filter[0]
       }
     }
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/add-cart`, { product: tempCartProduct, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc') })
+    const tenantId = await getClientTenantId()
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/add-cart`, { product: tempCartProduct, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc') }, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     fbq('track', 'AddToCart', {content_name: tempCartProduct.name, content_type: tempCartProduct.category.category, currency: "clp", value: tempCartProduct.price * tempCartProduct.quantity, content_ids: `['${tempCartProduct._id}']`, contents: [{id: tempCartProduct._id, category: tempCartProduct.category.category, quantity: tempCartProduct.quantity, item_price: tempCartProduct.price, title: tempCartProduct.name}], event_id: res.data._id})
     if (status === 'authenticated') {
       const cartLocal = JSON.parse(localStorage.getItem('cart')!)
-      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: cartLocal })
+      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: cartLocal }, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
     }
     setTimeout(() => {
       setText('Añadir al carrito')

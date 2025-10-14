@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { NumberFormat, offer } from '@/utils'
 import { Design, ICartProduct, ISell } from '@/interfaces'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 
 export const Resume = ({ cart, sell, style, design, setSell, coupon, setCoupon, sellRef }: { cart: ICartProduct[] | undefined, sell: ISell, style: any, design: Design, setSell: any, coupon: any, setCoupon: any, sellRef: any }) => {
   
@@ -56,7 +57,12 @@ export const Resume = ({ cart, sell, style, design, setSell, coupon, setCoupon, 
           <Button action={async (e: any) => {
             if (!loading) {
               setLoading(true)
-              const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/promotional-code`)
+              const tenantId = await getClientTenantId()
+              const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/promotional-code`, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
               const coupon = res.data.find((code: any) => code.promotionalCode.toLowerCase() === sell.coupon?.toLowerCase())
               setCoupon(coupon)
               if (coupon.discountType === 'Porcentaje') {

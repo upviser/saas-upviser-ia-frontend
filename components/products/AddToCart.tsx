@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, ButtonAddToCart, ButtonNone, Input, ItemCounter } from '../ui'
 import { IProduct } from '@/interfaces'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 
 interface Props {
     product: IProduct
@@ -60,7 +61,12 @@ export const AddToCart: React.FC<Props> = ({ product, tempCartProduct, setPopup,
                   e.preventDefault()
                   if (!loading) {
                     setLoading(true)
-                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/email-product/${email}`, { product: product.name })
+                    const tenantId = await getClientTenantId()
+                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/email-product/${email}`, { product: product.name }, {
+                      headers: {
+                        'x-tenant-id': tenantId,
+                      }
+                    })
                     setLoading(false)
                   }
                 }} loading={loading}>Envíar</Button>

@@ -6,6 +6,7 @@ import React, { ChangeEvent, useState } from 'react'
 import { Spinner2 } from './Spinner2'
 import Link from 'next/link'
 import { Button, H3, Input } from '.'
+import { getClientTenantId } from '@/utils'
 
 interface Props {
     account: any
@@ -63,8 +64,17 @@ export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountP
     e.preventDefault()
     setRegisterLoading(true)
     setError('')
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/register`, register)
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { email: register.email, firstName: register.firstName, lastName: register.lastName, tags: register.marketing ? ['Suscriptores'] : undefined })
+    const tenantId = await getClientTenantId()
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/register`, register, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { email: register.email, firstName: register.firstName, lastName: register.lastName, tags: register.marketing ? ['Suscriptores'] : undefined }, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
     if (response.data.message) setError(response.data.message)
     const res = await signIn('credentials', {
       email: response.data.email,

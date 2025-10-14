@@ -6,6 +6,7 @@ import CartContext from '../../context/cart/CartContext'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 import { Button, H3, P } from '../ui'
 
 interface Props {
@@ -23,7 +24,7 @@ export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPos
 
   const { data: session, status } = useSession()
 
-  const user = session?.user as { firstName: string, lastName: string, email: string, _id: string, cart: ICartProduct[] }
+  const user = session?.user as { firstName: string, lastName: string, email: string, _id: string, cart?: ICartProduct[] }
 
   return (
     <div ref={cartRef} onMouseEnter={() => setCartPc(false)} onMouseLeave={() => setCartPc(true)} onMouseMove={() => setCartPc(true)} className={`ml-auto flex flex-col gap-3 p-4 shadow-md bg-white z-40 w-[360px]`} style={{ height: 'calc(100vh - 49px)' }}>
@@ -75,7 +76,12 @@ export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPos
                               localStorage.setItem('cart', updateCart)
                               setCart(JSON.parse(localStorage.getItem('cart')!))
                               if (status === 'authenticated') {
-                                await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) })
+                                const tenantId = await getClientTenantId()
+await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+  headers: {
+    'x-tenant-id': tenantId,
+  }
+})
                               }
                             }}>-</button>
                             : <button className='pt-1 pb-1 pl-3 pr-2 cursor-not-allowed text-sm' style={{ color: `${style?.primary}99` }}>-</button>
@@ -92,7 +98,12 @@ export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPos
                               localStorage.setItem('cart', updateCart)
                               setCart(JSON.parse(localStorage.getItem('cart')!))
                               if (status === 'authenticated') {
-                                await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) })
+                                const tenantId = await getClientTenantId()
+await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+  headers: {
+    'x-tenant-id': tenantId,
+  }
+})
                               }
                             }}>+</button>
                             : <button className='pt-1 pb-1 pl-2 pr-3 cursor-not-allowed text-sm' style={{ color: `${style?.primary}99` }}>+</button>
@@ -112,7 +123,12 @@ export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPos
                       localStorage.setItem('cart', JSON.stringify(products))
                       setCart(products)
                       if (status === 'authenticated') {
-                        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) })
+                        const tenantId = await getClientTenantId()
+await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+  headers: {
+    'x-tenant-id': tenantId,
+  }
+})
                       }
                     } else {
                       let products
@@ -123,7 +139,12 @@ export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPos
                       localStorage.setItem('cart', JSON.stringify(products))
                       setCart(products)
                       if (status === 'authenticated') {
-                        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) })
+                        const tenantId = await getClientTenantId()
+await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+  headers: {
+    'x-tenant-id': tenantId,
+  }
+})
                       }
                     }
                   }}>

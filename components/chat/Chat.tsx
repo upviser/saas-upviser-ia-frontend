@@ -1,6 +1,7 @@
 "use client"
 import { IMessage, IStoreData } from '@/interfaces'
 import axios from 'axios'
+import { getClientTenantId } from '@/utils'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import io from 'socket.io-client'
@@ -46,7 +47,12 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat }) =>
   const getMessages = async () => {
     if (localStorage.getItem('chatId')) {
       const senderId = localStorage.getItem('chatId')
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chat/${senderId}`)
+      const tenantId = await getClientTenantId()
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chat/${senderId}`, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
       const messages = response.data
       const messagesReverse = messages.reverse()
       const lastMessage = messagesReverse[0]
@@ -187,12 +193,25 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat }) =>
       if (!chat.reverse()[0].agent) {
         socket.emit('message', {message: message, senderId: senderId, createdAt: new Date()})
       }
+      const tenantId = await getClientTenantId()
       if (chat.length === 1) {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat/create`, { senderId: senderId, response: chat[0].response, agent: true, adminView: false, userView: true, cart: cart })
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat/create`, { senderId: senderId, response: chat[0].response, agent: true, adminView: false, userView: true, cart: cart }, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
       } else if (chat.reverse()[0].message === `¡Hola! Soy el agente de IA de ${storeData?.name} ¿En que te puedo ayudar?`) {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat`, { senderId: senderId, response: `¡Hola! Soy el agente de IA de ${storeData?.name} ¿En que te puedo ayudar?`, agent: true, adminView: false, userView: true, cart: cart })
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat`, { senderId: senderId, response: `¡Hola! Soy el agente de IA de ${storeData?.name} ¿En que te puedo ayudar?`, agent: true, adminView: false, userView: true, cart: cart }, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
       }
-      response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat`, { senderId: senderId, message: message, agent: chat.reverse()[0].agent, adminView: false, userView: true, cart: cart })
+      response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat`, { senderId: senderId, message: message, agent: chat.reverse()[0].agent, adminView: false, userView: true, cart: cart }, {
+        headers: {
+          'x-tenant-id': tenantId,
+        }
+      })
       if (response!.data.response) {
         setChat(chat.filter(mes => mes.message === message))
       }
@@ -288,7 +307,12 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat }) =>
           }
           const senderId = localStorage.getItem('chatId')
           if (senderId) {
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/chat-user/${senderId}`)
+            const tenantId = await getClientTenantId()
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/chat-user/${senderId}`, {}, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             getMessages()
           } else {
             chat[0].userView = true
