@@ -71,38 +71,50 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
     const funnel = funnels?.find(funnel => funnel.steps?.some(step => step.slug !== '' ? `/${step.slug}` === pathname : false))
     const service = services?.find(service => service.steps?.some(step => step.slug !== '' ? `/${step.slug}` === pathname : false))
     const newEventId = new Date().getTime().toString()
-    const res = await apiClient.post('/page', { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), eventId: newEventId })
-    console.log(res.data)
+    const hostname = window.location.hostname
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tenant-hostname/${hostname}`)
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/page`, { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), eventId: newEventId }, {
+      headers: {
+        'x-tenant-id': res.data.tenantId,
+      }
+    })
     if (typeof fbq === 'function') {
       fbq('track', 'PageView', { content_name: funnel?.service, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `https://${domain.domain}${pathname}` }, { eventID: newEventId })
     }
     if (!load) {
       setLoad(true)
-      await apiClient.post('/session', { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id })
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/session`, { page: pathname, funnel: funnel?._id, step: funnel?.steps?.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps?.find(step => `/${step.slug}` === pathname)?._id }, {
+        headers: {
+          'x-tenant-id': res.data.tenantId,
+        }
+      })
     }
   }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (typeof fbq === 'function') {
-        pageView()
-        clearInterval(interval)
-      }
-    }, 100)
-  
-    return () => clearInterval(interval)
+    if (integrations?.apiPixelId && integrations.apiPixelId !== '') {
+      const interval = setInterval(() => {
+        if (typeof fbq === 'function') {
+          pageView()
+          clearInterval(interval)
+        }
+      }, 100)
+    
+      return () => clearInterval(interval)
+    } else {
+      pageView()
+    }
   }, [pathname])
 
   const getClientData = async () => {
-    const interval = setInterval(async () => {
-      if (typeof fbq === 'function') {
-        const res = await apiClient.get('/client-data')
-        setData(res.data)
-        clearInterval(interval)
+    const hostname = window.location.hostname
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tenant-hostname/${hostname}`)
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-data`, {
+      headers: {
+        'x-tenant-id': response.data.tenantId,
       }
-    }, 100)
-  
-    return () => clearInterval(interval)
+    })
+    setData(res.data)
   }
 
   useEffect(() => {
