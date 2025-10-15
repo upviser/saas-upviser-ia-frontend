@@ -65,27 +65,7 @@ const nextConfig = {
         pathname: '/**'
       }, {
         protocol: 'https',
-        hostname: 'web1-upviser.b-cdn.net',
-        port: '',
-        pathname: '/**'
-      }, {
-        protocol: 'https',
-        hostname: 'web2-upviser.b-cdn.net',
-        port: '',
-        pathname: '/**'
-      }, {
-        protocol: 'https',
-        hostname: 'web3-upviser.b-cdn.net',
-        port: '',
-        pathname: '/**'
-      }, {
-        protocol: 'https',
-        hostname: 'web4-upviser.b-cdn.net',
-        port: '',
-        pathname: '/**'
-      }, {
-        protocol: 'https',
-        hostname: 'web5-upviser.b-cdn.net',
+        hostname: 'saas-upviser-ia.b-cdn.net',
         port: '',
         pathname: '/**'
       },
