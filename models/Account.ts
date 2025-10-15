@@ -1,4 +1,12 @@
-import mongoose from 'mongoose'
+import mongoose, { Document, Model } from 'mongoose'
+
+interface IAccount extends Document {
+    tenantId: string
+    firstName?: string
+    lastName?: string
+    email: string
+    password: string
+}
 
 const AccountSchema = new mongoose.Schema({
     tenantId: { type: String, required: true },
@@ -10,6 +18,6 @@ const AccountSchema = new mongoose.Schema({
     timestamps: true
 })
 
-const Account = mongoose.models.Account || mongoose.model('Account', AccountSchema)
+const Account: Model<IAccount> = mongoose.models.Account || mongoose.model<IAccount>('Account', AccountSchema)
 
 export default Account

@@ -28,7 +28,13 @@ const getAuthOptions = (req: NextRequest) => {
           const passwordMatch = await bcrypt.compare(credentials!.password, userFound.password)
           if (!passwordMatch) throw new Error('Credenciales inválidas')
 
-          return userFound
+          return {
+            id: (userFound._id as any).toString(),
+            email: userFound.email,
+            tenantId: userFound.tenantId,
+            firstName: userFound.firstName,
+            lastName: userFound.lastName
+          }
         }
       })
     ],
