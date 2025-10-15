@@ -68,10 +68,11 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
   }, [])
 
   const pageView = async () => {
-    const funnel = funnels?.find(funnel => funnel.steps.some(step => step.slug !== '' ? `/${step.slug}` === pathname : false))
-    const service = services?.find(service => service.steps.some(step => step.slug !== '' ? `/${step.slug}` === pathname : false))
+    const funnel = funnels?.find(funnel => funnel.steps?.some(step => step.slug !== '' ? `/${step.slug}` === pathname : false))
+    const service = services?.find(service => service.steps?.some(step => step.slug !== '' ? `/${step.slug}` === pathname : false))
     const newEventId = new Date().getTime().toString()
-    await apiClient.post('/page', { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), eventId: newEventId })
+    const res = await apiClient.post('/page', { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), eventId: newEventId })
+    console.log(res.data)
     if (typeof fbq === 'function') {
       fbq('track', 'PageView', { content_name: funnel?.service, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `https://${domain.domain}${pathname}` }, { eventID: newEventId })
     }
