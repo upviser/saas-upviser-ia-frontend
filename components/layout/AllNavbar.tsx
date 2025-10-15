@@ -72,9 +72,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
     const service = services?.find(service => service.steps?.some(step => step.slug !== '' ? `/${step.slug}` === pathname : false))
     const newEventId = new Date().getTime().toString()
     const hostname = window.location.hostname
-    console.log(hostname)
     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tenant-hostname/${hostname}`)
-    console.log(res.data)
     await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/page`, { page: pathname, funnel: funnel?._id, step: funnel?.steps.find(step => `/${step.slug}` === pathname), service: funnel?.service ? funnel?.service : service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), eventId: newEventId }, {
       headers: {
         'x-tenant-id': res.data.tenantId,
