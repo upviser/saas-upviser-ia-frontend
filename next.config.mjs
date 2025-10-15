@@ -68,6 +68,11 @@ const nextConfig = {
         hostname: 'saas-upviser-ia.b-cdn.net',
         port: '',
         pathname: '/**'
+      }, {
+        protocol: 'https',
+        hostname: 'web1-upviser.b-cdn.net',
+        port: '',
+        pathname: '/**'
       },
       // Patrones para dominios dinámicos
       {

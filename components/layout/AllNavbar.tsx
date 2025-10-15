@@ -83,23 +83,26 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
   }
 
   useEffect(() => {
-    if (integrations?.apiPixelId && integrations.apiPixelId !== '') {
-      const interval = setInterval(() => {
-        if (typeof fbq === 'function') {
-          pageView()
-          clearInterval(interval)
-        }
-      }, 100)
-    
-      return () => clearInterval(interval)
-    } else {
-      pageView()
-    }
+    const interval = setInterval(() => {
+      if (typeof fbq === 'function') {
+        pageView()
+        clearInterval(interval)
+      }
+    }, 100)
+  
+    return () => clearInterval(interval)
   }, [pathname])
 
   const getClientData = async () => {
-    const res = await apiClient.get('/client-data')
-    setData(res.data)
+    const interval = setInterval(async () => {
+      if (typeof fbq === 'function') {
+        const res = await apiClient.get('/client-data')
+        setData(res.data)
+        clearInterval(interval)
+      }
+    }, 100)
+  
+    return () => clearInterval(interval)
   }
 
   useEffect(() => {
