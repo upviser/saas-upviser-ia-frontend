@@ -9,6 +9,7 @@ import { getClientTenantId } from '@/utils';
 import Cookies from 'js-cookie'
 import { io } from 'socket.io-client'
 import { NumberFormat } from '@/utils';
+import { useSession } from 'next-auth/react';
 
 const socket = io(`${process.env.NEXT_PUBLIC_API_URL}/`, {
     transports: ['websocket']
@@ -79,8 +80,8 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
   }, [plan])
 
   const viewCheckout = async () => {
+    const tenantId = await getClientTenantId()
     if (content.info.video === 'Realizar pago') {
-      const tenantId = await getClientTenantId()
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
         headers: {
           'x-tenant-id': tenantId,
@@ -115,13 +116,16 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
         setClient({ ...client, tags: services?.find(servi => servi._id === content.service?.service)?.tags?.length ? [...(services.find(servi => servi._id === content.service?.service)?.tags || []), 'clientes'] : ['clientes'], services: [{ service: content.service?.service, plan: plan?._id, step: service?.steps.find(step => `/${step.slug}` === pathname) ? service?.steps.find(step => `/${step.slug}` === pathname)?._id : '', price: typePrice === 'Mensual' ? plan?.price : typePrice === 'Anual' ? plan?.anualPrice : plan?.price }] })
         clientRef.current = { ...client, tags: services?.find(servi => servi._id === content.service?.service)?.tags?.length ? [...(services.find(servi => servi._id === content.service?.service)?.tags || []), 'clientes'] : ['clientes'], services: [{ service: content.service?.service, plan: plan?._id, step: service?.steps.find(step => `/${step.slug}` === pathname) ? service?.steps.find(step => `/${step.slug}` === pathname)?._id : '', price: typePrice === 'Mensual' ? plan?.price : typePrice === 'Anual' ? plan?.anualPrice : plan?.price }] }
         const newEventId = new Date().getTime().toString()
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, { page: pathname, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: typePrice === 'Mensual' ? services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.price) / 100 * 119 : plan?.price : services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.anualPrice) / 100 * 119 : plan?.anualPrice, event_id: newEventId, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp') })
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, { page: pathname, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: typePrice === 'Mensual' ? services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.price) / 100 * 119 : plan?.price : services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.anualPrice) / 100 * 119 : plan?.anualPrice, event_id: newEventId, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp') }, {
+          headers: {
+            'x-tenant-id': tenantId
+          }
+        })
         if (typeof fbq === 'function') {
           fbq('track', 'InitiateCheckout', { content_name: service?._id, currency: "clp", value: initializationRef.current.amount, contents: { id: service?._id, item_price: typePrice === 'Mensual' ? services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.price) / 100 * 119 : plan?.price : services.find(service => service._id && content.service?.service)?.typePay === 'Hay que agregarle el IVA al precio' ? Number(plan?.anualPrice) / 100 * 119 : plan?.anualPrice, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
         }
       }
     } else {
-      const tenantId = await getClientTenantId()
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
         headers: {
           'x-tenant-id': tenantId,
@@ -357,12 +361,12 @@ export const PopupPlans: React.FC<Props> = ({ popup, setPopup, plan, services, p
 
   return (
     <div className={`${popup.view} ${popup.opacity} transition-opacity duration-200 w-full h-full top-0 fixed bg-black/30 flex z-50 px-4`}>
-      <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} max-w-[600px] transition-transform duration-200 w-full rounded-2xl max-h-[600px] overflow-y-auto bg-white m-auto flex flex-col`} style={{ boxShadow: '0px 3px 20px 3px #11111120' }}>
+      <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} max-w-[600px] transition-transform duration-200 w-full rounded-2xl max-h-[600px] overflow-y-auto m-auto flex flex-col`} style={{ boxShadow: '0px 3px 20px 3px #11111120', background: content.info.image && content.info.image !== '' ? content.info.image : '#ffffff', color: content.info.textColor && content.info.textColor !== '' ? content.info.textColor : '#111111' }}>
         {
           ((service?.typePrice === 'Suscripción' || service?.typePrice === 'Pago variable con suscripción') && (payment?.mercadoPago.active && payment.mercadoPago.accessToken !== '' && payment.mercadoPago.publicKey !== '')) || ((payment?.transbank.active && payment.transbank.commerceCode !== '' && payment.transbank.apiKey !== '') || (payment?.mercadoPago.active && payment.mercadoPago.accessToken !== '' && payment.mercadoPago.publicKey !== ''))
             ? (
               <>
-                <div className='flex flex-col gap-4 sticky top-0 bg-white border-b z-50 p-6 md:p-8'>
+                <div className='flex flex-col gap-4 sticky top-0 z-50 p-6 md:p-8' style={{ background: content.info.image && content.info.image !== '' ? content.info.image : '#ffffff', borderBottom: `1px solid ${style.borderColor}` }}>
                   <p className='text-center text-2xl font-medium'>{plan?.name}</p>
                   <div className='flex flex-col gap-2'>
                     <div className='flex flex-col gap-1'>
