@@ -199,7 +199,7 @@ export default async function Page({ params }: { params: { page: string } }) {
   const [page, design, forms, calls, services, storeData, payment, style, categories, products, integrations, domain] = await Promise.all([pageData, designData, formsData, callsData, servicesData, storeDataData, paymentData, styleData, categoriesData, productsData, integrationsData, domainData])
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" style={{ background: page.backgroundType === 'Color' ? page.bgColor : page.backgroundType === 'Degradado' ? `${page.bgType === 'Lineal' ? 'linear' : 'radial'}-gradient(${page.bgType === 'Lineal' ? `${page.bgAngle}deg` : 'circle'}, ${page.bgColor1}, ${page.bgColor2})` : '', backgroundImage: `url("${page.bgImage}")`, backgroundSize: 'cover' }}>
       {
         page?.design?.map((content: any, index: any) => {
           if (content.content === 'Carrusel') {

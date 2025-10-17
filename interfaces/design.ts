@@ -50,6 +50,13 @@ export interface IPage {
     image?: string
     subPage?: { page?: string, slug?: string }[]
     design: IDesign[]
+    backgroundType?: string
+    bgColor?: string
+    bgColor1?: string
+    bgColor2?: string
+    bgType?: string
+    bgAngle?: string
+    bgImage?: string
 
     createdAt?: Date
     updatedAt?: Date

@@ -161,7 +161,7 @@ export default async function Page () {
         design.pages.map((page: any) => {
           if (page.page === 'Contacto') {
             return (
-              <>
+              <div key={page._id} className='flex flex-col' style={{ background: page.backgroundType === 'Color' ? page.bgColor : page.backgroundType === 'Degradado' ? `${page.bgType === 'Lineal' ? 'linear' : 'radial'}-gradient(${page.bgType === 'Lineal' ? `${page.bgAngle}deg` : 'circle'}, ${page.bgColor1}, ${page.bgColor2})` : '', backgroundImage: `url("${page.bgImage}")`, backgroundSize: 'cover' }}>
                 {
                   page.design.map((content: any, index: any) => {
                     if (content.content === 'Carrusel') {
@@ -215,7 +215,7 @@ export default async function Page () {
                     }
                   })
                 }
-              </>
+              </div>
             )
           }
         })
