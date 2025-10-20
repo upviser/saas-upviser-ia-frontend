@@ -287,7 +287,7 @@ export const Plans: React.FC<Props> = ({ content, services, index, payment, step
                           setTimeout(() => {
                               setPopup({ ...popup, view: 'flex', opacity: 'opacity-1' })
                           }, 10)
-                        }} style={style}>Me interesa este plan</Button>
+                        }} style={style}>{content.info.button}</Button>
                       </div>
                     ))
                   }
