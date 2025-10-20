@@ -286,8 +286,8 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
               <div ref={refTitle} className={`${viewTitle ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500`}>
                 {
                   index === 0
-                    ? <H1 text={content.info.title} color={content.info.textColor} config='text-center' />
-                    : <H2 text={content.info.title} color={content.info.textColor} config='text-center' />
+                    ? <H1 text={content.info.title} color={content.info.textColor} config='text-center font-semibold' />
+                    : <H2 text={content.info.title} color={content.info.textColor} config='text-center font-semibold' />
                 }
               </div>
             )
@@ -516,7 +516,7 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
                     }
                   }
                 }}>
-                  <div className={`${style.design === 'Borde' ? 'border' : ''} flex flex-col gap-4 h-fit m-auto w-full p-6 md:p-8 max-w-[500px] bg-white`} style={{ boxShadow: style.design === 'Sombreado' ? '0px 3px 20px 3px #11111110' : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '' }}>
+                  <div className={`${style.design === 'Borde' ? 'border' : ''} flex flex-col gap-4 h-fit m-auto w-full p-6 md:p-8 max-w-[500px] bg-white`} style={{ boxShadow: style.design === 'Sombreado' ? '0px 3px 20px 3px #11111110' : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', backgroundColor: content.info.image && content.info.image !== '' ? content.info.image : '' }}>
                     {
                       message !== ''
                         ? (

@@ -466,7 +466,7 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
                     }
                   }
                 }}>
-                  <div className={`${style.design === 'Borde' ? 'border' : ''} flex flex-col gap-4 h-fit m-auto w-full p-6 max-w-[500px]`} style={{ boxShadow: style.design === 'Sombreado' ? '0px 3px 10px 3px #11111108' : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '' }}>
+                  <div className={`${style.design === 'Borde' ? 'border' : ''} flex flex-col gap-4 h-fit m-auto w-full p-6 max-w-[500px]`} style={{ boxShadow: style.design === 'Sombreado' ? '0px 3px 10px 3px #11111108' : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', backgroundColor: content.info.image && content.info.image !== '' ? content.info.image : '' }}>
                     {
                       message !== ''
                         ? (
