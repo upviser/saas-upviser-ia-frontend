@@ -29,10 +29,12 @@ export interface IInfoFunnel {
     titleForm?: string
     button?: string
     buttonLink?: string
+    url?: string
     subTitle2?: string
     description2?: string
     button2?: string
     buttonLink2?: string
+    url2?: string
     subTitle3?: string
     description3?: string
     button3?: string
@@ -46,7 +48,7 @@ export interface IInfoFunnel {
     background?: string
     textColor?: string
     faq?: [{ question?: string, response?: string }]
-    blocks?: [{ title?: string, description?: string, buttonText?: string, buttonLink?: string, image?: string }]
+    blocks?: [{ title?: string, description?: string, buttonText?: string, buttonLink?: string, url?: string, image?: string }]
     reviews?: [{ review?: string, stars?: string, name?: string }]
     form?: { type: string, text:  string, name: string, data: string, datas?: string[] }[]
 }

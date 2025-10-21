@@ -411,7 +411,9 @@ export const Blocks: React.FC<Props> = ({ content, index, style, storeData }) =>
                         block.buttonLink && block.buttonLink !== '' && block.buttonText && block.buttonText !== ''
                           ? block.buttonLink === 'Abrir Whatsapp'
                             ? <button className={`m-auto w-fit flex text-center py-2 px-6 font-medium`} style={{ backgroundColor: style.primary, color: style.button, borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }} onClick={() => window.open(`https://wa.me/+56${storeData?.phone}?text=${block.title}`)}>{block.buttonText}</button>
-                            : <LinkButton url={block.buttonLink} style={style} config='mx-auto'>{block.buttonText}</LinkButton>
+                            : block.url && block.url !== ''
+                              ? <LinkButton url={block.url} target='_blank' style={style} config='mx-auto'>{block.buttonText}</LinkButton>
+                              : <LinkButton url={block.buttonLink} style={style} config='mx-auto'>{block.buttonText}</LinkButton>
                           : ''
                       }
                     </div>

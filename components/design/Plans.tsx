@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Check, H1, H2, P } from '../ui'
 import { NumberFormat } from '@/utils'
 import { PopupPlans } from './PopupPlans'
+import Link from 'next/link'
 
 interface Props {
     content: IDesign
@@ -280,14 +281,20 @@ export const Plans: React.FC<Props> = ({ content, services, index, payment, step
                               : ''
                           }
                         </div>
-                        <Button config='w-full' action={(e: any) => {
-                          e.preventDefault()
-                          setPlan(plan)
-                          setPopup({ ...popup, view: 'flex', opacity: 'opacity-0' })
-                          setTimeout(() => {
-                              setPopup({ ...popup, view: 'flex', opacity: 'opacity-1' })
-                          }, 10)
-                        }} style={style}>{content.info.button}</Button>
+                        {
+                          content.info.video === 'Ir a una página'
+                            ? <Link href={`${content.info.url}`} target='_blank' className='w-full'><Button style={style} config='w-full'>{content.info.button}</Button></Link>
+                            : (
+                              <Button config='w-full' action={(e: any) => {
+                                e.preventDefault()
+                                setPlan(plan)
+                                setPopup({ ...popup, view: 'flex', opacity: 'opacity-0' })
+                                setTimeout(() => {
+                                    setPopup({ ...popup, view: 'flex', opacity: 'opacity-1' })
+                                }, 10)
+                              }} style={style}>{content.info.button}</Button>
+                            )
+                        }
                       </div>
                     ))
                   }

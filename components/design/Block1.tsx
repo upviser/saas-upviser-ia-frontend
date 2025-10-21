@@ -160,7 +160,9 @@ export const Block1 = ({ content, index, calls, forms, design, payment, style, s
                         }} config='mx-auto lg:m-0' style={style}>{content.info.button}</Button>
                         : content.info.buttonLink === '' || content.info.button === ''
                           ? ''
-                          : <Link href={`${content.info.buttonLink}`} className='mx-auto lg:m-0'><Button style={style}>{content.info.button}</Button></Link>
+                          : content.info.url && content.info.url !== ''
+                            ? <Link href={`${content.info.url}`} target='_blank' className='mx-auto lg:m-0'><Button style={style}>{content.info.button}</Button></Link>
+                            : <Link href={`${content.info.buttonLink}`} className='mx-auto lg:m-0'><Button style={style}>{content.info.button}</Button></Link>
                     }
                   </div>
                 )

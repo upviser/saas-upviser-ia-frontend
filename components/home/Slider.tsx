@@ -180,7 +180,9 @@ export const Slider = ({ info, index, forms, calls, design, payment, style, stor
                                     : banner.buttonLink !== '' || banner.button !== ''
                                       ? banner.buttonLink === 'Abrir Whatsapp'
                                         ? <button className={`w-fit flex text-center py-2 px-6 font-medium`} style={{ backgroundColor: style.primary, color: style.button, borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }} onClick={() => window.open(`https://wa.me/+56${storeData?.phone}`)}>{banner.button}</button>
-                                        : <Link href={`${banner.buttonLink}`}><Button style={style}>{banner.button}</Button></Link>
+                                        : banner.url && banner.url !== ''
+                                          ? <Link href={`${banner.url}`} target="_blank"><Button style={style}>{banner.button}</Button></Link>
+                                          : <Link href={`${banner.buttonLink}`}><Button style={style}>{banner.button}</Button></Link>
                                       : ''
                                 }
                               </div>
