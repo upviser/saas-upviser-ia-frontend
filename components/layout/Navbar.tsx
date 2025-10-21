@@ -123,7 +123,7 @@ export const Navbar: React.FC<PropsWithChildren<Props>> = ({ children, design, s
                           }
                         } else if (page.button) {
                           return (
-                            <LinkButton key={page.slug} url={page.slug} config='py-[6px] my-auto' style={style}>{page.page}</LinkButton>
+                            <LinkButton key={page.slug} url={page.slug} target={page.slug.includes('https://') ? '_blank' : ''} config='py-[6px] my-auto' style={style}>{page.page}</LinkButton>
                           )
                         } else {
                           if (page.slug === '') {
@@ -498,7 +498,7 @@ export const Navbar: React.FC<PropsWithChildren<Props>> = ({ children, design, s
                   }
                 } else if (page.button) {
                   return (
-                    <LinkButton key={page.slug} url={page.slug} config={`${index === 0 ? element1 ? 'opacity-1' : 'opacity-0 translate-y-5' : index === 1 ? element2 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 2 ? element3 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 3 ? element4 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 4 ? element5 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 5 ? element6 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 6 ? element7 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 7 ? element8 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 8 ? element9 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 9 ? element10 ? 'opacity-1' : 'opacity-0 translate-y-4' : ''} transition-all duration-500 py-[6px] mx-auto mb-4`} style={style} click={() => {
+                    <LinkButton key={page.slug} url={page.slug} target={page.slug.includes('https://') ? '_blank' : ''} config={`${index === 0 ? element1 ? 'opacity-1' : 'opacity-0 translate-y-5' : index === 1 ? element2 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 2 ? element3 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 3 ? element4 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 4 ? element5 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 5 ? element6 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 6 ? element7 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 7 ? element8 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 8 ? element9 ? 'opacity-1' : 'opacity-0 translate-y-4' : index === 9 ? element10 ? 'opacity-1' : 'opacity-0 translate-y-4' : ''} transition-all duration-500 py-[6px] mx-auto mb-4`} style={style} click={() => {
                       setMenu('-ml-[350px]')
                       setTimeout(() => {
                         setIndex('hidden')
