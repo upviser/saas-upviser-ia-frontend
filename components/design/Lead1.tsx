@@ -256,7 +256,7 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
           }
           {
             content.info.description2 && content.info.description2 !== ''
-              ? <p ref={refSubtitle} className={`${viewSubtitle ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 px-4 py-2 w-fit text-base lg:text-lg`} style={{ backgroundColor: style.primary, color: style.button }}>{content.info.description2}</p>
+              ? <p ref={refSubtitle} className={`${viewSubtitle ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 px-4 py-2 w-fit text-base lg:text-lg`} style={{ backgroundColor: style.primary, color: style.button }} dangerouslySetInnerHTML={{ __html: content.info.description2 ? content.info.description2 : '' }} />
               : ''
           }
           {

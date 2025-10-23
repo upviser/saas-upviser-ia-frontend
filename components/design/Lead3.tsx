@@ -277,7 +277,7 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
         }
         {
           content.info.description2 && content.info.description2 !== ""
-            ? <p ref={refSubtitle} className={`${viewSubtitle ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 text-xl lg:text-3xl font-medium text-center`} style={{ color: content.info.textColor }}>{content.info.description2}</p>
+            ? <p ref={refSubtitle} className={`${viewSubtitle ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 text-xl lg:text-3xl font-medium text-center`} style={{ color: content.info.textColor }} dangerouslySetInnerHTML={{ __html: content.info.description2 ? content.info.description2 : '' }} />
             : ''
         }
         {
@@ -295,7 +295,7 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
         }
         {
           content.info.description && content.info.description !== ""
-            ? <p ref={refDescription} className={`${viewDescription ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 text-xl lg:text-3xl font-medium text-center underline`} style={{ color: content.info.textColor }}>{content.info.description}</p>
+            ? <p ref={refDescription} className={`${viewDescription ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 text-xl lg:text-3xl font-medium text-center underline`} style={{ color: content.info.textColor }} dangerouslySetInnerHTML={{ __html: content.info.description ? content.info.description : '' }} />
             : ''
         }
         {
