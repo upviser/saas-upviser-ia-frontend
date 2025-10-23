@@ -556,6 +556,7 @@ respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.da
                                 }
                                 <Input
                                   style={style}
+                                  bgColor={content.info.image}
                                   placeholder={label.text}
                                   value={newClient.data?.find(dat => dat.name === label.text)?.value || newClient[label.data]}
                                   inputChange={(e: any) => {
