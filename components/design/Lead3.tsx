@@ -560,6 +560,7 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
                                       <Input
                                         style={style}
                                         placeholder={label.name}
+                                        bgColor={content.info.image}
                                         value={getClientValue(label.data)} // Usamos la función getClientValue
                                         inputChange={(e: any) => {
                                           if (['firstName', 'lastName', 'email', 'phone'].includes(label.data)) {

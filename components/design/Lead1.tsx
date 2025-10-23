@@ -515,6 +515,7 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
                                         <Input
                                           style={style}
                                           placeholder={label.name}
+                                          bgColor={content.info.image}
                                           value={client.data?.find(dat => dat.name === label.name)?.value || client[label.data]}
                                           inputChange={(e: any) => {
                                             if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {

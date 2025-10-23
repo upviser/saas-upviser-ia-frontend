@@ -317,6 +317,7 @@ export const Form: React.FC<Props> = ({ content, index, style, forms, step, serv
                                     label.type === 'Texto' && (
                                       <Input
                                         style={style}
+                                        bgColor={content.info.image}
                                         placeholder={label.name}
                                         value={getClientValue(label.data)} // Usamos la función getClientValue
                                         inputChange={(e: any) => {

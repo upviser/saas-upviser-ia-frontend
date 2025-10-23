@@ -469,6 +469,7 @@ export const Lead2 = ({ content, forms, step, index, services, storeData, style,
                                       <Input
                                         style={style}
                                         placeholder={label.name}
+                                        bgColor={content.info.image}
                                         value={getClientValue(label.data)} // Usamos la función getClientValue
                                         inputChange={(e: any) => {
                                           if (['firstName', 'lastName', 'email', 'phone'].includes(label.data)) {
