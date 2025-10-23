@@ -315,21 +315,21 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
       let res: any
       if (pathname !== '/' && !pathname.includes('/llamadas/')) {
         const tenantId = await getClientTenantId()
-res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
-  headers: {
-    'x-tenant-id': tenantId,
-  }
-})
+        res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
       }
       let respo
       let stepFind
       if (res?.data) {
         const tenantId = await getClientTenantId()
-respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`, {
-  headers: {
-    'x-tenant-id': tenantId,
-  }
-})
+        respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        })
         stepFind = respo.data?.steps?.find((ste: any) => `/${ste.slug}` === pathname)
       }
       const newEventId = new Date().getTime().toString()
