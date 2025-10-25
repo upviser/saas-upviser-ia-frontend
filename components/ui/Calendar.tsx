@@ -78,10 +78,18 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
         const currentHour = currentDate.getHours(); 
         const currentMinutes = currentDate.getMinutes(); 
 
-        const meetingsRes = await apiClient.get('/meetings');
+        const meetingsRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/meetings`, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        });
         const meetings = meetingsRes.data.map((meeting: any) => new Date(meeting.date));
 
-        const res = await apiClient.get(`/calendar/${call.calendar}`);
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/calendar/${call.calendar}`, {
+          headers: {
+            'x-tenant-id': tenantId,
+          }
+        });
         const datesWithConvertedDates = res.data.dates.map((dateItem: any) => ({
             ...dateItem,
             date: new Date(dateItem.date)
@@ -226,6 +234,7 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-tenant-id': tenantId
           },
           body: JSON.stringify(formData),
         })
@@ -233,24 +242,44 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
           .then(async (response) => {
             console.log(response)
             paymentIdRef.current = response.id
-            const res = await apiClient.get(`/funnel-by-step${pathname}`)
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             let respo
             let stepFind
             if (res.data) {
-              respo = await apiClient.get(`/funnel-name/${res.data}`)
+              respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`, {
+                headers: {
+                  'x-tenant-id': tenantId,
+                }
+              })
               stepFind = respo.data.steps.find((ste: any) => `/${ste.slug}` === pathname)
             }
             const newEventId = new Date().getTime().toString()
-            await apiClient.post('/pay', { firstName: clientRef.current.firstName, lastName: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone, price: initializationRef.current.amount, state: 'Pago realizado', fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), pathname: pathname, eventId: newEventId, funnel: clientRef.current.funnels?.length ? clientRef.current.funnels[0].funnel : undefined, step: clientRef.current.funnels?.length ? clientRef.current.funnels[0].step : undefined, method: 'WebPay Plus' })
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay`, { firstName: clientRef.current.firstName, lastName: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone, price: initializationRef.current.amount, state: 'Pago realizado', fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), pathname: pathname, eventId: newEventId, funnel: clientRef.current.funnels?.length ? clientRef.current.funnels[0].funnel : undefined, step: clientRef.current.funnels?.length ? clientRef.current.funnels[0].step : undefined, method: 'WebPay Plus' }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             if (typeof fbq === 'function') {
               fbq('track', 'Purchase', { first_name: clientRef.current.firstName, last_name: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone && clientRef.current.phone !== '' ? `56${clientRef.current.phone}` : undefined, content_name: call?._id, currency: "clp", value: initializationRef.current.amount, contents: { id: call?._id, item_price: initializationRef.current.amount, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
             }
-            await apiClient.post('/meeting', { ...clientRef.current, date: selectDate.current, tags: tags, meeting: meeting, call: call.nameMeeting, duration: call.duration === '15 minutos' ? 15 : call.duration === '20 minutos' ? 20 : call.duration === '25 minutos' ? 25 : call.duration === '30 minutos' ? 30 : call.duration === '40 minutos' ? 40 : call.duration === '45 minutos' ? 45 : call.duration === '50 minutos' ? 50 : call.duration === '60 minutos' ? 60 : call.duration === '70 minutos' ? 70 : call.duration === '80 minutos' ? 80 : call.duration === '90 minutos' ? 90 : call.duration === '100 minutos' ? 100 : call.duration === '110 minutos' ? 110 : call.duration === '120 minutos' ? 120 : 120, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), page: pathname, service: clientRef.current.services?.length && clientRef.current.services[0].service && clientRef.current.services[0].service !== '' ? clientRef.current.services[0].service : undefined, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, funnel: respo?.data._id, step: stepFind?._id, eventId: newEventId, price: call.price, type: call.type?.length && call.type.length >= 2 ? type : call.type, calendar: call.calendar })
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/meeting`, { ...clientRef.current, date: selectDate.current, tags: tags, meeting: meeting, call: call.nameMeeting, duration: call.duration === '15 minutos' ? 15 : call.duration === '20 minutos' ? 20 : call.duration === '25 minutos' ? 25 : call.duration === '30 minutos' ? 30 : call.duration === '40 minutos' ? 40 : call.duration === '45 minutos' ? 45 : call.duration === '50 minutos' ? 50 : call.duration === '60 minutos' ? 60 : call.duration === '70 minutos' ? 70 : call.duration === '80 minutos' ? 80 : call.duration === '90 minutos' ? 90 : call.duration === '100 minutos' ? 100 : call.duration === '110 minutos' ? 110 : call.duration === '120 minutos' ? 120 : 120, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), page: pathname, service: clientRef.current.services?.length && clientRef.current.services[0].service && clientRef.current.services[0].service !== '' ? clientRef.current.services[0].service : undefined, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, funnel: respo?.data._id, step: stepFind?._id, eventId: newEventId, price: call.price, type: call.type?.length && call.type.length >= 2 ? type : call.type, calendar: call.calendar }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             if (typeof fbq === 'function') {
               fbq('track', 'Schedule', { first_name: clientRef.current.firstName, last_name: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone && clientRef.current.phone !== '' ? `56${clientRef.current.phone}` : undefined, content_name: call._id, currency: "clp", value: call.price, contents: { id: call._id, item_price: call.price, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
             }
             socket.emit('newNotification', { title: 'Nueva reunion agendada:', description: meeting, url: '/llamadas', view: false })
-            await apiClient.post('/notification', { title: 'Nueva reunion agendada:', description: call.nameMeeting, url: '/reuniones', view: false })
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nueva reunion agendada:', description: call.nameMeeting, url: '/reuniones', view: false }, {
+              headers: {
+                'x-tenant-id': tenantId,
+              }
+            })
             if (call.action === 'Mostrar mensaje') {
               setScheduled(true)
             } else if (call.action === 'Ir a una pagina') {
