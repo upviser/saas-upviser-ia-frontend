@@ -3,8 +3,8 @@ import { getServerTenantId } from "@/utils"
 import { headers } from 'next/headers'
 
 
-async function fetchCall (call: string, hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchCall (call: string, tenantId: string) {
+  
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/call-name/${call}`, { 
     next: { revalidate: 3600 },
     headers: {
@@ -14,8 +14,7 @@ async function fetchCall (call: string, hostname: string) {
   return res.json()
 }
 
-async function fetchCalls (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchCalls (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/calls`, { 
     next: { revalidate: 3600 },
     headers: {
@@ -25,8 +24,7 @@ async function fetchCalls (hostname: string) {
   return res.json()
 }
 
-async function fetchServices (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchServices (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`, { 
     next: { revalidate: 3600 },
     headers: {
@@ -36,8 +34,7 @@ async function fetchServices (hostname: string) {
   return res.json()
 }
 
-async function fetchPayment (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchPayment (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`, { 
     next: { revalidate: 3600 },
     headers: {
@@ -47,8 +44,7 @@ async function fetchPayment (hostname: string) {
   return res.json()
 }
 
-async function fetchStoredata (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStoredata (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, { 
     next: { revalidate: 3600 },
     headers: {
@@ -58,8 +54,7 @@ async function fetchStoredata (hostname: string) {
   return res.json()
 }
 
-async function fetchStyle (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStyle (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -68,8 +63,7 @@ async function fetchStyle (hostname: string) {
   return res.json()
 }
 
-async function fetchDomain (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchDomain (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -81,26 +75,27 @@ async function fetchDomain (hostname: string) {
 export default async function Page({ params }: { params: { call: string } }) {
   const headersList = headers()
   const hostname = headersList.get('host') || ''
+  const tenantId = await getServerTenantId(hostname)
 
-  const callData = fetchCall(params.call, hostname)
+  const callData = fetchCall(params.call, tenantId)
 
-  const callsData = fetchCalls(hostname)
+  const callsData = fetchCalls(tenantId)
 
-  const servicesData = fetchServices(hostname)
+  const servicesData = fetchServices(tenantId)
 
-  const paymentData = fetchPayment(hostname)
+  const paymentData = fetchPayment(tenantId)
 
-  const storeDataData = fetchStoredata(hostname)
+  const storeDataData = fetchStoredata(tenantId)
 
-  const styleData = fetchStyle(hostname)
+  const styleData = fetchStyle(tenantId)
 
-  const domainData = fetchDomain(hostname)
+  const domainData = fetchDomain(tenantId)
 
   const [call, calls, services, payment, storeData, style, domain] = await Promise.all([callData, callsData, servicesData, paymentData, storeDataData, styleData, domainData])
 
   return (
     <>
-      <Call calls={calls} content={{ content: '', info: { titleForm: 'Logo principal', video: 'Sin logo' }, meeting: call._id }} services={services} payment={payment} storeData={storeData} index={0} style={style} domain={domain} />
+      <Call calls={calls} content={{ content: '', info: { titleForm: 'Logo principal', video: 'Sin logo' }, meeting: call._id }} services={services} payment={payment} storeData={storeData} index={0} style={style} domain={domain} tenantId={tenantId} />
     </>
   )
 }

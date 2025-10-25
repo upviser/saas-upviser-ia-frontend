@@ -25,6 +25,7 @@ interface Props {
     products?: IProduct[]
     integrations: any
     domain: any
+    tenantId: string
 }
 
 declare global {
@@ -35,7 +36,7 @@ declare global {
 
 declare const fbq: Function
 
-export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design, storeData, funnels, politics, calls, forms, payment, services, style, categories, products, integrations, domain }) => {
+export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design, storeData, funnels, politics, calls, forms, payment, services, style, categories, products, integrations, domain, tenantId }) => {
 
   const { apiClient } = useApiClient()
   const [load, setLoad] = useState(false)
@@ -214,7 +215,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                                     }
                                   </div>
                                   <div className="p-6 w-full lg:w-7/12">
-                                    <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === design.popup?.content)!} tags={calls.find(call => call._id === design.popup?.content)?.tags!} meeting={calls.find(call => call._id === design.popup?.content)?.nameMeeting!} payment={payment} style={style} domain={domain} />
+                                    <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === design.popup?.content)!} tags={calls.find(call => call._id === design.popup?.content)?.tags!} meeting={calls.find(call => call._id === design.popup?.content)?.nameMeeting!} payment={payment} style={style} domain={domain} tenantId={tenantId} />
                                   </div>
                                 </div>
                               )

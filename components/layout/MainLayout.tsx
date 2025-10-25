@@ -1,13 +1,11 @@
 import React from "react"
 import { AllNavbar } from "."
 import { getServerTenantId } from "@/utils"
-import { headers } from "next/headers"
 
 
 export const revalidate = 3600
 
-async function fetchDesign (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchDesign (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -16,8 +14,7 @@ async function fetchDesign (hostname: string) {
   return res.json()
 }
 
-async function fetchStoredata (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStoredata (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -26,8 +23,7 @@ async function fetchStoredata (hostname: string) {
   return res.json()
 }
 
-async function fetchFunnels (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchFunnels (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/funnels`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -36,8 +32,7 @@ async function fetchFunnels (hostname: string) {
   return res.json()
 }
 
-async function fetchPolitics (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchPolitics (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/politics`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -46,8 +41,7 @@ async function fetchPolitics (hostname: string) {
   return res.json()
 }
 
-async function fetchCalls (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchCalls (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/calls`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -56,8 +50,7 @@ async function fetchCalls (hostname: string) {
   return res.json()
 }
 
-async function fetchForms (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchForms (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/forms`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -66,8 +59,7 @@ async function fetchForms (hostname: string) {
   return res.json()
 }
 
-async function fetchPayment (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchPayment (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -76,8 +68,7 @@ async function fetchPayment (hostname: string) {
   return res.json()
 }
 
-async function fetchServices (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchServices (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -86,8 +77,7 @@ async function fetchServices (hostname: string) {
   return res.json()
 }
 
-async function fetchStyle (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStyle (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -96,8 +86,7 @@ async function fetchStyle (hostname: string) {
   return res.json()
 }
 
-async function fetchCategories (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchCategories (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -106,8 +95,7 @@ async function fetchCategories (hostname: string) {
   return res.json()
 }
 
-async function fetchProducts (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchProducts (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -116,8 +104,7 @@ async function fetchProducts (hostname: string) {
   return res.json()
 }
 
-async function fetchIntegrations (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchIntegrations (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -126,8 +113,7 @@ async function fetchIntegrations (hostname: string) {
   return res.json()
 }
 
-async function fetchDomain (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchDomain (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -136,38 +122,38 @@ async function fetchDomain (hostname: string) {
   return res.json()
 }
 
-export default async function MainLayout({ children, hostname }: { children: React.ReactNode, hostname: string }) {
+export default async function MainLayout({ children, tenantId }: { children: React.ReactNode, tenantId: string }) {
   
-  const designData = fetchDesign(hostname)
+  const designData = fetchDesign(tenantId)
   
-  const storeDataData = fetchStoredata(hostname)
+  const storeDataData = fetchStoredata(tenantId)
 
-  const funnelsData = fetchFunnels(hostname)
+  const funnelsData = fetchFunnels(tenantId)
 
-  const politicsData = fetchPolitics(hostname)
+  const politicsData = fetchPolitics(tenantId)
 
-  const callsData = fetchCalls(hostname)
+  const callsData = fetchCalls(tenantId)
 
-  const formsData = fetchForms(hostname)
+  const formsData = fetchForms(tenantId)
 
-  const paymentData = fetchPayment(hostname)
+  const paymentData = fetchPayment(tenantId)
 
-  const servicesData = fetchServices(hostname)
+  const servicesData = fetchServices(tenantId)
 
-  const styleData = fetchStyle(hostname)
+  const styleData = fetchStyle(tenantId)
 
-  const categoriesData = fetchCategories(hostname)
+  const categoriesData = fetchCategories(tenantId)
 
-  const productsData = fetchProducts(hostname)
+  const productsData = fetchProducts(tenantId)
 
-  const integrationsData = fetchIntegrations(hostname)
+  const integrationsData = fetchIntegrations(tenantId)
 
-  const domainData = fetchDomain(hostname)
+  const domainData = fetchDomain(tenantId)
 
   const [design, storeData, funnels, politics, calls, forms, payment, services, style, categories, products, integrations, domain] = await Promise.all([designData, storeDataData, funnelsData, politicsData, callsData, formsData, paymentData, servicesData, styleData, categoriesData, productsData, integrationsData, domainData])
   
   return (
-    <AllNavbar design={design} storeData={storeData} funnels={funnels} politics={politics} calls={calls} forms={forms} payment={payment} services={services} style={style} categories={categories} products={products} integrations={integrations} domain={domain}>
+    <AllNavbar design={design} storeData={storeData} funnels={funnels} politics={politics} calls={calls} forms={forms} payment={payment} services={services} style={style} categories={categories} products={products} integrations={integrations} domain={domain} tenantId={tenantId}>
       { children }
     </AllNavbar>
   )

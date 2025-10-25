@@ -4,9 +4,7 @@ import { Metadata } from "next"
 import { getServerTenantId } from "@/utils"
 import { headers } from 'next/headers'
 
-
-async function fetchPost (post: string, hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchPost (post: string, tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/${post}`, { 
     next: { revalidate: 3600 },
     headers: {
@@ -16,8 +14,7 @@ async function fetchPost (post: string, hostname: string) {
   return res.json()
 }
 
-async function fetchPosts (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchPosts (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, { 
     next: { revalidate: 3600 },
     headers: {
@@ -27,9 +24,9 @@ async function fetchPosts (hostname: string) {
   return res.json()
 }
 
-async function fetchStyle (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStyle (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+    next: { revalidate: 3600 },
     headers: {
       'x-tenant-id': tenantId,
     }
@@ -68,12 +65,13 @@ export async function generateMetadata({
 export default async function Page ({ params }: { params: { post: string } }) {
   const headersList = headers()
   const hostname = headersList.get('host') || ''
+  const tenantId = await getServerTenantId(hostname)
   
-  const postData = fetchPost(params.post, hostname)
+  const postData = fetchPost(params.post, tenantId)
 
-  const postsData = fetchPosts(hostname)
+  const postsData = fetchPosts(tenantId)
 
-  const styleData = fetchStyle(hostname)
+  const styleData = fetchStyle(tenantId)
 
   const [post, posts, style] = await Promise.all([postData, postsData, styleData])
 

@@ -3,8 +3,7 @@ import { getServerTenantId } from "@/utils"
 import { headers } from 'next/headers'
 
 
-async function fetchPolitics (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchPolitics (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/politics`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -16,8 +15,9 @@ async function fetchPolitics (hostname: string) {
 export default async function Page () {
   const headersList = headers()
   const hostname = headersList.get('host') || ''
+  const tenantId = await getServerTenantId(hostname)
 
-  const politics = await fetchPolitics(hostname)
+  const politics = await fetchPolitics(tenantId)
 
   return (
     <div className="w-full p-4 flex">

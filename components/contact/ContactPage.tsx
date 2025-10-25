@@ -9,7 +9,7 @@ import { getClientTenantId } from '@/utils'
 
 declare const fbq: Function
 
-export const ContactPage = ({ info, index, style }: { info: IInfo, index: any, style?: any }) => {
+export const ContactPage = ({ info, index, style, tenantId }: { info: IInfo, index: any, style?: any, tenantId: string }) => {
 
   const [formContact, setFormContact] = useState<IContactData>({
     name: '',
@@ -132,7 +132,6 @@ export const ContactPage = ({ info, index, style }: { info: IInfo, index: any, s
       if (formContact.name !== '' && formContact.email !== '' && formContact.message !== '') {
         if (emailRegex.test(formContact.email)) {
           const newEventId = new Date().getTime().toString()
-          const tenantId = await getClientTenantId()
           await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/contact`, { ...formContact, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), page: pathname, eventId: newEventId }, {
             headers: {
               'x-tenant-id': tenantId,

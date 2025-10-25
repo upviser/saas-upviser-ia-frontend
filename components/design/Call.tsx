@@ -8,7 +8,7 @@ import { NumberFormat } from '@/utils'
 import Link from 'next/link'
 import Image from 'next/image'
 
-export const Call = ({ calls, content, step, services, payment, storeData, index, style, domain }: { calls: ICall[], content: IDesign, step?: string, services: IService[], payment: IPayment, storeData?: IStoreData, index: number, style?: any, domain: any }) => {
+export const Call = ({ calls, content, step, services, payment, storeData, index, style, domain, tenantId }: { calls: ICall[], content: IDesign, step?: string, services: IService[], payment: IPayment, storeData?: IStoreData, index: number, style?: any, domain: any, tenantId: string }) => {
 
   const [newClient, setNewClient] = useState<IClient>({ email: '', meetings: [{ meeting: calls.find(call => call._id === content.meeting)?._id! }] })
   const [calendar, setCalendar] = useState(false)
@@ -28,8 +28,16 @@ export const Call = ({ calls, content, step, services, payment, storeData, index
 
   const getFunnel = async () => {
     if (step) {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`)
-      const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`)
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
+        headers: {
+          'x-tenant-id': tenantId
+        }
+      })
+      const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`, {
+        headers: {
+          'x-tenant-id': tenantId
+        }
+      })
       const stepFind = respo.data?.steps.find((ste: any) => ste.step === step)
       const stepIndex = respo.data.steps.reverse().findIndex((ste: any) => ste.step === step)
       const service = services?.find(service => service._id === respo.data?.service)
@@ -263,7 +271,7 @@ export const Call = ({ calls, content, step, services, payment, storeData, index
               </div>
             </div>
             <div className={`${calendar ? 'opacity-1' : 'opacity-0'} transition-opacity duration-500 p-6 w-full lg:w-7/12`}>
-              <Calendar newClient={newClient} setNewClient={setNewClient} call={calls.find(call => call._id === content.meeting)!} tags={calls.find(call => call._id === content.meeting)?.tags!} meeting={calls.find(call => call._id === content.meeting)?._id!} payment={payment} services={services} style={style} content={content} domain={domain} />
+              <Calendar newClient={newClient} setNewClient={setNewClient} call={calls.find(call => call._id === content.meeting)!} tags={calls.find(call => call._id === content.meeting)?.tags!} meeting={calls.find(call => call._id === content.meeting)?._id!} payment={payment} services={services} style={style} content={content} domain={domain} tenantId={tenantId} />
             </div>
           </div>
         </div>

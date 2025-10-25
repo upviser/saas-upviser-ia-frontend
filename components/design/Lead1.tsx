@@ -11,7 +11,7 @@ import Image from 'next/image'
 
 declare const fbq: Function
 
-export const Lead1 = ({ content, forms, step, index, services, style, storeData, domain }: { content: IDesign, forms: IForm[], step?: string, index: any, services?: IService[], style?: any, storeData?: IStoreData, domain: any }) => {
+export const Lead1 = ({ content, forms, step, index, services, style, storeData, domain, tenantId }: { content: IDesign, forms: IForm[], step?: string, index: any, services?: IService[], style?: any, storeData?: IStoreData, domain: any, tenantId: string }) => {
 
   const [client, setClient] = useState<IClient>({ email: '', tags: forms.find(form => form._id === content.form)?.tags, forms: [{ form: forms.find(form => form._id === content.form)?._id! }] })
   const [message, setMessage] = useState('')
@@ -39,7 +39,6 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
 
   const getFunnel = async () => {
     try {
-      const tenantId = await getClientTenantId()
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
         headers: {
           'x-tenant-id': tenantId,
@@ -230,7 +229,6 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
   }, []);
 
   const getClientData = async () => {
-    const tenantId = await getClientTenantId()
     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-data`, {
       headers: {
         'x-tenant-id': tenantId,
@@ -367,8 +365,7 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
                       setLoading(false)
                       return
                     }
-
-                    const tenantId = await getClientTenantId()
+                    
                     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
                       headers: {
                         'x-tenant-id': tenantId,

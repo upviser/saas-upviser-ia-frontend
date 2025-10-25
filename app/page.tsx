@@ -12,8 +12,7 @@ import { headers } from 'next/headers'
 
 export const revalidate = 3600
 
-async function fetchDesign (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchDesign (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -22,8 +21,7 @@ async function fetchDesign (hostname: string) {
   return res.json()
 }
 
-async function fetchForms (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchForms (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/forms`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -32,8 +30,7 @@ async function fetchForms (hostname: string) {
   return res.json()
 }
 
-async function fetchCalls (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchCalls (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/calls`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -42,8 +39,7 @@ async function fetchCalls (hostname: string) {
   return res.json()
 }
 
-async function fetchServices (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchServices (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/services`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -52,8 +48,7 @@ async function fetchServices (hostname: string) {
   return res.json()
 }
 
-async function fetchStoredata (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStoredata (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -62,8 +57,7 @@ async function fetchStoredata (hostname: string) {
   return res.json()
 }
 
-async function fetchPayment (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchPayment (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -72,8 +66,7 @@ async function fetchPayment (hostname: string) {
   return res.json()
 }
 
-async function fetchStyle (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStyle (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -82,8 +75,7 @@ async function fetchStyle (hostname: string) {
   return res.json()
 }
 
-async function fetchCategories (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchCategories (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -92,8 +84,7 @@ async function fetchCategories (hostname: string) {
   return res.json()
 }
 
-async function fetchProducts (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchProducts (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -102,8 +93,7 @@ async function fetchProducts (hostname: string) {
   return res.json()
 }
 
-async function fetchIntegrations (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchIntegrations (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -112,8 +102,7 @@ async function fetchIntegrations (hostname: string) {
   return res.json()
 }
 
-async function fetchDomain (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchDomain (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -156,28 +145,29 @@ export async function generateMetadata() {
 export default async function Home() {
   const headersList = headers()
   const hostname = headersList.get('host') || ''
+  const tenantId = await getServerTenantId(hostname)
 
-  const designData = fetchDesign(hostname)
+  const designData = fetchDesign(tenantId)
 
-  const formsData = fetchForms(hostname)
+  const formsData = fetchForms(tenantId)
 
-  const callsData = fetchCalls(hostname)
+  const callsData = fetchCalls(tenantId)
 
-  const servicesData = fetchServices(hostname)
+  const servicesData = fetchServices(tenantId)
 
-  const storeDataData = fetchStoredata(hostname)
+  const storeDataData = fetchStoredata(tenantId)
 
-  const paymentData = fetchPayment(hostname)
+  const paymentData = fetchPayment(tenantId)
 
-  const styleData = fetchStyle(hostname)
+  const styleData = fetchStyle(tenantId)
 
-  const categoriesData = fetchCategories(hostname)
+  const categoriesData = fetchCategories(tenantId)
 
-  const productsData = fetchProducts(hostname)
+  const productsData = fetchProducts(tenantId)
 
-  const integrationsData = fetchIntegrations(hostname)
+  const integrationsData = fetchIntegrations(tenantId)
 
-  const domainData = fetchDomain(hostname)
+  const domainData = fetchDomain(tenantId)
 
   const [design, forms, calls, services, storeData, payment, style, categories, products, integrations, domain] = await Promise.all([designData, formsData, callsData, servicesData, storeDataData, paymentData, styleData, categoriesData, productsData, integrationsData, domainData])
 
@@ -203,23 +193,23 @@ export default async function Home() {
                     } else if (content.content === 'Bloque 5') {
                       return <Block5 key={content.content} content={content} index={index} calls={calls} forms={forms} design={design} payment={payment} style={style} storeData={storeData} domain={domain} />
                     } else if (content.content === 'Contacto') {
-                      return <ContactPage key={content.content} info={ content.info } index={index} style={style} />
+                      return <ContactPage key={content.content} info={content.info} index={index} style={style} tenantId={tenantId} />
                     } else if (content.content === 'Suscripción') {
-                      return <Subscribe key={content.content} info={ content.info } style={style} />
+                      return <Subscribe key={content.content} info={ content.info } style={style} tenantId={tenantId} />
                     } else if (content.content === 'Lead 1') {
-                      return <Lead1 key={content.content} content={content} forms={forms} index={index} services={services} style={style} domain={domain} />
+                      return <Lead1 key={content.content} content={content} forms={forms} index={index} services={services} style={style} domain={domain} tenantId={tenantId} />
                     } else if (content.content === 'Video') {
                       return <Video key={content.content} content={content} index={index} storeData={storeData} style={style} />
                     } else if (content.content === 'Agendar llamada') {
-                      return <Call key={content.content} calls={calls} content={content} services={services} payment={payment} storeData={storeData} index={index} style={style} domain={domain} />
+                      return <Call key={content.content} calls={calls} content={content} services={services} payment={payment} storeData={storeData} index={index} style={style} domain={domain} tenantId={tenantId} />
                     } else if (content.content === 'Bloque 7') {
                       return <Block7 key={content.content} content={content} />
                     } else if (content.content === 'Llamadas') {
                       return <Calls key={content.content} content={content} calls={calls} style={style} index={index} />
                     } else if (content.content === 'Checkout') {
-                      return <Checkout key={content.content} content={content} services={services} payment={payment} storeData={storeData} style={style} index={index} integrations={integrations} domain={domain} />
+                      return <Checkout key={content.content} content={content} services={services} payment={payment} storeData={storeData} style={style} index={index} integrations={integrations} domain={domain} tenantId={tenantId} />
                     } else if (content.content === 'Lead 2') {
-                      return <Lead2 key={content.content} content={content} forms={forms} index={index} services={services} storeData={storeData} style={style} domain={domain} />
+                      return <Lead2 key={content.content} content={content} forms={forms} index={index} services={services} storeData={storeData} style={style} domain={domain} tenantId={tenantId} />
                     } else if (content.content === 'Servicios') {
                       return <Services key={content.content} content={content} services={services} index={index} style={style} />
                     } else if (content.content === 'Planes') {
@@ -227,13 +217,13 @@ export default async function Home() {
                     } else if (content.content === 'Preguntas frecuentes') {
                       return <Faq key={content.content} content={content} services={services} index={index} />
                     } else if (content.content === 'Lead 3') {
-                      return <Lead3 key={content.content} content={content} services={services} index={index} style={style} forms={forms} storeData={storeData} domain={domain} />
+                      return <Lead3 key={content.content} content={content} services={services} index={index} style={style} forms={forms} storeData={storeData} domain={domain} tenantId={tenantId} />
                     } else if (content.content === 'Tabla comparativa') {
                       return <Table key={content.content} content={content} services={services} index={index} payment={payment} style={style} integrations={integrations} domain={domain} />
                     } else if (content.content === 'Bloques') {
                       return <Blocks key={content.content} content={content} index={index} style={style} storeData={storeData} />
                     } else if (content.content === 'Formulario') {
-                      return <Form key={content.content} content={content} index={index} style={style} forms={forms} domain={domain} />
+                      return <Form key={content.content} content={content} index={index} style={style} forms={forms} domain={domain} tenantId={tenantId} />
                     } else if (content.content === 'Reseñas') {
                       return <Reviews key={content.content} content={content} index={index} style={style} />
                     } else if (content.content === 'Carrusel de imagenes') {

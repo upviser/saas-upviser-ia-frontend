@@ -4,11 +4,9 @@ import { Metadata } from "next"
 import { getServerTenantId } from "@/utils"
 import { headers } from 'next/headers'
 
-
 export const revalidate = 3600
 
-async function fetchStoredata (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStoredata (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -17,8 +15,7 @@ async function fetchStoredata (hostname: string) {
   return res.json()
 }
 
-async function fetchChilexpress (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchChilexpress (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -27,8 +24,7 @@ async function fetchChilexpress (hostname: string) {
   return res.json()
 }
 
-async function fetchStyle (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStyle (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -37,8 +33,7 @@ async function fetchStyle (hostname: string) {
   return res.json()
 }
 
-async function fetchPayment (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchPayment (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -47,8 +42,7 @@ async function fetchPayment (hostname: string) {
   return res.json()
 }
 
-async function fetchDesign (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchDesign (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -57,8 +51,7 @@ async function fetchDesign (hostname: string) {
   return res.json()
 }
 
-async function fetchIntegrations (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchIntegrations (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -67,8 +60,7 @@ async function fetchIntegrations (hostname: string) {
   return res.json()
 }
 
-async function fetchDomain (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchDomain (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/domain`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -87,20 +79,21 @@ export const metadata: Metadata = {
 export default async function Page () {
   const headersList = headers()
   const hostname = headersList.get('host') || ''
+  const tenantId = await getServerTenantId(hostname)
 
-  const storeDataData = fetchStoredata(hostname)
+  const storeDataData = fetchStoredata(tenantId)
 
-  const chilexpressData = fetchChilexpress(hostname)
+  const chilexpressData = fetchChilexpress(tenantId)
 
-  const styleData = fetchStyle(hostname)
+  const styleData = fetchStyle(tenantId)
 
-  const paymentData = fetchPayment(hostname)
+  const paymentData = fetchPayment(tenantId)
 
-  const designData = fetchDesign(hostname)
+  const designData = fetchDesign(tenantId)
 
-  const integrationsData = fetchIntegrations(hostname)
+  const integrationsData = fetchIntegrations(tenantId)
 
-  const domainData = fetchDomain(hostname)
+  const domainData = fetchDomain(tenantId)
 
   const [storeData, chilexpress, style, payment, design, integrations, domain] = await Promise.all([storeDataData, chilexpressData, styleData, paymentData, designData, integrationsData, domainData])
 

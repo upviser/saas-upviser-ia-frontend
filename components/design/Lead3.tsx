@@ -3,7 +3,6 @@ import { IClient, IDesign, IForm, IService, IStoreData } from '@/interfaces'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Check, H1, H2, Input, P, Select } from '../ui'
 import axios from 'axios'
-import { getClientTenantId } from '@/utils'
 import Cookies from 'js-cookie'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -18,11 +17,12 @@ interface Props {
     storeData?: IStoreData
     step?: string
     domain: any
+    tenantId: string
 }
 
 declare const fbq: Function
 
-export const Lead3: React.FC<Props> = ({ content, index, style, services, forms, storeData, step, domain }) => {
+export const Lead3: React.FC<Props> = ({ content, index, style, services, forms, storeData, step, domain, tenantId }) => {
   
   const [question, setQuestion] = useState(-1);
   const contentRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -51,7 +51,6 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
 
   const getFunnel = async () => {
     try {
-      const tenantId = await getClientTenantId()
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
         headers: {
           'x-tenant-id': tenantId,
@@ -416,8 +415,7 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
                       setLoading(false)
                       return
                     }
-                
-                    const tenantId = await getClientTenantId()
+
                     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
                       headers: {
                         'x-tenant-id': tenantId,

@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Check, H1, H2, H3, Input, Select } from '../ui'
 import { IClient, IDesign, IForm, IService, IStoreData } from '@/interfaces'
 import axios from 'axios'
-import { getClientTenantId } from '@/utils'
 import { usePathname, useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
 import Image from 'next/image'
@@ -11,7 +10,7 @@ import Link from 'next/link'
 
 declare const fbq: Function
 
-export const Lead2 = ({ content, forms, step, index, services, storeData, style, domain }: { content: IDesign, forms: IForm[], step?: string, index: any, services: IService[], storeData: IStoreData, style?: any, domain: any }) => {
+export const Lead2 = ({ content, forms, step, index, services, storeData, style, domain, tenantId }: { content: IDesign, forms: IForm[], step?: string, index: any, services: IService[], storeData: IStoreData, style?: any, domain: any, tenantId: string }) => {
 
   const [client, setClient] = useState<IClient>({ email: '', tags: forms.find(form => form._id === content.form)?.tags, forms: [{ form: forms.find(form => form._id === content.form)?._id! }] })
   const [message, setMessage] = useState('')
@@ -36,7 +35,6 @@ export const Lead2 = ({ content, forms, step, index, services, storeData, style,
 
   const getFunnel = async () => {
     try {
-      const tenantId = await getClientTenantId()
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
         headers: {
           'x-tenant-id': tenantId,
@@ -325,8 +323,7 @@ export const Lead2 = ({ content, forms, step, index, services, storeData, style,
                       setLoading(false)
                       return
                     }
-                
-                    const tenantId = await getClientTenantId()
+
                     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
                       headers: {
                         'x-tenant-id': tenantId,

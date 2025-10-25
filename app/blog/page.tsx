@@ -4,8 +4,7 @@ import { getServerTenantId } from "@/utils"
 import { headers } from 'next/headers'
 
 
-async function fetchPosts (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchPosts (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, { 
     next: { revalidate: 3600 },
     headers: {
@@ -15,9 +14,9 @@ async function fetchPosts (hostname: string) {
   return res.json()
 }
 
-async function fetchStyle (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStyle (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+    next: { revalidate: 3600 },
     headers: {
       'x-tenant-id': tenantId,
     }
@@ -28,10 +27,11 @@ async function fetchStyle (hostname: string) {
 export default async function Page () {
   const headersList = headers()
   const hostname = headersList.get('host') || ''
+  const tenantId = await getServerTenantId(hostname)
 
-  const posts: IPost[] = await fetchPosts(hostname)
+  const posts: IPost[] = await fetchPosts(tenantId)
 
-  const style: any = await fetchStyle(hostname)
+  const style: any = await fetchStyle(tenantId)
 
   return (
     <PageBlog posts={posts} style={style} />

@@ -25,6 +25,7 @@ interface Props {
     index: number
     integrations: any
     domain: any
+    tenantId: string
 }
 
 declare global {
@@ -40,7 +41,7 @@ const MemoCardNumber = React.memo(CardNumber);
 const MemoExpirationDate = React.memo(ExpirationDate);
 const MemoSecurityCode = React.memo(SecurityCode);
 
-export const Checkout: React.FC<Props> = ({ content, services, step, payment, storeData, style, index, integrations, domain }) => {
+export const Checkout: React.FC<Props> = ({ content, services, step, payment, storeData, style, index, integrations, domain, tenantId }) => {
 
   const [client, setClient] = useState<IClient>({ email: '' })
   const [loading, setLoading] = useState(false)
@@ -79,9 +80,17 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
   initMercadoPago(payment?.mercadoPago.publicKey!)
 
   const viewCheckout = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`)
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-by-step${pathname}`, {
+      headers: {
+        'x-tenant-id': tenantId
+      }
+    })
     if (!res.data.message) {
-      const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`)
+      const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/funnel-name/${res.data}`, {
+        headers: {
+          'x-tenant-id': tenantId
+        }
+      })
       const stepFind = respo.data.steps.find((ste: any) => ste.step === step)
       const currentUrl = window.location.href
       const url = new URL(currentUrl)
@@ -89,10 +98,18 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
       const email = params.get('email')
       const serviceId = params.get('service')
       setIdService(serviceId? serviceId : '')
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${email}`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${email}`, {
+        headers: {
+          'x-tenant-id': tenantId
+        }
+      })
       setClientData(response.data)
       if (email && serviceId) {
-        const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/pay-email/${email}-${serviceId}`)
+        const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/pay-email/${email}-${serviceId}`, {
+          headers: {
+            'x-tenant-id': tenantId
+          }
+        })
         setInitialization({ amount: Number(service?.typePrice === 'Precio variable con 2 pagos' || service?.typePrice === '2 pagos' ? service?.typePay === 'Hay que agregarle el IVA al precio' ? Number(resp.data.price) / 100 * 119 / 2 : Number(resp.data.price) / 2 : service?.typePay === 'Hay que agregarle el IVA al precio' ? Number(resp.data.price / 100 * 119) : resp.data.price) })
         initializationRef.current.amount = Number(service?.typePrice === 'Precio variable con 2 pagos' || service?.typePrice === '2 pagos' ? service?.typePay === 'Hay que agregarle el IVA al precio' ? Number(resp.data.price) / 100 * 119 / 2 : Number(resp.data.price) / 2 : service?.typePay === 'Hay que agregarle el IVA al precio' ? Number(resp.data.price / 100 * 119) : resp.data.price)
         setClient({ ...client, tags: service?.tags?.length ? [...(service?.tags || [])] : [], services: [{ service: content.service?.service, plan: content.service?.plan, step: service?.steps.find(step => `/${step.slug}` === pathname) ? service?.steps.find(step => `/${step.slug}` === pathname)?._id : '', price: resp.data.price }], funnels: [{ funnel: respo.data._id, step: stepFind._id }] })
@@ -103,12 +120,20 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
       }
       const newEventId = new Date().getTime().toString()
       if (pathname !== '/') {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, { page: pathname, funnel: respo.data._id, step: stepFind?._id, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: initializationRef.current.amount, event_id: newEventId, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp') })
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, { page: pathname, funnel: respo.data._id, step: stepFind?._id, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: initializationRef.current.amount, event_id: newEventId, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp') }, {
+          headers: {
+            'x-tenant-id': tenantId
+          }
+        })
         if (typeof fbq === 'function') {
           fbq('track', 'InitiateCheckout', { content_name: service?._id, currency: "clp", value: initializationRef.current.amount, contents: { id: service?._id, item_price: initializationRef.current.amount, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
         }
       } else {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, { page: pathname, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: initializationRef.current.amount, eventId: newEventId, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp') })
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, { page: pathname, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: initializationRef.current.amount, eventId: newEventId, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp') }, {
+          headers: {
+            'x-tenant-id': tenantId
+          }
+        })
         if (typeof fbq === 'function') {
           fbq('track', 'InitiateCheckout', { content_name: service?._id, currency: "clp", value: initializationRef.current.amount, contents: { id: service?._id, item_price: initializationRef.current.amount, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
         }
@@ -122,11 +147,19 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
       setIdService(serviceId? serviceId : '')
       let response: any
       if (email) {
-        response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${email}`)
+        response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${email}`, {
+          headers: {
+            'x-tenant-id': tenantId
+          }
+        })
       }
       setClientData(response?.data)
       if (email && serviceId) {
-        const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/pay-email/${email}-${serviceId}`)
+        const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/pay-email/${email}-${serviceId}`, {
+          headers: {
+            'x-tenant-id': tenantId
+          }
+        })
         setInitialization({ amount: Number(service?.typePrice === 'Precio variable con 2 pagos' || service?.typePrice === '2 pagos' ? service?.typePay === 'Hay que agregarle el IVA al precio' ? Number(resp.data.price) / 100 * 119 / 2 : Number(resp.data.price) / 2 : service?.typePay === 'Hay que agregarle el IVA al precio' ? Number(resp.data.price / 100 * 119) : resp.data.price) })
         initializationRef.current.amount = Number(service?.typePrice === 'Precio variable con 2 pagos' || service?.typePrice === '2 pagos' ? service?.typePay === 'Hay que agregarle el IVA al precio' ? Number(resp.data.price) / 100 * 119 / 2 : Number(resp.data.price) / 2 : service?.typePay === 'Hay que agregarle el IVA al precio' ? Number(resp.data.price / 100 * 119) : resp.data.price)
         setClient({ ...client, tags: service?.tags?.length ? [...(service?.tags || [])] : [], services: [{ service: content.service?.service, plan: content.service?.plan, step: service?.steps.find(step => `/${step.slug}` === pathname) ? service?.steps.find(step => `/${step.slug}` === pathname)?._id : '', price: resp.data.price }] })
@@ -136,7 +169,11 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
         clientRef.current = { ...client, tags: service?.tags?.length ? [...(service?.tags || [])] : [], services: [{ service: content.service?.service, plan: content.service?.plan, step: service?.steps.find(step => `/${step.slug}` === pathname) ? service?.steps.find(step => `/${step.slug}` === pathname)?._id : '', price: service?.price ? service?.price : service?.plans?.plans.find(plan => plan._id === content.service?.plan)?.price ? service?.plans?.plans.find(plan => plan._id === content.service?.plan)?.price : '' }] }
       }
       const newEventId = new Date().getTime().toString()
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, { page: pathname, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: initializationRef.current.amount, event_id: newEventId, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp') })
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, { page: pathname, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: initializationRef.current.amount, event_id: newEventId, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp') }, {
+        headers: {
+          'x-tenant-id': tenantId
+        }
+      })
       if (typeof fbq === 'function') {
         fbq('track', 'InitiateCheckout', { content_name: service?._id, currency: "clp", value: initializationRef.current.amount, contents: { id: service?._id, item_price: initializationRef.current.amount, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
       }
@@ -244,6 +281,7 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
+                  'x-tenant-id': tenantId
                 },
                 body: JSON.stringify({ cardToken: formData.token, price: initializationRef.current.amount, frequency: frequency, email: clientRef.current.email }),
               })
@@ -255,25 +293,45 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                     const service = services?.find(service => service._id === content.service?.service)
                     if (res.data.email) {
                       currentClient.services![0].payStatus = 'Pago realizado'
-                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], step: service?.steps[service?.steps.find(step => step._id === currentClient.services![0].step) ? service?.steps.findIndex(step => step._id === currentClient.services![0].step) + 1 : 0]._id }], tags: ['clientes'] })
+                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], step: service?.steps[service?.steps.find(step => step._id === currentClient.services![0].step) ? service?.steps.findIndex(step => step._id === currentClient.services![0].step) + 1 : 0]._id }], tags: ['clientes'] }, {
+                        headers: {
+                          'x-tenant-id': tenantId
+                        }
+                      })
                     } else {
-                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], step: service?.steps[0]._id, payStatus: 'Pago realizado' }], tags: ['clientes'] })
+                      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], step: service?.steps[0]._id, payStatus: 'Pago realizado' }], tags: ['clientes'] }, {
+                        headers: {
+                          'x-tenant-id': tenantId
+                        }
+                      })
                     }
                     const price = Number(initializationRef.current.amount)
                     const newEventId = new Date().getTime().toString()
-                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay`, { firstName: clientRef.current.firstName, lastName: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: price, state: 'Pago realizado', fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), pathname: pathname, eventId: newEventId, funnel: clientRef.current.funnels?.length ? clientRef.current.funnels[0].funnel : undefined, step: clientRef.current.funnels?.length ? clientRef.current.funnels[0].step : undefined, method: 'MercadoPago', suscriptionId: response.id })
+                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay`, { firstName: clientRef.current.firstName, lastName: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: price, state: 'Pago realizado', fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), pathname: pathname, eventId: newEventId, funnel: clientRef.current.funnels?.length ? clientRef.current.funnels[0].funnel : undefined, step: clientRef.current.funnels?.length ? clientRef.current.funnels[0].step : undefined, method: 'MercadoPago', suscriptionId: response.id }, {
+                      headers: {
+                        'x-tenant-id': tenantId
+                      }
+                    })
                     if (typeof fbq === 'function') {
                       fbq('track', 'Purchase', { first_name: clientRef.current.firstName, last_name: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone && clientRef.current.phone !== '' ? `56${clientRef.current.phone}` : undefined, content_name: service?._id, currency: "clp", value: price, contents: { id: service?._id, item_price: price, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
                     }
                     socket.emit('newNotification', { title: 'Nuevo pago recibido:', description: services?.find(servi => servi._id === content.service?.service)?.name, url: '/pagos', view: false })
-                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nuevo pago recibido:', description: services?.find(servi => servi._id === content.service?.service)?.name, url: '/pagos', view: false })
+                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nuevo pago recibido:', description: services?.find(servi => servi._id === content.service?.service)?.name, url: '/pagos', view: false }, {
+                      headers: {
+                        'x-tenant-id': tenantId
+                      }
+                    })
                     setLoading(false)
                     setPaymentCompleted(true)
                     resolve();
                   } else {
                     let currentClient = clientRef.current
                     currentClient.services![0].payStatus = 'Pago no realizado'
-                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient)
+                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient, {
+                      headers: {
+                        'x-tenant-id': tenantId
+                      }
+                    })
                     setPaymentFailed(true)
                     resolve();
                   }
@@ -282,7 +340,11 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                   console.log(error)
                   let currentClient = clientRef.current
                   currentClient.services![0].payStatus = 'Pago no realizado'
-                  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient)
+                  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient, {
+                    headers: {
+                      'x-tenant-id': tenantId
+                    }
+                  })
                   setPaymentFailed(true)
                   reject();
                 });
@@ -291,6 +353,7 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
+                  'x-tenant-id': tenantId
                 },
                 body: JSON.stringify(formData),
               })
@@ -299,22 +362,42 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                   console.log(response)
                   paymentIdRef.current = response.id
                   let currentClient = clientRef.current
-                  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${currentClient.email}`)
+                  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${currentClient.email}`, {
+                    headers: {
+                      'x-tenant-id': tenantId
+                    }
+                  })
                   const service = services?.find(service => service._id === content.service?.service)
                   if (res.data.email) {
                     currentClient.services![0].payStatus = res.data.services.find((service: any) => service.service === currentClient.services![0].service)?.payStatus === 'Pago realizado' ? 'Segundo pago realizado' : 'Pago realizado'
-                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], step: service?.steps[service?.steps.find(step => step._id === currentClient.services![0].step) ? service?.steps.findIndex(step => step._id === currentClient.services![0].step) + 1 : 0]._id }], tags: ['clientes'] })
+                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], step: service?.steps[service?.steps.find(step => step._id === currentClient.services![0].step) ? service?.steps.findIndex(step => step._id === currentClient.services![0].step) + 1 : 0]._id }], tags: ['clientes'] }, {
+                      headers: {
+                        'x-tenant-id': tenantId
+                      }
+                    })
                   } else {
-                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], step: service?.steps[0]._id, payStatus: 'Pago realizado' }], tags: ['clientes'] })
+                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], step: service?.steps[0]._id, payStatus: 'Pago realizado' }], tags: ['clientes'] }, {
+                      headers: {
+                        'x-tenant-id': tenantId
+                      }
+                    })
                   }
                   const price = Number(initializationRef.current.amount)
                   const newEventId = new Date().getTime().toString()
-                  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay`, { firstName: clientRef.current.firstName, lastName: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: price, state: 'Pago realizado', fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), pathname: pathname, eventId: newEventId, funnel: clientRef.current.funnels?.length ? clientRef.current.funnels[0].funnel : undefined, step: clientRef.current.funnels?.length ? clientRef.current.funnels[0].step : undefined, method: 'MercadoPago' })
+                  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay`, { firstName: clientRef.current.firstName, lastName: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone, service: service?._id, stepService: services?.find(service => service.steps.find(step => `/${step.slug}` === pathname))?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: price, state: 'Pago realizado', fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), pathname: pathname, eventId: newEventId, funnel: clientRef.current.funnels?.length ? clientRef.current.funnels[0].funnel : undefined, step: clientRef.current.funnels?.length ? clientRef.current.funnels[0].step : undefined, method: 'MercadoPago' }, {
+                    headers: {
+                      'x-tenant-id': tenantId
+                    }
+                  })
                   if (typeof fbq === 'function') {
                     fbq('track', 'Purchase', { first_name: clientRef.current.firstName, last_name: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone && clientRef.current.phone !== '' ? `56${clientRef.current.phone}` : undefined, content_name: service?._id, currency: "clp", value: price, contents: { id: service?._id, item_price: price, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
                   }
                   socket.emit('newNotification', { title: 'Nuevo pago recibido:', description: services?.find(servi => servi._id === content.service?.service)?.name, url: '/pagos', view: false })
-                  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nuevo pago recibido:', description: services?.find(servi => servi._id === content.service?.service)?.name, url: '/pagos', view: false })
+                  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nuevo pago recibido:', description: services?.find(servi => servi._id === content.service?.service)?.name, url: '/pagos', view: false }, {
+                    headers: {
+                      'x-tenant-id': tenantId
+                    }
+                  })
                   setLoading(false)
                   setPaymentCompleted(true)
                   resolve();
@@ -322,10 +405,18 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                 .catch(async (error) => {
                   console.log(error)
                   let currentClient = clientRef.current
-                  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${currentClient.email}`)
+                  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${currentClient.email}`, {
+                    headers: {
+                      'x-tenant-id': tenantId
+                    }
+                  })
                   if (res.data.email) {
                     currentClient.services![0].payStatus = res.data.services.find((service: any) => service.service === currentClient.services![0].service)?.payStatus === 'Pago realizado' ? 'Segundo pago no realizado' : 'Pago no realizado'
-                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient)
+                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient, {
+                      headers: {
+                        'x-tenant-id': tenantId
+                      }
+                    })
                   }
                   setPaymentFailed(true)
                   reject();
@@ -383,21 +474,37 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
       if (clientRef.current.email !== '' && clientRef.current.firstName !== '' && clientRef.current.lastName !== '' && clientRef.current.phone !== '') {
         if (emailRegex.test(clientRef.current.email)) {
           let currentClient = clientRef.current
-          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${currentClient.email}`)
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${currentClient.email}`, {
+            headers: {
+              'x-tenant-id': tenantId
+            }
+          })
           let client
           if (res.data.email) {
             currentClient.services![0].payStatus = res.data.services.find((service: any) => service.service === currentClient.services![0].service)?.payStatus === 'Pago realizado' ? 'Segundo pago iniciado' : 'Pago iniciado'
-            client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient)
+            client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient, {
+              headers: {
+                'x-tenant-id': tenantId
+              }
+            })
             localStorage.setItem('service', JSON.stringify(currentClient.services![0]))
           } else {
             currentClient.services![0].payStatus = 'Pago iniciado'
-            client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], payStatus: 'Pago iniciado' }] })
+            client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], payStatus: 'Pago iniciado' }] }, {
+              headers: {
+                'x-tenant-id': tenantId
+              }
+            })
             localStorage.setItem('service', JSON.stringify({ ...currentClient.services![0], payStatus: 'Pago iniciado' }))
           }
           const service = services?.find(service => service._id === content.service?.service)
           const price = Number(initializationRef.current.amount)
           const newEventId = new Date().getTime().toString()
-          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay`, { firstName: clientRef.current.firstName, lastName: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone, service: service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: price, state: currentClient.services![0].payStatus, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), pathname: pathname, eventId: newEventId, funnel: clientRef.current.funnels?.length ? clientRef.current.funnels[0].funnel : undefined, step: clientRef.current.funnels?.length ? clientRef.current.funnels[0].step : undefined, method: 'WebPay Plus' })
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay`, { firstName: clientRef.current.firstName, lastName: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone, service: service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: price, state: currentClient.services![0].payStatus, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), pathname: pathname, eventId: newEventId, funnel: clientRef.current.funnels?.length ? clientRef.current.funnels[0].funnel : undefined, step: clientRef.current.funnels?.length ? clientRef.current.funnels[0].step : undefined, method: 'WebPay Plus' }, {
+            headers: {
+              'x-tenant-id': tenantId
+            }
+          })
           if (typeof fbq === 'function') {
             fbq('track', 'AddPaymentInfo', { first_name: clientRef.current.firstName, last_name: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone && clientRef.current.phone !== '' ? `56${clientRef.current.phone}` : undefined, content_name: service?._id, currency: "clp", value: price, contents: { id: service?._id, item_price: price, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
           }
@@ -525,7 +632,11 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                                           <div className='w-full'>
                                             <button className='flex gap-2 p-2 border w-full' onClick={async () => {
                                               setPay('MercadoPago')
-                                              const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/mercado-pago-create`, [{ title: services?.find(service => service._id === content.service)?.name, unit_price: initializationRef.current.amount, quantity: 1 }])
+                                              const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/mercado-pago-create`, [{ title: services?.find(service => service._id === content.service)?.name, unit_price: initializationRef.current.amount, quantity: 1 }], {
+                                                headers: {
+                                                  'x-tenant-id': tenantId
+                                                }
+                                              })
                                               setLink(res.data.init_point)
                                             }} style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }}>
                                               <input type='radio' className='my-auto' checked={pay === 'MercadoPago'} />
@@ -559,7 +670,11 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                                                 amount: initializationRef.current.amount,
                                                 returnUrl: `https://${domain.domain}/procesando-pago`
                                               }
-                                              const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/create`, pago)
+                                              const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/create`, pago, {
+                                                headers: {
+                                                  'x-tenant-id': tenantId
+                                                }
+                                              })
                                               setToken(response.data.token)
                                               setUrl(response.data.url)
                                             }}>
@@ -585,21 +700,37 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                                                         if (clientRef.current.email !== '' && clientRef.current.firstName !== '' && clientRef.current.lastName !== '' && clientRef.current.phone !== '') {
                                                           if (emailRegex.test(clientRef.current.email)) {
                                                             let currentClient = clientRef.current
-                                                            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${currentClient.email}`)
+                                                            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${currentClient.email}`, {
+                                                              headers: {
+                                                                'x-tenant-id': tenantId
+                                                              }
+                                                            })
                                                             let client
                                                             if (res.data.email) {
                                                               currentClient.services![0].payStatus = res.data.services.find((service: any) => service.service === currentClient.services![0].service)?.payStatus === 'Pago realizado' ? 'Segundo pago iniciado' : 'Pago iniciado'
-                                                              client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient)
+                                                              client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient, {
+                                                                headers: {
+                                                                  'x-tenant-id': tenantId
+                                                                }
+                                                              })
                                                               localStorage.setItem('service', JSON.stringify(currentClient.services![0]))
                                                             } else {
                                                               currentClient.services![0].payStatus = 'Pago iniciado'
-                                                              client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], payStatus: 'Pago iniciado' }] })
+                                                              client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], payStatus: 'Pago iniciado' }] }, {
+                                                                headers: {
+                                                                  'x-tenant-id': tenantId
+                                                                }
+                                                              })
                                                               localStorage.setItem('service', JSON.stringify({ ...currentClient.services![0], payStatus: 'Pago iniciado' }))
                                                             }
                                                             const service = services?.find(service => service._id === content.service?.service)
                                                             const price = Number(initializationRef.current.amount)
                                                             const newEventId = new Date().getTime().toString()
-                                                            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay`, { firstName: clientRef.current.firstName, lastName: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone, service: service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: price, state: currentClient.services![0].payStatus, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), pathname: pathname, eventId: newEventId, funnel: clientRef.current.funnels?.length ? clientRef.current.funnels[0].funnel : undefined, step: clientRef.current.funnels?.length ? clientRef.current.funnels[0].step : undefined, method: 'WebPay Plus' })
+                                                            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay`, { firstName: clientRef.current.firstName, lastName: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone, service: service?._id, stepService: service?.steps.find(step => `/${step.slug}` === pathname)?._id, typeService: service?.typeService, typePrice: service?.typePrice, plan: content.service?.plan, price: price, state: currentClient.services![0].payStatus, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), pathname: pathname, eventId: newEventId, funnel: clientRef.current.funnels?.length ? clientRef.current.funnels[0].funnel : undefined, step: clientRef.current.funnels?.length ? clientRef.current.funnels[0].step : undefined, method: 'WebPay Plus' }, {
+                                                              headers: {
+                                                                'x-tenant-id': tenantId
+                                                              }
+                                                            })
                                                             if (typeof fbq === 'function') {
                                                               fbq('track', 'AddPaymentInfo', { first_name: clientRef.current.firstName, last_name: clientRef.current.lastName, email: clientRef.current.email, phone: clientRef.current.phone && clientRef.current.phone !== '' ? `56${clientRef.current.phone}` : undefined, content_name: service?._id, currency: "clp", value: price, contents: { id: service?._id, item_price: price, quantity: 1 }, fbc: Cookies.get('_fbc'), fbp: Cookies.get('_fbp'), event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}` }, { eventID: newEventId })
                                                             }

@@ -9,7 +9,7 @@ import Cookies from 'js-cookie'
 
 declare const fbq: Function
 
-export const SubscribePage = ({ info, style }: { info: IInfo, style?: any }) => {
+export const SubscribePage = ({ info, style, tenantId }: { info: IInfo, style?: any, tenantId: string }) => {
 
   const [subscribeData, setSubscribeData] = useState({ email: '', tags: ['suscriptores'] })
   const [loading, setLoading] = useState(false)
@@ -30,7 +30,6 @@ export const SubscribePage = ({ info, style }: { info: IInfo, style?: any }) => 
       setError('')
       if (emailRegex.test(subscribeData.email)) {
         const newEventId = new Date().getTime().toString()
-        const tenantId = await getClientTenantId()
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...subscribeData, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc'), page: pathname, eventId: newEventId }, {
           headers: {
             'x-tenant-id': tenantId,

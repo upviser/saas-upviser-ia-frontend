@@ -27,8 +27,7 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600
 
-async function fetchIntegrations (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchIntegrations (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -37,8 +36,7 @@ async function fetchIntegrations (hostname: string) {
   return res.json()
 }
 
-async function fetchStoredata (hostname: string) {
-  const tenantId = await getServerTenantId(hostname)
+async function fetchStoredata (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/store-data`, {
     headers: {
       'x-tenant-id': tenantId,
@@ -54,10 +52,11 @@ export default async function RootLayout({
 }>) {
   const headersList = headers()
   const hostname = headersList.get('host') || ''
+  const tenantId = await getServerTenantId(hostname)
 
-  const integrationsData = fetchIntegrations(hostname)
+  const integrationsData = fetchIntegrations(tenantId)
 
-  const storeDataData = fetchStoredata(hostname)
+  const storeDataData = fetchStoredata(tenantId)
 
   const [integrations, storeData] = await Promise.all([integrationsData, storeDataData])
 
@@ -68,7 +67,7 @@ export default async function RootLayout({
       </head>
       <body className="overflow-x-hidden">
         <Providers>
-          <MainLayout hostname={hostname}>
+          <MainLayout tenantId={tenantId}>
             <main>{children}</main>
           </MainLayout>
         </Providers>
