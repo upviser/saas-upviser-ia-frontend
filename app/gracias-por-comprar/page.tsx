@@ -19,9 +19,12 @@ const PageBuySuccess = () => {
   const {setCart} = useContext(CartContext)
 
   const updateClient = async () => {
+    const hostname = window.location.href
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tenants`)
+    const tenant = response.data.find((tenant: any) => tenant.domain === hostname)
+    const tenantId = tenant.tenantId
     if (localStorage.getItem('pay')) {
       const pay = JSON.parse(localStorage.getItem('pay')!)
-      const tenantId = await getClientTenantId()
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/domain`, {
         headers: {
           'x-tenant-id': tenantId,

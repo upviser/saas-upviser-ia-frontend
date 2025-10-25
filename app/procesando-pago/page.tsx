@@ -17,6 +17,10 @@ export default function PayProcess () {
   const router = useRouter()
 
   const verifyPay = async () => {
+    const hostname = window.location.href
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tenants`)
+    const tenant = response.data.find((tenant: any) => tenant.domain === hostname)
+    const tenantId = tenant.tenantId
     const urlParams = new URLSearchParams(window.location.search)
     const tokenWs = urlParams.get('token_ws')
     const status = urlParams.get('collection_status')
@@ -25,7 +29,6 @@ export default function PayProcess () {
       const pay = JSON.parse(localStorage.getItem('pay')!)
       const sell = JSON.parse(localStorage.getItem('sell')!)
       if (pay) {
-        const tenantId = await getClientTenantId()
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/commit`, { token: tokenWs }, {
           headers: {
             'x-tenant-id': tenantId,
@@ -104,7 +107,6 @@ export default function PayProcess () {
           router.push('/pago-fallido')
         }
       } else if (sell) {
-        const tenantId = await getClientTenantId()
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/commit`, { token: tokenWs }, {
           headers: {
             'x-tenant-id': tenantId,
@@ -112,7 +114,6 @@ export default function PayProcess () {
         })
         if (response.data.status === 'AUTHORIZED') {
           const shippingData = JSON.parse(localStorage.getItem('shippingData')!)
-          console.log(shippingData)
           const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`, {
             headers: {
               'x-tenant-id': tenantId,
@@ -146,7 +147,6 @@ export default function PayProcess () {
     } else if (status) {
       const pay = JSON.parse(localStorage.getItem('pay')!)
       const sell = JSON.parse(localStorage.getItem('sell')!)
-      const tenantId = await getClientTenantId()
       if (pay) {
         if (status === 'approved') {
           await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/pay/${pay._id}`, { state: 'Pago realizado' }, {

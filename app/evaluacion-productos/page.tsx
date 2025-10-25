@@ -16,11 +16,14 @@ export default function Page () {
 
   const getSell = async () => {
     setLoading(true)
+    const hostname = window.location.href
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tenants`)
+    const tenant = response.data.find((tenant: any) => tenant.domain === hostname)
+    const tenantId = tenant.tenantId
     const currentUrl = window.location.href
     const url = new URL(currentUrl)
     const params = new URLSearchParams(url.search)
     const sell = params.get('sell')
-    const tenantId = await getClientTenantId()
     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sell/${sell}`, {
       headers: {
         'x-tenant-id': tenantId,
@@ -32,25 +35,17 @@ export default function Page () {
         res.data.cart.map((product: any) => productsCart.push({ _id: product._id, calification: '', title: '', review: '', name: `${res.data.firstName} ${res.data.lastName}`, email: res.data.email }))
         setProducts(productsCart)
     }
+    const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
+    setStyle(resp.data)
     setLoading(false)
   }
 
   useEffect(() => {
     getSell()
-  }, [])
-
-  const getStyle = async () => {
-    const tenantId = await getClientTenantId()
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
-      headers: {
-        'x-tenant-id': tenantId,
-      }
-    })
-    setStyle(res.data)
-  }
-
-  useEffect(() => {
-    getStyle()
   }, [])
 
   return (

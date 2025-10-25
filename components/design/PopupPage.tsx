@@ -21,9 +21,10 @@ interface Props {
     style?: any
     storeData: IStoreData
     domain: any
+    tenantId: string
 }
 
-export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, calls, forms, payment, style, storeData, domain }) => {
+export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, calls, forms, payment, style, storeData, domain, tenantId }) => {
 
   const [message, setMessage] = useState('')
   const [clientData, setClientData] = useState<IClient>({ email: '' })
@@ -117,7 +118,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                                       }
                                     </div>
                                     <div className="p-6 w-full lg:w-7/12">
-                                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === content)!} tags={calls.find(call => call._id === content)?.tags!} meeting={calls.find(call => call._id === content)?.nameMeeting!} payment={payment} style={style} domain={domain} />
+                                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === content)!} tags={calls.find(call => call._id === content)?.tags!} meeting={calls.find(call => call._id === content)?.nameMeeting!} payment={payment} style={style} domain={domain} tenantId={tenantId} />
                                     </div>
                                   </div>
                                 </div>
@@ -323,7 +324,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                       }
                     </div>
                     <div className="p-6 md:p-8 w-full lg:w-7/12">
-                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === content)!} tags={calls.find(call => call._id === content)?.tags!} meeting={calls.find(call => call._id === content)?.nameMeeting!} payment={payment} domain={domain} />
+                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === content)!} tags={calls.find(call => call._id === content)?.tags!} meeting={calls.find(call => call._id === content)?.nameMeeting!} payment={payment} domain={domain} tenantId={tenantId} />
                     </div>
                   </div>
                 </div>

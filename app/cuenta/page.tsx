@@ -26,32 +26,27 @@ export default function Page () {
 
   const getSells = async () => {
     setLoading(true)
-    const tenantId = await getClientTenantId()
+    const hostname = window.location.href
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tenants`)
+    const tenant = response.data.find((tenant: any) => tenant.domain === hostname)
+    const tenantId = tenant.tenantId
     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sells-client/${session?.user?.email}`, {
       headers: {
         'x-tenant-id': tenantId,
       }
     })
     setSells(res.data)
+    const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+      headers: {
+        'x-tenant-id': tenantId,
+      }
+    })
+    setStyle(resp.data)
     setLoading(false)
   }
 
   useEffect(() => {
     getSells()
-  }, [])
-
-  const getStyle = async () => {
-    const tenantId = await getClientTenantId()
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
-      headers: {
-        'x-tenant-id': tenantId,
-      }
-    })
-    setStyle(res.data)
-  }
-
-  useEffect(() => {
-    getStyle()
   }, [])
 
   useEffect(() => {
