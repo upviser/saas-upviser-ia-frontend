@@ -227,7 +227,7 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
 
   return (
     <>
-        <div className={`${chatOpacity} ${chatView ? 'flex' : 'hidden'} ${chatOpacity === '-mb-[200px]' ? 'opacity-0' : 'opacity-1'} fixed bottom-24 right-4 z-50 h-[450px] ml-3 justify-between flex-col gap-3 transition-all duration-500 w-80 sm:w-96 sm:h-[570px] sm:gap-4`} style={{ borderRadius: `${style.borderBlock}px`, boxShadow: `0px 3px 20px 3px #11111125`, backgroundColor: design.chat?.bgColor && design.chat.bgColor !== '' ? design.chat.bgColor : '#ffffff' }}>
+        <div className={`${chatOpacity} ${chatView ? 'flex' : 'hidden'} ${chatOpacity === '-mb-[200px]' ? 'opacity-0' : 'opacity-1'} fixed bottom-24 right-4 z-50 h-[450px] ml-3 justify-between flex-col gap-3 transition-all duration-500 w-80 sm:w-96 sm:h-[570px] sm:gap-4`} style={{ borderRadius: `${style.borderBlock}px`, boxShadow: `0px 3px 20px 3px #11111125`, backgroundColor: design?.chat?.bgColor && design.chat.bgColor !== '' ? design.chat.bgColor : '#ffffff' }}>
           <div className='h-28 w-full flex p-4' style={{ backgroundColor: style.primary, borderTopLeftRadius: `${style.borderBlock}px`, borderTopRightRadius: `${style.borderBlock}px` }}>
             <span className='text-white mt-auto mb-auto text-xl'>Chat</span>
           </div>
@@ -286,8 +286,8 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
                 : ''
             }
           </div>
-          <form className='flex gap-2 pr-3 pl-3 pb-3 sm:pr-4 sm:pl-4 sm:pb-4' style={{ color: design.chat.textColor }}>
-            <Input inputChange={inputChange} value={newMessage} type={'text'} placeholder={'Mensaje'} style={style} bgColor={design.chat.bgColor} />
+          <form className='flex gap-2 pr-3 pl-3 pb-3 sm:pr-4 sm:pl-4 sm:pb-4' style={{ color: design?.chat?.textColor }}>
+            <Input inputChange={inputChange} value={newMessage} type={'text'} placeholder={'Mensaje'} style={style} bgColor={design?.chat?.bgColor} />
             <button type='submit' onClick={submitMessage} className='text-white w-28 dark:bg-neutral-700 transition-colors duration-200 hover:bg-transparent' style={{ backgroundColor: style.primary, borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '' }}>Enviar</button>
           </form>
         </div>
