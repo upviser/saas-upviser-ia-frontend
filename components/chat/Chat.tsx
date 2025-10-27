@@ -54,8 +54,7 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
         }
       })
       const messages = response.data
-      const messagesReverse = messages.reverse()
-      const lastMessage = messagesReverse[0]
+      const lastMessage = messages[0]
       if (lastMessage?.createdAt) {
         const lastDate = new Date(lastMessage.createdAt);
         const now = new Date();
