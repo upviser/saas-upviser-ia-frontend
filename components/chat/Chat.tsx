@@ -211,13 +211,8 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
           'x-tenant-id': tenantId,
         }
       })
-      if (response!.data.response) {
-        setChat(chat.filter(mes => mes.message === message))
-      }
+      getMessages()
       setLoadingMessage(false)
-      if (response!.data.response) {
-        setChat(chat.concat(response!.data))
-      }
       if (response!.data.cart) {
         localStorage.setItem('cart', JSON.stringify(response.data.cart))
         setCart(response.data.cart)
