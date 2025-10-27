@@ -466,7 +466,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
         }
         {
           design.chatView
-            ? <Chat style={style} storeData={storeData} design={design} viewChat={viewChat} />
+            ? <Chat style={style} storeData={storeData} design={design} viewChat={viewChat} tenantId={tenantId} />
             : ''
         }
       </div>
