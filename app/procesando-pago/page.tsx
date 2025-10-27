@@ -43,6 +43,7 @@ export default function PayProcess () {
           if (localStorage.getItem('service') && localStorage.getItem('service2')) {
             const service = JSON.parse(localStorage.getItem('service')!)
             const service2 = JSON.parse(localStorage.getItem('service2')!)
+            const funnel = JSON.parse(localStorage.getItem('funnel')!)
             service.step = service2.steps[service2.steps.find((step: any) => step._id === service.step) ? service2.steps.findIndex((step: any) => step._id === service.step) + 1 : 0]._id
             service.payStatus =
               service.payStatus === 'Pago iniciado'
@@ -50,7 +51,7 @@ export default function PayProcess () {
                 : service.payStatus === 'Segundo pago iniciado'
                 ? 'Segundo pago realizado'
                 : '';
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: [service] }, {
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: [service], funnels: [funnel] }, {
               headers: {
                 'x-tenant-id': tenantId,
               }
@@ -102,6 +103,7 @@ export default function PayProcess () {
           localStorage.setItem('pay', '')
           localStorage.setItem('service', '')
           localStorage.setItem('service2', '')
+          localStorage.setItem('funnel', '')
           localStorage.setItem('meetingData', '')
           localStorage.setItem('meetingEvent', '')
           router.push('/pago-fallido')
@@ -157,6 +159,7 @@ export default function PayProcess () {
           if (localStorage.getItem('service') && localStorage.getItem('service2')) {
             const service = JSON.parse(localStorage.getItem('service')!)
             const service2 = JSON.parse(localStorage.getItem('service2')!)
+            const funnel = JSON.parse(localStorage.getItem('funnel')!)
             service.step = service2.steps[service2.steps.find((step: any) => step._id === service.step) ? service2.steps.findIndex((step: any) => step._id === service.step) + 1 : 0]._id
             service.payStatus =
               service.payStatus === 'Pago iniciado'
@@ -164,7 +167,7 @@ export default function PayProcess () {
                 : service.payStatus === 'Segundo pago iniciado'
                 ? 'Segundo pago realizado'
                 : '';
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: [service] }, {
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${pay.email}`, { services: [service], funnels: [funnel] }, {
               headers: {
                 'x-tenant-id': tenantId,
               }
@@ -216,6 +219,7 @@ export default function PayProcess () {
           localStorage.setItem('pay', '')
           localStorage.setItem('service', '')
           localStorage.setItem('service2', '')
+          localStorage.setItem('funnel', '')
           localStorage.setItem('meetingData', '')
           localStorage.setItem('meetingEvent', '')
           router.push('/pago-fallido')

@@ -482,20 +482,22 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
           let client
           if (res.data.email) {
             currentClient.services![0].payStatus = res.data.services.find((service: any) => service.service === currentClient.services![0].service)?.payStatus === 'Pago realizado' ? 'Segundo pago iniciado' : 'Pago iniciado'
-            client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient, {
+            client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, funnels: [] }, {
               headers: {
                 'x-tenant-id': tenantId
               }
             })
             localStorage.setItem('service', JSON.stringify(currentClient.services![0]))
+            localStorage.setItem('funnel', JSON.stringify(currentClient.funnels![0]))
           } else {
             currentClient.services![0].payStatus = 'Pago iniciado'
-            client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], payStatus: 'Pago iniciado' }] }, {
+            client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, funnels: [], services: [{ ...currentClient.services![0], payStatus: 'Pago iniciado' }] }, {
               headers: {
                 'x-tenant-id': tenantId
               }
             })
             localStorage.setItem('service', JSON.stringify({ ...currentClient.services![0], payStatus: 'Pago iniciado' }))
+            localStorage.setItem('funnel', JSON.stringify(currentClient.funnels![0]))
           }
           const service = services?.find(service => service._id === content.service?.service)
           const price = Number(initializationRef.current.amount)
@@ -708,20 +710,22 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                                                             let client
                                                             if (res.data.email) {
                                                               currentClient.services![0].payStatus = res.data.services.find((service: any) => service.service === currentClient.services![0].service)?.payStatus === 'Pago realizado' ? 'Segundo pago iniciado' : 'Pago iniciado'
-                                                              client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, currentClient, {
+                                                              client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, funnels: [] }, {
                                                                 headers: {
                                                                   'x-tenant-id': tenantId
                                                                 }
                                                               })
                                                               localStorage.setItem('service', JSON.stringify(currentClient.services![0]))
+                                                              localStorage.setItem('funnel', JSON.stringify(currentClient.funnels![0]))
                                                             } else {
                                                               currentClient.services![0].payStatus = 'Pago iniciado'
-                                                              client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, services: [{ ...currentClient.services![0], payStatus: 'Pago iniciado' }] }, {
+                                                              client = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, { ...currentClient, funnels: [], services: [{ ...currentClient.services![0], payStatus: 'Pago iniciado' }] }, {
                                                                 headers: {
                                                                   'x-tenant-id': tenantId
                                                                 }
                                                               })
                                                               localStorage.setItem('service', JSON.stringify({ ...currentClient.services![0], payStatus: 'Pago iniciado' }))
+                                                              localStorage.setItem('funnel', JSON.stringify(currentClient.funnels![0]))
                                                             }
                                                             const service = services?.find(service => service._id === content.service?.service)
                                                             const price = Number(initializationRef.current.amount)
