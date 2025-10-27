@@ -188,7 +188,8 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
         localStorage.setItem('cart', JSON.stringify(cart))
       }
       let response
-      if (!chat.reverse()[0].agent) {
+      const lastMessage = chat[chat.length - 1]
+      if (!lastMessage.agent) {
         socket.emit('message', {message: message, senderId: senderId, createdAt: new Date()})
       } else {
         setLoadingMessage(true)
@@ -199,7 +200,7 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
             'x-tenant-id': tenantId,
           }
         })
-      } else if (chat.reverse()[0].message === `¡Hola! Soy el agente de IA de ${storeData?.name} ¿En que te puedo ayudar?`) {
+      } else if (lastMessage.message === `¡Hola! Soy el agente de IA de ${storeData?.name} ¿En que te puedo ayudar?`) {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat`, { senderId: senderId, response: `¡Hola! Soy el agente de IA de ${storeData?.name} ¿En que te puedo ayudar?`, agent: true, adminView: false, userView: true, cart: cart }, {
           headers: {
             'x-tenant-id': tenantId,
