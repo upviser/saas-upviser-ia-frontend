@@ -189,7 +189,7 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
         localStorage.setItem('cart', JSON.stringify(cart))
       }
       let response
-      if (!chat[0].agent) {
+      if (!chat.reverse()[0].agent) {
         socket.emit('message', {message: message, senderId: senderId, createdAt: new Date()})
       }
       if (chat.length === 1) {
@@ -198,14 +198,14 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
             'x-tenant-id': tenantId,
           }
         })
-      } else if (chat[0].message === `¡Hola! Soy el agente de IA de ${storeData?.name} ¿En que te puedo ayudar?`) {
+      } else if (chat.reverse()[0].message === `¡Hola! Soy el agente de IA de ${storeData?.name} ¿En que te puedo ayudar?`) {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat`, { senderId: senderId, response: `¡Hola! Soy el agente de IA de ${storeData?.name} ¿En que te puedo ayudar?`, agent: true, adminView: false, userView: true, cart: cart }, {
           headers: {
             'x-tenant-id': tenantId,
           }
         })
       }
-      response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat`, { senderId: senderId, message: message, agent: chat[0].agent, adminView: false, userView: true, cart: cart }, {
+      response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat`, { senderId: senderId, message: message, agent: chat.reverse()[0].agent, adminView: false, userView: true, cart: cart }, {
         headers: {
           'x-tenant-id': tenantId,
         }
