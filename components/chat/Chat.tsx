@@ -286,7 +286,7 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
                 : ''
             }
           </div>
-          <form className='flex gap-2 pr-3 pl-3 pb-3 sm:pr-4 sm:pl-4 sm:pb-4'>
+          <form className='flex gap-2 pr-3 pl-3 pb-3 sm:pr-4 sm:pl-4 sm:pb-4' style={{ color: design.chat.textColor }}>
             <Input inputChange={inputChange} value={newMessage} type={'text'} placeholder={'Mensaje'} style={style} bgColor={design.chat.bgColor} />
             <button type='submit' onClick={submitMessage} className='text-white w-28 dark:bg-neutral-700 transition-colors duration-200 hover:bg-transparent' style={{ backgroundColor: style.primary, borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '' }}>Enviar</button>
           </form>
