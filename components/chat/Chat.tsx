@@ -21,9 +21,10 @@ interface Props {
   storeData?: IStoreData
   design: any
   viewChat: boolean
+  tenantId: string
 }
 
-export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat }) => {
+export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tenantId }) => {
 
   const [chatView, setChatView] = useState(false)
   const [chatOpacity, setChatOpacity] = useState('-mb-[200px]')
@@ -47,7 +48,6 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat }) =>
   const getMessages = async () => {
     if (localStorage.getItem('chatId')) {
       const senderId = localStorage.getItem('chatId')
-      const tenantId = await getClientTenantId()
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chat/${senderId}`, {
         headers: {
           'x-tenant-id': tenantId,
@@ -193,7 +193,6 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat }) =>
       if (!chat.reverse()[0].agent) {
         socket.emit('message', {message: message, senderId: senderId, createdAt: new Date()})
       }
-      const tenantId = await getClientTenantId()
       if (chat.length === 1) {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat/create`, { senderId: senderId, response: chat[0].response, agent: true, adminView: false, userView: true, cart: cart }, {
           headers: {
@@ -307,7 +306,6 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat }) =>
           }
           const senderId = localStorage.getItem('chatId')
           if (senderId) {
-            const tenantId = await getClientTenantId()
             await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/chat-user/${senderId}`, {}, {
               headers: {
                 'x-tenant-id': tenantId,
