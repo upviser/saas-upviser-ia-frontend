@@ -151,7 +151,6 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
   const submitMessage = async (e: any) => {
     e.preventDefault()
     if (!loadingMessage) {
-      setLoadingMessage(true)
       let senderId
       let cart
       let message = newMessage
@@ -191,6 +190,8 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
       let response
       if (!chat.reverse()[0].agent) {
         socket.emit('message', {message: message, senderId: senderId, createdAt: new Date()})
+      } else {
+        setLoadingMessage(true)
       }
       if (chat.length === 1) {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat/create`, { senderId: senderId, response: chat[0].response, agent: true, adminView: false, userView: true, cart: cart }, {
@@ -211,7 +212,7 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
         }
       })
       if (response!.data.response) {
-        setChat(chat.filter(mes => mes.message === message))
+        setChat(chat.filter(mes => mes.message === message).reverse())
       }
       setLoadingMessage(false)
       if (response!.data.response) {
