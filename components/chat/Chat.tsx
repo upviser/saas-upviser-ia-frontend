@@ -207,6 +207,7 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
           }
         })
       }
+      console.log(lastMessage)
       response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/chat`, { senderId: senderId, message: message, agent: lastMessage.agent, adminView: false, userView: true, cart: cart }, {
         headers: {
           'x-tenant-id': tenantId,
