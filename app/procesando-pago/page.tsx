@@ -18,9 +18,13 @@ export default function PayProcess () {
 
   const verifyPay = async () => {
     const hostname = window.location.href
+    console.log(hostname)
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tenants`)
+    console.log(response.data)
     const tenant = response.data.find((tenant: any) => tenant.domain === hostname)
-    const tenantId = tenant.tenantId
+    console.log(tenant)
+    const tenantId = tenant?.tenantId
+    console.log(tenantId)
     const urlParams = new URLSearchParams(window.location.search)
     const tokenWs = urlParams.get('token_ws')
     const status = urlParams.get('collection_status')
