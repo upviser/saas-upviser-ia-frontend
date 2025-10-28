@@ -92,9 +92,9 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
     socket.on('messageAdmin', message => {
       if (localStorage.getItem('chatId') === message.senderId) {
         if (chatOpacityRef.current === '') {
-          setChat(chatRef.current.concat([{ ...message, agent: true, adminView: true, userView: true }]))
+          setChat(chatRef.current.concat([{ ...message, adminView: true, userView: true }]))
         } else {
-          setChat(chatRef.current.concat([{ ...message, agent: true, adminView: true, userView: false }]))
+          setChat(chatRef.current.concat([{ ...message, adminView: true, userView: false }]))
         }
       }
     })
@@ -189,7 +189,7 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
       }
       let response
       const lastMessage = chat[chat.length - 1]
-      console.log(lastMessage)
+      console.log(chat)
       if (!lastMessage.agent) {
         socket.emit('message', {message: message, senderId: senderId, createdAt: new Date()})
       } else {
