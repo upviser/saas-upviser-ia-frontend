@@ -151,6 +151,7 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
   const submitMessage = async (e: any) => {
     e.preventDefault()
     if (!loadingMessage) {
+      await getMessages()
       let senderId
       let cart
       let message = newMessage
