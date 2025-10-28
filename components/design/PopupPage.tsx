@@ -22,7 +22,7 @@ interface Props {
     storeData: IStoreData
     domain: any
     tenantId: string
-    content: IDesign
+    content?: IDesign
 }
 
 export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, calls, forms, payment, style, storeData, domain, tenantId, content }) => {
@@ -58,7 +58,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, call
         {
           cont === 'Abrir popup'
             ? (
-              <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${calls.find(call => call._id === cont) ? 'max-w-[800px]' : 'max-w-[600px]'} ${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 w-full p-6 md:p-8 max-h-[600px] overflow-y-auto m-auto flex flex-col gap-4`} style={{ boxShadow: '0px 3px 20px 3px #11111120', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', backgroundColor: content.info.background, color: content.info.textColor }}>
+              <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${calls.find(call => call._id === cont) ? 'max-w-[800px]' : 'max-w-[600px]'} ${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 w-full p-6 md:p-8 max-h-[600px] overflow-y-auto m-auto flex flex-col gap-4`} style={{ boxShadow: '0px 3px 20px 3px #11111120', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', backgroundColor: content?.info.background ? content?.info.background : design.popup?.bgColor, color: content?.info.textColor ? content?.info.textColor : design.popup?.textColor }}>
                 {
                   message !== ''
                     ? <p>{message}</p>
