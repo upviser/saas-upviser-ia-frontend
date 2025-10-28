@@ -23,9 +23,10 @@ interface Props {
     domain: any
     tenantId: string
     content?: IDesign
+    page?: any
 }
 
-export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, calls, forms, payment, style, storeData, domain, tenantId, content }) => {
+export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, calls, forms, payment, style, storeData, domain, tenantId, content, page }) => {
 
   const [message, setMessage] = useState('')
   const [clientData, setClientData] = useState<IClient>({ email: '' })
@@ -54,11 +55,11 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, call
   }, [popup, setPopup]);
 
   return (
-    <div className={`${popup.view} ${popup.opacity} transition-opacity duration-200 w-full h-full top-0 fixed bg-black/30 flex z-50 px-4`}>
+    <div className={`${popup.view} ${popup.opacity} transition-opacity duration-200 w-full h-full top-0 fixed bg-black/30 flex z-50 px-4`} style={{ color: content?.info.textColor ? content?.info.textColor : design.popup?.textColor }}>
         {
           cont === 'Abrir popup'
             ? (
-              <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${calls.find(call => call._id === cont) ? 'max-w-[800px]' : 'max-w-[600px]'} ${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 w-full p-6 md:p-8 max-h-[600px] overflow-y-auto m-auto flex flex-col gap-4`} style={{ boxShadow: '0px 3px 20px 3px #11111120', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', backgroundColor: content?.info.background ? content?.info.background : design.popup?.bgColor, color: content?.info.textColor ? content?.info.textColor : design.popup?.textColor }}>
+              <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${calls.find(call => call._id === cont) ? 'max-w-[800px]' : 'max-w-[600px]'} ${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 w-full p-6 md:p-8 max-h-[600px] overflow-y-auto m-auto flex flex-col gap-4`} style={{ boxShadow: '0px 3px 20px 3px #11111120', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', backgroundColor: content?.info.background ? content?.info.background : design.popup?.bgColor ? design.popup?.bgColor : page.bgColor }}>
                 {
                   message !== ''
                     ? <p>{message}</p>
@@ -119,7 +120,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, call
                                       }
                                     </div>
                                     <div className="p-6 w-full lg:w-7/12">
-                                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === cont)!} tags={calls.find(call => call._id === cont)?.tags!} meeting={calls.find(call => call._id === cont)?.nameMeeting!} payment={payment} style={style} domain={domain} tenantId={tenantId} />
+                                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === cont)!} tags={calls.find(call => call._id === cont)?.tags!} meeting={calls.find(call => call._id === cont)?.nameMeeting!} payment={payment} style={style} domain={domain} tenantId={tenantId} page={page} />
                                     </div>
                                   </div>
                                 </div>
@@ -284,17 +285,10 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, call
             )
             : calls.find(call => call._id === cont)
               ? (
-                <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 max-w-[800px] bg-white m-auto w-full`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }}>
+                <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 max-w-[800px] max-h-[600px] overflow-y-auto m-auto w-full`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', backgroundColor: content?.info.background ? content?.info.background : design.popup?.bgColor ? design.popup?.bgColor : page.bgColor }}>
                   <div className="lg:flex">
-                    <div className="p-6 md:p-8 border-b lg:border-b-0 lg:border-r flex flex-col gap-8 w-full lg:w-5/12">
+                    <div className="p-6 md:p-8 flex flex-col gap-8 w-full lg:w-5/12">
                       <div className="flex flex-col gap-3">
-                        {
-                          storeData?.logo && storeData.logo !== ''
-                            ? <Image src={storeData.logo} alt={`Imagen logo ${storeData.name}`} width={200} height={150} className='w-40' />
-                            : storeData?.logoWhite && storeData.logoWhite !== ''
-                              ? <Image src={storeData.logoWhite} alt={`Imagen logo ${storeData.name}`} width={200} height={150} className='w-40' />
-                              : ''
-                        }
                         {
                           calls.find(call => call._id === cont)
                             ? (
@@ -325,14 +319,14 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, call
                       }
                     </div>
                     <div className="p-6 md:p-8 w-full lg:w-7/12">
-                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === cont)!} tags={calls.find(call => call._id === cont)?.tags!} meeting={calls.find(call => call._id === cont)?.nameMeeting!} payment={payment} domain={domain} tenantId={tenantId} />
+                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === cont)!} tags={calls.find(call => call._id === cont)?.tags!} meeting={calls.find(call => call._id === cont)?.nameMeeting!} payment={payment} domain={domain} tenantId={tenantId} style={style} content={content} page={page} />
                     </div>
                   </div>
                 </div>
               )
               : forms.find(form => form._id === cont)
                 ? (
-                  <form ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 flex flex-col gap-4 h-fit m-auto p-6 md:p-8 w-full max-w-[600px] bg-white`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }} onSubmit={async (e: any) => {
+                  <form ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 flex flex-col gap-4 h-fit m-auto p-6 md:p-8 w-full max-w-[600px]`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', backgroundColor: content?.info.background ? content?.info.background : design.popup?.bgColor ? design.popup?.bgColor : page.bgColor }} onSubmit={async (e: any) => {
                     e.preventDefault()
                     if (!loading) {
                       setLoading(true)
@@ -404,6 +398,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, call
                                   <p>{label.text !== '' ? label.text : label.name}</p>
                                   <Input
                                     style={style}
+                                    bgColor={content?.info.background ? content?.info.background : design.popup?.bgColor ? design.popup?.bgColor : page.bgColor}
                                     placeholder={label.name}
                                     value={clientData.data?.find((dat: any) => dat.name === label.name)?.value || clientData[label.data]}
                                     inputChange={(e: any) => {

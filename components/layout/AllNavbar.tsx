@@ -175,16 +175,9 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                           design.popup.content && design.popup.content !== ''
                             ? calls.find(call => call._id === design.popup?.content)
                               ? (
-                                <div className="lg:flex" style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', color: '#111111', backgroundColor: '#ffffff' }}>
-                                  <div className="p-6 border-b lg:border-b-0 lg:border-r flex flex-col gap-8 w-full lg:w-5/12">
+                                <div className="lg:flex">
+                                  <div className={`flex flex-col gap-8 w-full lg:w-5/12`}>
                                     <div className="flex flex-col gap-3">
-                                      {
-                                        storeData?.logo && storeData.logo !== ''
-                                          ? <Image src={storeData.logo} alt={`Imagen logo ${storeData.name}`} width={200} height={150} className='w-40' />
-                                          : storeData?.logoWhite && storeData.logoWhite !== ''
-                                            ? <Image src={storeData.logoWhite} alt={`Imagen logo ${storeData.name}`} width={200} height={150} className='w-40' />
-                                            : ''
-                                      }
                                       {
                                         calls.find(call => call._id === design.popup?.content)
                                           ? (
@@ -215,7 +208,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                                     }
                                   </div>
                                   <div className="p-6 w-full lg:w-7/12">
-                                    <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === design.popup?.content)!} tags={calls.find(call => call._id === design.popup?.content)?.tags!} meeting={calls.find(call => call._id === design.popup?.content)?.nameMeeting!} payment={payment} style={style} domain={domain} tenantId={tenantId} />
+                                    <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === design.popup?.content)!} tags={calls.find(call => call._id === design.popup?.content)?.tags!} meeting={calls.find(call => call._id === design.popup?.content)?.nameMeeting!} payment={payment} style={style} domain={domain} tenantId={tenantId} popup={design.popup} />
                                   </div>
                                 </div>
                               )
@@ -295,7 +288,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                                     setLoading(false)
                                   }
                                 }}>
-                                  <div className="flex flex-col gap-4 h-fit m-auto w-full p-6" style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', color: '#111111', backgroundColor: '#ffffff' }}>
+                                  <div className="flex flex-col gap-4 h-fit m-auto w-full">
                                     {
                                       message !== ''
                                         ? <p className='text-lg text-center font-medium'>{message}</p>
@@ -331,6 +324,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                                                   <p>{label.text !== '' ? label.text : label.name}</p>
                                                   <Input
                                                     style={style}
+                                                    bgColor={design.popup?.bgColor}
                                                     placeholder={label.name}
                                                     value={clientData.data?.find(dat => dat.name === label.name)?.value || clientData[label.data]}
                                                     inputChange={(e: any) => {

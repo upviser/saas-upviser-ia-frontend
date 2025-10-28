@@ -11,7 +11,7 @@ import { Design, ICall, IClient, IForm, IInfo, IPayment, IStoreData } from "@/in
 import { useEffect, useRef, useState } from "react"
 import { PopupPage } from "../design"
 
-export const Slider = ({ info, index, forms, calls, design, payment, style, storeData, domain, tenantId }: { info: IInfo, index: any, forms: IForm[], calls: ICall[], design: Design, payment: IPayment, style?: any, storeData: IStoreData, domain: any, tenantId: string }) => {
+export const Slider = ({ info, index, forms, calls, design, payment, style, storeData, domain, tenantId, page }: { info: IInfo, index: any, forms: IForm[], calls: ICall[], design: Design, payment: IPayment, style?: any, storeData: IStoreData, domain: any, tenantId: string, page?: any}) => {
 
   const [popup, setPopup] = useState({ view: 'hidden', opacity: 'opacity-0', mouse: false })
   const [content, setContent] = useState('')
@@ -123,7 +123,7 @@ export const Slider = ({ info, index, forms, calls, design, payment, style, stor
 
   return (
     <>
-      <PopupPage popup={popup} setPopup={setPopup} cont={content} design={design} calls={calls} forms={forms} payment={payment} storeData={storeData} domain={domain} tenantId={tenantId} />
+      <PopupPage popup={popup} setPopup={setPopup} cont={content} design={design} calls={calls} forms={forms} payment={payment} storeData={storeData} domain={domain} tenantId={tenantId} page={page} />
       <div className="z-0">
         <Swiper
           className={styles.mySwiper}

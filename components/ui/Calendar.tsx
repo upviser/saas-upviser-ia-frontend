@@ -25,6 +25,8 @@ type CalendarProps = {
   content?: any
   domain: any
   tenantId: string
+  popup?: any
+  page?: any
 };
 
 interface DateData {
@@ -41,7 +43,7 @@ declare global {
 
 declare const fbq: Function
 
-export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tags, meeting, call, payment, services, style, content, domain, tenantId }) => {
+export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tags, meeting, call, payment, services, style, content, domain, tenantId, popup, page }) => {
   const { apiClient } = useApiClient()
   const [date, setDate] = useState<Date>(new Date());
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
@@ -504,7 +506,7 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
                               key={hour}
                               onClick={() => handleHourSelect(hour.toString())}
                               className={`p-2 text-center transition-colors duration-200`}
-                              style={{ backgroundColor: isTimeSelected(hour.toString()) ? style.primary : `${content?.info.textColor && content.info.textColor !== '' ? content.info.textColor : '#111111'}15`, color: isTimeSelected(hour.toString()) ? style.button : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }}
+                              style={{ backgroundColor: isTimeSelected(hour.toString()) ? style.primary : `${content?.info.textColor && content.info.textColor !== '' ? `${content.info.textColor}15` : popup?.textColor ? `${popup.textColor}15` : '#11111120'}`, color: isTimeSelected(hour.toString()) ? style.button : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }}
                             >
                               {hour}
                             </button>
@@ -579,7 +581,7 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
                                 }
                                 <Input
                                   style={style}
-                                  bgColor={content.info.image}
+                                  bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : page?.bgColor}
                                   placeholder={label.text}
                                   value={newClient.data?.find(dat => dat.name === label.text)?.value || newClient[label.data]}
                                   inputChange={(e: any) => {
@@ -856,7 +858,7 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
           key={i} 
           disabled={!isAvailable} 
           className={`w-[36px] h-9 sm:w-12 sm:h-12 m-auto flex transition-color duration-150`}
-          style={{ backgroundColor: isAvailable ? (isSelected ? style.primary : content?.info.textColor && content.info.textColor !== '' ? `${content.info.textColor}15` : '#11111120') : '', color: isAvailable ? (isSelected ? style.button : `${content?.info.textColor}`) : `${content?.info.textColor}70`, borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }}
+          style={{ backgroundColor: isAvailable ? (isSelected ? style.primary : content?.info.textColor && content.info.textColor !== '' ? `${content.info.textColor}15` : popup?.textColor ? `${popup.textColor}15` : '#11111120') : '', color: isAvailable ? (isSelected ? style.button : `${content?.info.textColor}`) : `${content?.info.textColor}70`, borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }}
           onClick={() => handleDateTimeSelect(currentDate)}
         >
           <p className='m-auto'>{i}</p>

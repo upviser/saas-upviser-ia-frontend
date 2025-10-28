@@ -157,17 +157,17 @@ export default async function Page () {
                 {
                   page.design.map((content: any, index: any) => {
                     if (content.content === 'Carrusel') {
-                      return <Slider key={content.content} info={content.info} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} />
+                      return <Slider key={content.content} info={content.info} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} page={page} />
                     } else if (content.content === 'Bloque 1') {
-                      return <Block1 key={content.content} content={content} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} />
+                      return <Block1 key={content.content} content={content} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} page={page} />
                     } else if (content.content === 'Bloque 2') {
-                      return <Block2 key={content.content} content={content} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} />
+                      return <Block2 key={content.content} content={content} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} page={page} />
                     } else if (content.content === 'Bloque 3') {
-                      return <Block3 key={content.content} content={content} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} />
+                      return <Block3 key={content.content} content={content} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} page={page} />
                     } else if (content.content === 'Bloque 4') {
-                      return <Block4 key={content.content} content={content} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} />
+                      return <Block4 key={content.content} content={content} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} page={page} />
                     } else if (content.content === 'Bloque 5') {
-                      return <Block5 key={content.content} content={content} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} />
+                      return <Block5 key={content.content} content={content} index={index} forms={forms} calls={calls} design={design} payment={payment} style={style} storeData={storeData} domain={domain} tenantId={tenantId} page={page} />
                     } else if (content.content === 'Contacto') {
                       return <ContactPage key={content.content} info={content.info} index={index} style={style} tenantId={tenantId} />
                     } else if (content.content === 'Suscripción') {
