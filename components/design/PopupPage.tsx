@@ -4,7 +4,7 @@ import { Button, Calendar, Input } from '../ui'
 import axios from 'axios'
 import { getClientTenantId } from '@/utils'
 import { usePathname, useRouter } from 'next/navigation'
-import { Design, ICall, IClient, IForm, IPayment, IStoreData } from '@/interfaces'
+import { Design, ICall, IClient, IDesign, IForm, IPayment, IStoreData } from '@/interfaces'
 import Cookies from 'js-cookie'
 import Image from 'next/image'
 
@@ -13,7 +13,7 @@ declare const fbq: Function
 interface Props {
     popup: any
     setPopup: any
-    content: string
+    cont: string
     design: Design
     calls: ICall[]
     forms: IForm[]
@@ -22,9 +22,10 @@ interface Props {
     storeData: IStoreData
     domain: any
     tenantId: string
+    content: IDesign
 }
 
-export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, calls, forms, payment, style, storeData, domain, tenantId }) => {
+export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, calls, forms, payment, style, storeData, domain, tenantId, content }) => {
 
   const [message, setMessage] = useState('')
   const [clientData, setClientData] = useState<IClient>({ email: '' })
@@ -55,9 +56,9 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
   return (
     <div className={`${popup.view} ${popup.opacity} transition-opacity duration-200 w-full h-full top-0 fixed bg-black/30 flex z-50 px-4`}>
         {
-          content === 'Abrir popup'
+          cont === 'Abrir popup'
             ? (
-              <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${calls.find(call => call._id === content) ? 'max-w-[800px]' : 'max-w-[600px]'} ${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 w-full p-6 md:p-8 max-h-[600px] overflow-y-auto bg-white m-auto flex flex-col gap-4`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }}>
+              <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${calls.find(call => call._id === cont) ? 'max-w-[800px]' : 'max-w-[600px]'} ${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 w-full p-6 md:p-8 max-h-[600px] overflow-y-auto m-auto flex flex-col gap-4`} style={{ boxShadow: '0px 3px 20px 3px #11111120', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', backgroundColor: content.info.background, color: content.info.textColor }}>
                 {
                   message !== ''
                     ? <p>{message}</p>
@@ -118,7 +119,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                                       }
                                     </div>
                                     <div className="p-6 w-full lg:w-7/12">
-                                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === content)!} tags={calls.find(call => call._id === content)?.tags!} meeting={calls.find(call => call._id === content)?.nameMeeting!} payment={payment} style={style} domain={domain} tenantId={tenantId} />
+                                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === cont)!} tags={calls.find(call => call._id === cont)?.tags!} meeting={calls.find(call => call._id === cont)?.nameMeeting!} payment={payment} style={style} domain={domain} tenantId={tenantId} />
                                     </div>
                                   </div>
                                 </div>
@@ -189,8 +190,8 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                                         phone: clientData.phone && clientData.phone !== '' ? `56${clientData.phone}` : undefined,
                                         fbp: Cookies.get('_fbp'),
                                         fbc: Cookies.get('_fbc'),
-                                        content_name: clientData.services?.length && clientData.services[0].service !== '' ? clientData.services[0].service : undefined,
-                                        contents: { id: clientData.services?.length && clientData.services[0].service !== '' ? clientData.services[0].service : undefined, quantity: 1 },
+                                        cont_name: clientData.services?.length && clientData.services[0].service !== '' ? clientData.services[0].service : undefined,
+                                        conts: { id: clientData.services?.length && clientData.services[0].service !== '' ? clientData.services[0].service : undefined, quantity: 1 },
                                         event_source_url: `${domain.domain === 'upviser.cl' ? process.env.NEXT_PUBLIC_WEB_URL : `https://${domain.domain}`}${pathname}`
                                       }, { eventID: newEventId })
                                       if (form?.action === 'Ir a una pagina') {
@@ -281,7 +282,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                 }
               </div>
             )
-            : calls.find(call => call._id === content)
+            : calls.find(call => call._id === cont)
               ? (
                 <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 max-w-[800px] bg-white m-auto w-full`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }}>
                   <div className="lg:flex">
@@ -295,13 +296,13 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                               : ''
                         }
                         {
-                          calls.find(call => call._id === content)
+                          calls.find(call => call._id === cont)
                             ? (
                               <>
-                                <p className="text-xl font-semibold">{calls.find(call => call._id === content)?.nameMeeting}</p>
+                                <p className="text-xl font-semibold">{calls.find(call => call._id === cont)?.nameMeeting}</p>
                                 <div className="flex gap-2">
                                   <svg className="w-5 text-gray-500" data-id="details-item-icon" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg" role="img"><path d="M.5 5a4.5 4.5 0 1 0 9 0 4.5 4.5 0 1 0-9 0Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path><path d="M5 3.269V5l1.759 2.052" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                                  <p className="text-gray-500">{calls.find(call => call._id === content)?.duration}</p>
+                                  <p className="text-gray-500">{calls.find(call => call._id === cont)?.duration}</p>
                                 </div>
                               </>
                             )
@@ -309,13 +310,13 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                         }
                       </div>
                       {
-                        calls.find(call => call._id === content) && calls.find(call => call._id === content)?.description !== ''
+                        calls.find(call => call._id === cont) && calls.find(call => call._id === cont)?.description !== ''
                           ? (
                             <div className="flex flex-col gap-3">
                               <p className="font-medium">Descripción:</p>
-                              <div onClick={() => console.log(calls.find(call => call._id === content)?.description)} className="flex flex-col gap-2">
+                              <div onClick={() => console.log(calls.find(call => call._id === cont)?.description)} className="flex flex-col gap-2">
                                 {
-                                  calls.find(call => call._id === content)?.description?.split('\n').map(text => <p key={text}>{text}</p>)
+                                  calls.find(call => call._id === cont)?.description?.split('\n').map(text => <p key={text}>{text}</p>)
                                 }
                               </div>
                             </div>
@@ -324,12 +325,12 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                       }
                     </div>
                     <div className="p-6 md:p-8 w-full lg:w-7/12">
-                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === content)!} tags={calls.find(call => call._id === content)?.tags!} meeting={calls.find(call => call._id === content)?.nameMeeting!} payment={payment} domain={domain} tenantId={tenantId} />
+                      <Calendar newClient={clientData} setNewClient={setClientData} call={calls.find(call => call._id === cont)!} tags={calls.find(call => call._id === cont)?.tags!} meeting={calls.find(call => call._id === cont)?.nameMeeting!} payment={payment} domain={domain} tenantId={tenantId} />
                     </div>
                   </div>
                 </div>
               )
-              : forms.find(form => form._id === content)
+              : forms.find(form => form._id === cont)
                 ? (
                   <form ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 flex flex-col gap-4 h-fit m-auto p-6 md:p-8 w-full max-w-[600px] bg-white`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }} onSubmit={async (e: any) => {
                     e.preventDefault()
@@ -338,7 +339,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                       setError('')
                       let valid = true
                       let errorMessage = ''
-                      forms.find(form => form._id === content)?.labels.forEach(label => {
+                      forms.find(form => form._id === cont)?.labels.forEach(label => {
                         if (label.data && (!clientData[label.data] || clientData[label.data].trim() === '')) {
                           valid = false
                           errorMessage = `Por favor, completa el campo ${label.text || label.name}.`
@@ -360,10 +361,10 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                           'x-tenant-id': tenantId,
                         }
                       })
-                      if (forms.find(form => form._id === content)?.action === 'Ir a una pagina') {
-                        router.push(forms.find(form => form._id === content)?.redirect!)
-                      } else if (forms.find(form => form._id === content)?.action === 'Mostrar mensaje') {
-                        setMessage(forms.find(form => form._id === content)?.message!)
+                      if (forms.find(form => form._id === cont)?.action === 'Ir a una pagina') {
+                        router.push(forms.find(form => form._id === cont)?.redirect!)
+                      } else if (forms.find(form => form._id === cont)?.action === 'Mostrar mensaje') {
+                        setMessage(forms.find(form => form._id === cont)?.message!)
                       }
                       setLoading(false)
                     }
@@ -378,9 +379,9 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                                 ? <p className='px-2 py-1 bg-red-500 text-white w-fit'>{error}</p>
                                 : ''
                             }
-                            <p className="text-xl font-medium text-center" style={{ color: style?.primary }}>{forms?.find(form => form._id === content)?.title}</p>
+                            <p className="text-xl font-medium text-center" style={{ color: style?.primary }}>{forms?.find(form => form._id === cont)?.title}</p>
                             {
-                              forms?.find(form => form._id === content)?.informations.map(information => (
+                              forms?.find(form => form._id === cont)?.informations.map(information => (
                                 <div key={information.text} className="flex gap-2">
                                   <div
                                     className="my-auto"
@@ -398,7 +399,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                               ))
                             }
                             {
-                              forms?.find(form => form._id === content)?.labels.map(label => (
+                              forms?.find(form => form._id === cont)?.labels.map(label => (
                                 <div key={label._id} className="flex flex-col gap-2">
                                   <p>{label.text !== '' ? label.text : label.name}</p>
                                   <Input
@@ -427,7 +428,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, content, design, c
                                 </div>
                               ))
                             }
-                            <Button type='submit' config='w-full' style={style} loading={loading}>{forms?.find(form => form._id === content)?.button}</Button>
+                            <Button type='submit' config='w-full' style={style} loading={loading}>{forms?.find(form => form._id === cont)?.button}</Button>
                           </>
                         )
                     }
