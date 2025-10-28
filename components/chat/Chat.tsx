@@ -189,6 +189,7 @@ export const Chat: React.FC<Props> = ({ style, storeData, design, viewChat, tena
       }
       let response
       const lastMessage = chat[chat.length - 1]
+      console.log(lastMessage)
       if (!lastMessage.agent) {
         socket.emit('message', {message: message, senderId: senderId, createdAt: new Date()})
       } else {
