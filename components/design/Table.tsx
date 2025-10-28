@@ -132,7 +132,7 @@ export const Table: React.FC<Props> = ({ content, services, index, payment, step
           {
             services?.find(service => service._id === content.service?.service)?.plans?.plans.length
               ? (
-                <div className={`${tableLoaded ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 overflow-x-auto w-full`} style={{ boxShadow: style.design === 'Sombreado' ? '0px 3px 20px 3px #11111110' : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', backgroundColor: content.info.image }}>
+                <div className={`${tableLoaded ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 overflow-x-auto w-full`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', backgroundColor: content.info.image }}>
                   <table className={`min-w-full table-auto rounded-xl`}>
                     <thead ref={tableRef}>
                       <tr>

@@ -787,7 +787,7 @@ export const Checkout: React.FC<Props> = ({ content, services, step, payment, st
                             }
                           </div>
                         </div>
-                        <div ref={refInformation} className={`${viewInformation ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 flex flex-col gap-4 sticky top-20 h-fit w-full p-6 md:p-8 md:w-2/5`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', color: content.info.textColor, backgroundColor: content.info.image }}>
+                        <div ref={refInformation} className={`${viewInformation ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 flex flex-col gap-4 sticky top-20 h-fit w-full p-6 md:p-8 md:w-2/5`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', color: content.info.textColor, backgroundColor: content.info.image }}>
                           {
                             content.service && content.service.service !== ''
                               ? (

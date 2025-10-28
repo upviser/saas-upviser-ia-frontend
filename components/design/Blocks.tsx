@@ -385,7 +385,7 @@ export const Blocks: React.FC<Props> = ({ content, index, style, storeData }) =>
                     ref={i === 0 ? block1Ref : i === 1 ? block2Ref : i === 2 ? block3Ref : i === 3 ? block4Ref : i === 4 ? block5Ref : i === 5 ? block6Ref : i === 6 ? block7Ref : i === 7 ? block8Ref : i === 8 ? block9Ref : i === 9 ? block10Ref : null}
                     className={`${i === 0 ? block1Loaded ? 'opacity-1' : 'opacity-0 translate-y-6' : i === 1 ? block2Loaded ? 'opacity-1' : 'opacity-0 translate-y-6' : i === 2 ? block3Loaded ? 'opacity-1' : 'opacity-0 translate-y-6' : i === 3 ? block4Loaded ? 'opacity-1' : 'opacity-0 translate-y-6' : i === 4 ? block5Loaded ? 'opacity-1' : 'opacity-0 translate-y-6' : i === 5 ? block6Loaded ? 'opacity-1' : 'opacity-0 translate-y-6' : i === 6 ? block7Loaded ? 'opacity-1' : 'opacity-0 translate-y-6' : i === 7 ? block8Loaded ? 'opacity-1' : 'opacity-0 translate-y-6' : i === 8 ? block9Loaded ? 'opacity-1' : 'opacity-0 translate-y-6' : i === 9 ? block10Loaded ? 'opacity-1' : 'opacity-0 translate-y-6' : ''} transition-all duration-500 flex flex-col p-6 w-full max-w-96 min-h-48 lg:min-h-56`}
                     style={{
-                      boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '',
+                      boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}` : '',
                       borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '',
                       border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '',
                       backgroundColor: content.info.image
@@ -394,7 +394,7 @@ export const Blocks: React.FC<Props> = ({ content, index, style, storeData }) =>
                     <div className='flex flex-col gap-2 m-auto'>
                       {
                         block.image && block.image !== ''
-                          ? <Image className='w-full sm:h-52' src={block.image} alt={`Imagen del bloque de ${block.title}`} width={1000} height={800} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }} />
+                          ? <Image className='w-full sm:h-52' src={block.image} alt={`Imagen del bloque de ${block.title}`} width={1000} height={800} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }} />
                           : ''
                       }
                       {block.title && block.title !== "" ? (

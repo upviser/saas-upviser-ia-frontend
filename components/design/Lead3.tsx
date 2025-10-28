@@ -514,7 +514,7 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
                     }
                   }
                 }}>
-                  <div className={`flex flex-col gap-4 h-fit m-auto w-full p-6 md:p-8 max-w-[500px]`} style={{ border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', boxShadow: style.design === 'Sombreado' ? '0px 3px 20px 3px #11111110' : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', backgroundColor: content.info.image && content.info.image !== '' ? content.info.image : '', color: content.info.textColor }}>
+                  <div className={`flex flex-col gap-4 h-fit m-auto w-full p-6 md:p-8 max-w-[500px]`} style={{ border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', backgroundColor: content.info.image && content.info.image !== '' ? content.info.image : '', color: content.info.textColor }}>
                     {
                       message !== ''
                         ? (

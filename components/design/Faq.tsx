@@ -151,7 +151,7 @@ export const Faq: React.FC<Props> = ({ content, index, style, services }) => {
                     className={`flex flex-col transition-all duration-500`}
                     style={{
                       padding: question === i ? "24px" : "24px 24px 12px",
-                      boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '',
+                      boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}` : '',
                       gap: question === i ? "16px" : "8px",
                       borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '',
                       border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '',
