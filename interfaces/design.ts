@@ -57,6 +57,7 @@ export interface IPage {
     bgType?: string
     bgAngle?: string
     bgImage?: string
+    textColor?: string
 
     createdAt?: Date
     updatedAt?: Date

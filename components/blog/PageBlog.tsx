@@ -1,12 +1,13 @@
-import { IPost } from '@/interfaces'
+import { Design, IPost } from '@/interfaces'
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { H1, H2 } from '../ui'
 
-export const PageBlog = ({ posts, style }: { posts: IPost[], style?: any }) => {
+export const PageBlog = ({ posts, style, design }: { posts: IPost[], style?: any, design: Design }) => {
+  const page = design.pages.find(page => page.page === 'Blog')
   return (
-    <div className="w-full flex p-4">
+    <div className="w-full flex p-4" style={{ background: page?.backgroundType === 'Color' ? page.bgColor : page?.backgroundType === 'Degradado' ? `${page.bgType === 'Lineal' ? 'linear' : 'radial'}-gradient(${page.bgType === 'Lineal' ? `${page.bgAngle}deg` : 'circle'}, ${page.bgColor1}, ${page.bgColor2})` : `url("${page?.bgImage}")`, backgroundSize: 'cover', color: page?.textColor }}>
       <div className="w-full max-w-[1280px] m-auto flex flex-col gap-4">
         <H1 text='Blog' />
         <H2 text='Ultimos posts' />
