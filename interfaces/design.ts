@@ -18,6 +18,8 @@ export interface IProductPage {
     title: string
     text: string
     design: IDesign[]
+    bgColor?: string
+    textColor?: string
 }
 
 export interface ICategoryPage {

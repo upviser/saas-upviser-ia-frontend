@@ -12,15 +12,15 @@ export const Resume = ({ cart, sell, style, design, setSell, coupon, setCoupon, 
   const [loading, setLoading] = useState(false)
 
   return (
-    <div className='w-5/12 h-fit p-6 hidden sticky top-28 bg-gray-50 xl:block' style={{ borderRadius: style?.form === 'Redondeadas' ? `${style?.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', backgroundColor: design.checkoutPage.detailsColor }}>
-      <div className='mb-2 flex flex-col gap-2 pb-2 border-b'>
+    <div className='w-5/12 h-fit p-6 hidden sticky top-28 xl:block' style={{ borderRadius: style?.form === 'Redondeadas' ? `${style?.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', backgroundColor: design.checkoutPage.detailsColor }}>
+      <div className='mb-2 flex flex-col gap-2 pb-2' style={{ borderBottom: `1px solid ${style.borderColor}` }}>
         <h2 className='font-medium text-xl sm:text-3xl'>Carrito</h2>
         {
           cart?.length !== 0
             ? cart?.map(product => (
               <div className='flex gap-2 justify-between mb-2' key={product._id}>
                 <div className='flex gap-2'>
-                  <Image className='w-20 h-auto border p-1' style={{ borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '' }} src={product.image!} alt={product.name} width={80} height={80} />
+                  <Image className='w-20 h-auto p-1' style={{ borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '', border: `1px solid ${style.borderColor}` }} src={product.image!} alt={product.name} width={80} height={80} />
                   <div className='mt-auto mb-auto'>
                     <span className='block font-medium'>{product.name.toLocaleUpperCase()}</span>
                     <span className='block'>Cantidad: {product.quantity}</span>
@@ -44,10 +44,10 @@ export const Resume = ({ cart, sell, style, design, setSell, coupon, setCoupon, 
             : ''
         }
       </div>
-      <div className='mb-2 flex flex-col gap-2 pb-3 border-b'>
+      <div className='mb-2 flex flex-col gap-2 pb-3' style={{ borderBottom: `1px solid ${style.borderColor}` }}>
         <h2 className='font-medium text-xl sm:text-3xl'>Cupon de descuento</h2>
         <div className='flex gap-2'>
-          <Input inputChange={(e: any) => {
+          <Input bgColor={design.checkoutPage.detailsColor} inputChange={(e: any) => {
             setSell({ ...sell, coupon: e.target.value })
             sellRef.current = { ...sell, coupon: e.target.value }
           }} value={sell.coupon} type={'text'} placeholder={'Cupon'} text='text-sm' style={style} />
@@ -81,7 +81,7 @@ export const Resume = ({ cart, sell, style, design, setSell, coupon, setCoupon, 
           }} style={style} loading={loading} config='min-w-28'>Agregar</Button>
         </div>
       </div>
-      <div className='mb-2 pb-2 border-b'>
+      <div className='mb-2 pb-2' style={{ borderBottom: `1px solid ${style.borderColor}` }}>
         <div className='flex gap-2 justify-between mb-1'>
           <span className='text-[14px]'>Subtotal</span>
           <span className='text-[14px]'>${NumberFormat(sell.total - sell.shipping)}</span>

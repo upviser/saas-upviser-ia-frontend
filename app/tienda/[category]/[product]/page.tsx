@@ -190,8 +190,8 @@ export default async function ({ params }: { params: { product: string } }) {
   const [product, design, products, categories, calls, forms, services, storeData, payment, style, integrations, domain] = await Promise.all([productData, designData, productsData, categoriesData, callsData, formsData, servicesData, storeDataData, paymentData, styleData, integrationsData, domainData])
 
   return (
-    <div className="flex flex-col" style={{ background: design?.productPage[0].backgroundType === 'Color' ? design?.productPage[0].bgColor : design?.productPage[0].backgroundType === 'Degradado' ? `${design?.productPage[0].bgType === 'Lineal' ? 'linear' : 'radial'}-gradient(${design?.productPage[0].bgType === 'Lineal' ? `${design?.productPage[0].bgAngle}deg` : 'circle'}, ${design?.productPage[0].bgColor1}, ${design?.productPage[0].bgColor2})` : '', backgroundImage: `url("${design?.productPage[0].bgImage}")`, backgroundSize: 'cover' }}>
-      <PageProduct product={product} design={design} products={products} categories={categories} style={style} integrations={integrations} />
+    <div className="flex flex-col" style={{ background: design?.productPage[0].bgColor, color: design.productPage[0].textColor }}>
+      <PageProduct product={product} design={design} products={products} categories={categories} style={style} integrations={integrations} tenantId={tenantId} />
       {
         design?.productPage[0].design?.map((content: any, index: any) => {
           if (content.content === 'Carrusel') {
@@ -209,7 +209,7 @@ export default async function ({ params }: { params: { product: string } }) {
           } else if (content.content === 'Contacto') {
             return <ContactPage key={content.content} info={content.info} index={index} style={style} tenantId={tenantId} />
           } else if (content.content === 'Suscripción') {
-            return <Subscribe key={content.content} info={ content.info } style={style} tenantId={tenantId} />
+            return <Subscribe key={content.content} info={ content.info } style={style} tenantId={tenantId} page={design?.productPage[0]} />
           } else if (content.content === 'Lead 1') {
             return <Lead1 key={content.content} content={content} forms={forms} index={index} services={services} style={style} domain={domain} tenantId={tenantId} />
           } else if (content.content === 'Video') {

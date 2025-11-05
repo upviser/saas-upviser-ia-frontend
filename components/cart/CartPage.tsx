@@ -28,11 +28,11 @@ const CartPage = ({ design, products, style, storeData }: { design: Design, prod
   }, [products])
 
   return (
-    <>
+    <div style={{ backgroundColor: design.cartPage.bgColor, color: design.cartPage.textColor }}>
       <Head>
         <title>Carrito</title>
       </Head>
-      <div className='p-4 flex' style={{ backgroundColor: design.cartPage.bgColor, color: design.cartPage.textColor }}>
+      <div className='p-4 flex'>
         <div className='m-auto w-[1280px] flex flex-col gap-4'>
           <h1 className='text-2xl sm:text-4xl font-medium'>Carrito</h1>
           <div className='flex gap-4 xl:gap-8 flex-col xl:flex-row'>
@@ -84,9 +84,9 @@ const CartPage = ({ design, products, style, storeData }: { design: Design, prod
                 ? (
                   <div className='w-full xl:w-5/12'>
                     <div className='p-6 450:p-6' style={{ borderRadius: style?.form === 'Redondeadas' ? `${style?.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', backgroundColor: design.cartPage.detailsColor }}>
-                      <div className='mb-2 pb-2 border-b'>
-                        <div className='mb-4 border-b pb-4'>
-                          <ShippingCart setShippingCost={setShippingCost} style={style} storeData={storeData} />
+                      <div className='mb-2 pb-2' style={{ borderBottom: `1px solid ${style.borderColor}` }}>
+                        <div className='mb-4 pb-4' style={{ borderBottom: `1px solid ${style.borderColor}` }}>
+                          <ShippingCart design={design} setShippingCost={setShippingCost} style={style} storeData={storeData} />
                         </div>
                         <div className='flex gap-2 justify-between mb-1'>
                           <span className='text-[14px]'>Subtotal</span>
@@ -125,7 +125,7 @@ const CartPage = ({ design, products, style, storeData }: { design: Design, prod
             ? <ProductList products={ productsFiltered } title='Productos recomendados' style={style} />
             : ''
       }
-    </>
+    </div>
   )
 }
 

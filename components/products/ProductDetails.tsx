@@ -1,5 +1,5 @@
 import React from 'react'
-import { ICartProduct, IProduct, ITypeVariation } from '../../interfaces'
+import { Design, ICartProduct, IProduct, ITypeVariation } from '../../interfaces'
 import { NumberFormat } from '../../utils'
 import { ButtonAddToCart, ButtonNone, Select } from '../ui'
 import Image from 'next/image'
@@ -12,9 +12,10 @@ interface Props {
   setPopup: any
   style: any
   liveData: { stock: string, price: string, beforePrice: string, variations: ITypeVariation }
+  design: Design
 }
 
-export const ProductDetails: React.FC<Props> = ({ product, tempCartProduct, setTempCartProduct, popup, setPopup, style, liveData }) => {
+export const ProductDetails: React.FC<Props> = ({ product, tempCartProduct, setTempCartProduct, popup, setPopup, style, liveData, design }) => {
 
   const onUpdateQuantity = ( quantity: number ) => {
     setTempCartProduct( (currentProduct: any) => ({
@@ -58,7 +59,7 @@ export const ProductDetails: React.FC<Props> = ({ product, tempCartProduct, setT
   }
 
   return (
-      <div className='m-auto p-4 block bg-white gap-2 w-full border-t justify-around sm:flex'>
+      <div className='m-auto p-4 block gap-2 w-full justify-around sm:flex' style={{ backgroundColor: design.productPage[0].bgColor, borderTop: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }}>
         <div className='flex mb-2 justify-around gap-2 sm:mb-0'>
           <Image className='w-20 h-20 mt-auto mb-auto' style={{ borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '' }} src={ tempCartProduct.image && tempCartProduct.image !== '' ? tempCartProduct.image : product?.images[0]} alt={product.name} width={80} height={80} />
           <div className='mt-auto mb-auto'>
@@ -75,7 +76,7 @@ export const ProductDetails: React.FC<Props> = ({ product, tempCartProduct, setT
               liveData.variations.variations.length
                 ? product.variations?.variations.length
                   ? product.variations.variations[0].variation !== ''
-                    ? <Select style={style} selectChange={selectVariation} value={tempCartProduct.variation?.variation ? tempCartProduct.variation.subVariation ? tempCartProduct.variation.subVariation2 ? `${tempCartProduct.variation?.variation} / ${tempCartProduct.variation.subVariation} / ${tempCartProduct.variation.subVariation2}` : `${tempCartProduct.variation?.variation} / ${tempCartProduct.variation.subVariation}` : tempCartProduct.variation?.variation : 'Seleccionar variación'}>
+                    ? <Select bgColor={design.productPage[0].bgColor} style={style} selectChange={selectVariation} value={tempCartProduct.variation?.variation ? tempCartProduct.variation.subVariation ? tempCartProduct.variation.subVariation2 ? `${tempCartProduct.variation?.variation} / ${tempCartProduct.variation.subVariation} / ${tempCartProduct.variation.subVariation2}` : `${tempCartProduct.variation?.variation} / ${tempCartProduct.variation.subVariation}` : tempCartProduct.variation?.variation : 'Seleccionar variación'}>
                         <option>Seleccionar variación</option>
                         {
                           product.variations.variations.map(variation => (
@@ -86,7 +87,7 @@ export const ProductDetails: React.FC<Props> = ({ product, tempCartProduct, setT
                     : ''
                   : ''
                 : liveData.variations.variations[0]?.variation && liveData.variations.variations[0].variation !== ''
-                    ? <Select style={style} selectChange={selectVariation} value={tempCartProduct.variation?.variation ? tempCartProduct.variation.subVariation ? tempCartProduct.variation.subVariation2 ? `${tempCartProduct.variation?.variation} / ${tempCartProduct.variation.subVariation} / ${tempCartProduct.variation.subVariation2}` : `${tempCartProduct.variation?.variation} / ${tempCartProduct.variation.subVariation}` : tempCartProduct.variation?.variation : 'Seleccionar variación'}>
+                    ? <Select bgColor={design.productPage[0].bgColor} style={style} selectChange={selectVariation} value={tempCartProduct.variation?.variation ? tempCartProduct.variation.subVariation ? tempCartProduct.variation.subVariation2 ? `${tempCartProduct.variation?.variation} / ${tempCartProduct.variation.subVariation} / ${tempCartProduct.variation.subVariation2}` : `${tempCartProduct.variation?.variation} / ${tempCartProduct.variation.subVariation}` : tempCartProduct.variation?.variation : 'Seleccionar variación'}>
                         <option>Seleccionar variación</option>
                         {
                           liveData.variations.variations.map(variation => (

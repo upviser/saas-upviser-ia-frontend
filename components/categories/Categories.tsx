@@ -48,10 +48,10 @@ export default function Categories({ categories, style, content }: { categories:
       color: content.info.textColor
     }}>
       <div ref={titleRef} className={`${titleLoaded ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 max-w-[1280px] m-auto flex gap-4`}>
-        <Link className={`transition-colors duration-200 py-1 px-4 border`} style={{ border: pathname === '/tienda' ? `1px solid ${style?.primary}` : '', borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '' }} href='/tienda'>Todos los productos</Link>
+        <Link className={`transition-colors duration-200 py-1 px-4 border`} style={{ border: pathname === '/tienda' ? `1px solid ${style?.primary}` : `1px solid ${style.borderColor}`, borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '' }} href='/tienda'>Todos los productos</Link>
         {
           categories.map(category => (
-            <Link key={category._id} className={`py-1 px-4 border transition-colors duration-200`} style={{ border: pathname === `/tienda/${category.slug}` ? `1px solid ${style?.primary}` : '', borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '' }} href={`/tienda/${category.slug}`}>{ category.category }</Link>
+            <Link key={category._id} className={`py-1 px-4 border transition-colors duration-200`} style={{ border: pathname === `/tienda/${category.slug}` ? `1px solid ${style?.primary}` : `1px solid ${style.borderColor}`, borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '' }} href={`/tienda/${category.slug}`}>{ category.category }</Link>
           ))
         }
       </div>

@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react'
 import { Button, H3, Input } from '../ui'
-import { ISell } from '@/interfaces'
+import { Design, ISell } from '@/interfaces'
 import axios from 'axios'
 import { getClientTenantId } from '@/utils'
 
@@ -16,9 +16,10 @@ interface Props {
     sell: ISell
     style?: any
     session: any
+    design: Design
 }
 
-export const EditData: React.FC<Props> = ({ contactMouse, setContactOpacity, setContactView, contactView, contactOpacity, setContactMouse, inputChange, sell, style, session }) => {
+export const EditData: React.FC<Props> = ({ contactMouse, setContactOpacity, setContactView, contactView, contactOpacity, setContactMouse, inputChange, sell, style, session, design }) => {
   
   const [loading, setLoading] = useState(false)
   
@@ -31,23 +32,23 @@ export const EditData: React.FC<Props> = ({ contactMouse, setContactOpacity, set
         }, 200)
       }
     }} className={`${contactView} ${contactOpacity} transition-opacity px-4 duration-200 w-full h-full fixed top-0 z-50 bg-black/30`}>
-      <div onMouseEnter={() => setContactMouse(true)} onMouseLeave={() => setContactMouse(false)} className={`${contactOpacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 m-auto p-6 bg-white flex flex-col gap-4 rounded-xl max-w-[500px] w-full`}>
+      <div onMouseEnter={() => setContactMouse(true)} onMouseLeave={() => setContactMouse(false)} className={`${contactOpacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 m-auto p-6 flex flex-col gap-4 rounded-xl max-w-[500px] w-full`} style={{ backgroundColor: design.checkoutPage.bgColor, color: design.checkoutPage.textColor }}>
         <H3 text='Editar datos de contacto' />
         <div className='flex gap-2'>
           <div className='flex flex-col w-1/2 gap-2'>
             <p className='text-sm'>Nombre</p>
-            <Input placeholder='Nombre' name='firstName' inputChange={inputChange} value={sell.firstName} style={style} />
+            <Input bgColor={design.checkoutPage.bgColor} placeholder='Nombre' name='firstName' inputChange={inputChange} value={sell.firstName} style={style} />
           </div>
           <div className='flex flex-col w-1/2 gap-2'>
             <p className='text-sm'>Apellido</p>
-            <Input placeholder='Apellido' name='lastName' inputChange={inputChange} value={sell.lastName} style={style} />
+            <Input bgColor={design.checkoutPage.bgColor} placeholder='Apellido' name='lastName' inputChange={inputChange} value={sell.lastName} style={style} />
           </div>
         </div>
         <div className='flex flex-col gap-2'>
           <p className='text-sm'>Teléfono</p>
           <div className='flex gap-2'>
             <span className='mt-auto mb-auto text-sm'>+56</span>
-            <Input placeholder='Teléfono' name='phone' inputChange={inputChange} value={sell.phone} style={style} />
+            <Input bgColor={design.checkoutPage.bgColor} placeholder='Teléfono' name='phone' inputChange={inputChange} value={sell.phone} style={style} />
           </div>
         </div>
         <Button action={async (e: any) => {

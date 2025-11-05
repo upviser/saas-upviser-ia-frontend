@@ -7,6 +7,7 @@ import { Spinner2 } from './Spinner2'
 import Link from 'next/link'
 import { Button, H3, Input } from '.'
 import { getClientTenantId } from '@/utils'
+import { Design } from '@/interfaces'
 
 interface Props {
     account: any
@@ -15,9 +16,10 @@ interface Props {
     setAccountView: any
     setAccountPosition: any
     style?: any
+    design: Design | undefined
 }
 
-export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountPc, setAccountView, setAccountPosition, style }) => {
+export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountPc, setAccountView, setAccountPosition, style, design }) => {
 
   const [login, setLogin] = useState({
     email: '',
@@ -100,7 +102,7 @@ export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountP
   }
 
   return (
-    <div onMouseEnter={() => setAccountPc(false)} onMouseLeave={() => setAccountPc(true)} className={`ml-auto flex flex-col gap-3 p-4 bg-white z-40 w-full sm:w-96`} style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '' }}>
+    <div onMouseEnter={() => setAccountPc(false)} onMouseLeave={() => setAccountPc(true)} className={`ml-auto flex flex-col gap-3 p-4 z-40 w-full sm:w-96`} style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', backgroundColor: design?.header?.bgColor && design?.header?.bgColor !== '' ? design?.header.bgColor : '#ffffff', color: design?.header?.textColor && design?.header?.textColor !== '' ? design?.header?.textColor : '#111111' }}>
       {
         error !== ''
           ? (
@@ -110,7 +112,7 @@ export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountP
           )
           : ''
       }
-      <h3 className='text-center border-b pb-2'>Cuenta</h3>
+      <h3 className='text-center pb-2' style={{ borderBottom: style?.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }}>Cuenta</h3>
       {
         status === 'authenticated'
           ? (
@@ -120,7 +122,7 @@ export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountP
                 setTimeout(() => {
                   setAccountView('hidden')
                 }, 500)
-              }} className='p-1.5 hover:bg-neutral-100 rounded-md transition-colors duration-100'>Ver mi cuenta</Link>
+              }} className='p-1.5 rounded-md'>Ver mi cuenta</Link>
               <Button action={handleLogout} style={style} loading={closeLoading} config='w-full'>Cerrar sesion</Button>
             </>
           )
@@ -130,11 +132,11 @@ export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountP
                 <button onClick={(e: any) => {
                   e.preventDefault()
                   setAccount('Ingresar')
-                }} className={`${account === 'Ingresar' ? 'border-neutral-700' : 'border-white'} border-b-2 w-1/2 h-10 text-sm lg:text-[16px]`}>Ingresar</button>
+                }} className={`w-1/2 h-10 text-sm lg:text-[16px]`} style={{ borderBottom: account === 'Ingresar' ? `2px solid ${style?.borderColor}` : `2px solid ${design?.header?.bgColor}` }}>Ingresar</button>
                 <button onClick={(e: any) => {
                   e.preventDefault()
                   setAccount('Registrarse')
-                }} className={`${account === 'Registrarse' ? 'border-neutral-700' : 'border-white'} border-b-2 w-1/2 h-10 text-sm lg:text-[16px]`}>Registrarse</button>
+                }} className={`w-1/2 h-10 text-sm lg:text-[16px]`} style={{ borderBottom: account === 'Registrarse' ? `2px solid ${style?.borderColor}` : `2px solid ${design?.header?.bgColor}` }}>Registrarse</button>
               </div>
               {
                 account === 'Ingresar'
@@ -142,11 +144,11 @@ export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountP
                     <form onSubmit={loginHandleSubmit} className='flex flex-col gap-3'>
                       <div className='flex flex-col gap-2'>
                         <p className='text-sm'>Email</p>
-                        <Input placeholder='Email' inputChange={(e: ChangeEvent<HTMLInputElement>) => setLogin({ ...login, email: e.target.value })} style={style} value={login.email} />
+                        <Input bgColor={design?.header?.bgColor} placeholder='Email' inputChange={(e: ChangeEvent<HTMLInputElement>) => setLogin({ ...login, email: e.target.value })} style={style} value={login.email} />
                       </div>
                       <div className='flex flex-col gap-2'>
                         <p className='text-sm'>Contraseña</p>
-                        <Input type='password' placeholder='*******' inputChange={(e: ChangeEvent<HTMLInputElement>) => setLogin({...login, password: e.target.value})} style={style} value={login.password} />
+                        <Input bgColor={design?.header?.bgColor} type='password' placeholder='*******' inputChange={(e: ChangeEvent<HTMLInputElement>) => setLogin({...login, password: e.target.value})} style={style} value={login.password} />
                       </div>
                       <Button type='submit' loading={loginLoading} style={style} config='w-full'>Ingresar</Button>
                       <Link href='/' className='text-sm'>Olvide mi contraseña</Link>
@@ -157,23 +159,23 @@ export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountP
                       <div className='flex flex-col gap-3 overflow-y-auto max-h-52'>
                         <div className='flex flex-col gap-2'>
                           <p className='text-sm'>Nombre</p>
-                          <Input placeholder='Nombre' inputChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({ ...register, firstName: e.target.value })} style={style} value={register.firstName} />
+                          <Input bgColor={design?.header?.bgColor} placeholder='Nombre' inputChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({ ...register, firstName: e.target.value })} style={style} value={register.firstName} />
                         </div>
                         <div className='flex flex-col gap-2'>
                           <p className='text-sm'>Apellido</p>
-                          <Input placeholder='Apellido' inputChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({...register, lastName: e.target.value})} style={style} value={register.lastName} />
+                          <Input bgColor={design?.header?.bgColor} placeholder='Apellido' inputChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({...register, lastName: e.target.value})} style={style} value={register.lastName} />
                         </div>
                         <div className='flex flex-col gap-2'>
                           <p className='text-sm'>Email</p>
-                          <Input placeholder='Email' inputChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({...register, email: e.target.value})} style={style} value={register.email} />
+                          <Input bgColor={design?.header?.bgColor} placeholder='Email' inputChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({...register, email: e.target.value})} style={style} value={register.email} />
                         </div>
                         <div className='flex flex-col gap-2'>
                           <p className='text-sm'>Contraseña</p>
-                          <Input type='password' placeholder='*******' inputChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({...register, password: e.target.value})} style={style} value={register.password} />
+                          <Input bgColor={design?.header?.bgColor} type='password' placeholder='*******' inputChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({...register, password: e.target.value})} style={style} value={register.password} />
                         </div>
                         <div className='flex flex-col gap-2'>
                           <p className='text-sm'>Confirmar contraseña</p>
-                          <Input type='password' placeholder='*******' inputChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({...register, confirmPassrword: e.target.value})} style={style} value={register.confirmPassrword} />
+                          <Input bgColor={design?.header?.bgColor} type='password' placeholder='*******' inputChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({...register, confirmPassrword: e.target.value})} style={style} value={register.confirmPassrword} />
                         </div>
                         <div className='flex gap-2'>
                           <input type='checkbox' checked={register.marketing} onChange={(e: ChangeEvent<HTMLInputElement>) => setRegister({ ...register, marketing: e.target.checked ? true : false })} />

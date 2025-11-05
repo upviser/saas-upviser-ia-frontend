@@ -21,11 +21,11 @@ interface Props {
   design: Design
   integrations: any
   domain: any
+  tenantId: string
 }
 
-export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, payment, design, integrations, domain }) => {
+export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, payment, design, integrations, domain, tenantId }) => {
 
-  const { apiClient } = useApiClient()
   const {cart, setCart} = useContext(CartContext)
   
   const [sell, setSell] = useState<ISell>({
@@ -95,8 +95,16 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
 
   const getClientData = async () => {
     if (status === 'authenticated') {
-      const resp = await apiClient.get('/chilexpress')
-      const response = await apiClient.get(`/client-email/${session?.user?.email}`)
+      const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chilexpress`, {
+        headers: {
+          'x-tenant-id': tenantId
+        }
+      })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/client-email/${session?.user?.email}`, {
+        headers: {
+          'x-tenant-id': tenantId
+        }
+      })
       const data: IClient = response.data
       if (data) {
         setSell({...sell, address: data.address ? data.address : '', number: data.number ? data.number : '', city: data.city ? data.city : '', email: data.email, firstName: data.firstName ? data.firstName : '', lastName: data.lastName ? data.lastName : '', phone: data.phone ? Number(data.phone) : undefined, region: data.region ? data.region : '', total: cart?.reduce((bef: any, curr: any) => bef + curr.price * curr.quantity, 0), cart: cart!})
@@ -165,7 +173,11 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
         }
       }
     }
-    const res = await apiClient.post('/information', { cart: cart, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc') })
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/information`, { cart: cart, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc') }, {
+      headers: {
+        'x-tenant-id': tenantId
+      }
+    })
     if (typeof fbq === 'function') {
       fbq('track', 'InitiateCheckout', {contents: cart?.map(product => ({ id: product._id, quantity: product.quantity, category: product.category.category, item_price: product.price, title: product.name })), currency: "clp", value: cart!.reduce((bef, curr) => curr.quantityOffers?.length ? offer(curr) : bef + curr.price * curr.quantity, 0) + Number(sell.shipping), content_ids: cart?.map(product => product._id), event_id: res.data._id})
     }
@@ -195,7 +207,11 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
         amount: sell.total,
         returnUrl: `https://${domain.domain}/procesando-pago`
       }
-      const response = await apiClient.post('/pay/create', pago)
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/pay/create`, pago, {
+        headers: {
+          'x-tenant-id': tenantId
+        }
+      })
       setToken(response.data.token)
       setUrl(response.data.url)
     } else if (e.target.name === 'pay' && e.target.value === 'MercadoPagoPro') {
@@ -204,7 +220,7 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
         products = products.concat({ title: product.name, unit_price: product.price, quantity: product.quantity })
       })
       products = products.concat({ title: 'Envío', unit_price: Number(sell.shipping), quantity: 1 })
-      const res = await apiClient.post('/mercado-pago-create', products)
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/mercado-pago-create`, products)
       setLink(res.data.init_point)
     }
   }
@@ -215,8 +231,8 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
         ((chilexpress.active && chilexpress.coberturaKey !== '' && chilexpress.cotizadorKey !== '' && chilexpress.enviosKey !== '' && chilexpress.cardNumber !== '') && ((payment.transbank.active && payment.transbank.commerceCode !== '' && payment.transbank.apiKey !== '') || (payment.mercadoPago.active && payment.mercadoPago.accessToken !== '' && payment.mercadoPago.publicKey !== ''))) && storeData?.locations?.length && storeData.locations[0].countyCoverageCode !== '' && storeData.locations[0].streetName !== '' && storeData.locations[0].streetNumber !== '' && storeData.nameContact !== ''
           ? (
             <div style={{ backgroundColor: design.checkoutPage.bgColor, color: design.checkoutPage.textColor }}>
-              <EditData contactMouse={contactMouse} setContactOpacity={setContactOpacity} setContactView={setContactView} contactView={contactView} contactOpacity={contactOpacity} setContactMouse={setContactMouse} inputChange={inputChange} sell={sell} style={style} session={session} />
-              <EditShipping shippingMouse={shippingMouse} setShippingOpacity={setShippingOpacity} setShippingView={setShippingView} shippingView={shippingView} shippingOpacity={shippingOpacity} setShippingMouse={setShippingMouse} sell={sell} inputChange={inputChange} setSell={setSell} setShipping={setShipping} chilexpress={chilexpress} style={style} sellRef={sellRef} session={session} setDest={setDest} />
+              <EditData design={design} contactMouse={contactMouse} setContactOpacity={setContactOpacity} setContactView={setContactView} contactView={contactView} contactOpacity={contactOpacity} setContactMouse={setContactMouse} inputChange={inputChange} sell={sell} style={style} session={session} />
+              <EditShipping shippingMouse={shippingMouse} setShippingOpacity={setShippingOpacity} setShippingView={setShippingView} shippingView={shippingView} shippingOpacity={shippingOpacity} setShippingMouse={setShippingMouse} sell={sell} inputChange={inputChange} setSell={setSell} setShipping={setShipping} chilexpress={chilexpress} style={style} sellRef={sellRef} session={session} setDest={setDest} design={design} />
               <ResumePhone cart={cart} sell={sell} style={style} design={design} setSell={setSell} coupon={coupon} setCoupon={setCoupon} sellRef={sellRef} />
               <div className='mt-28 flex p-4 xl:mt-0'>
                 <form className='w-[1280px] m-auto block xl:flex' id='formBuy'>

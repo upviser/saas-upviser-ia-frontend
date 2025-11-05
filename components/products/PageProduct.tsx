@@ -9,7 +9,7 @@ import { H2 } from "../ui"
 
 declare const fbq: Function
 
-export default function PageProduct ({ product, design, products, categories, style, integrations }: { product: IProduct, design: Design, products: IProduct[], categories: ICategory[], style: any, integrations: any }) {
+export default function PageProduct ({ product, design, products, categories, style, integrations, tenantId }: { product: IProduct, design: Design, products: IProduct[], categories: ICategory[], style: any, integrations: any , tenantId: string }) {
 
   const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
     _id: product._id,
@@ -29,7 +29,6 @@ export default function PageProduct ({ product, design, products, categories, st
   const [popup, setPopup] = useState({ view: 'hidden', opacity: 'opacity-0', mouse: false })
 
   const viewContent = async () => {
-    const tenantId = await getClientTenantId()
     const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/view-content`, { product: product, fbp: Cookies.get('_fbp'), fbc: Cookies.get('_fbc') }, {
       headers: {
         'x-tenant-id': tenantId,
@@ -94,7 +93,7 @@ export default function PageProduct ({ product, design, products, categories, st
         product?.stock > 0
           ? (
             <div className={`${detailsPosition} flex transition-all duration-500 decoration-slate-200 fixed w-full z-30`}>
-              <ProductDetails product={product} setTempCartProduct={setTempCartProduct} tempCartProduct={tempCartProduct} popup={popup} setPopup={setPopup} style={style} liveData={liveData} />
+              <ProductDetails product={product} setTempCartProduct={setTempCartProduct} tempCartProduct={tempCartProduct} popup={popup} setPopup={setPopup} style={style} liveData={liveData} design={design} />
             </div>
           )
           : ''

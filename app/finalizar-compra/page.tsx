@@ -98,6 +98,6 @@ export default async function Page () {
   const [storeData, chilexpress, style, payment, design, integrations, domain] = await Promise.all([storeDataData, chilexpressData, styleData, paymentData, designData, integrationsData, domainData])
 
   return (
-    <CheckoutPage storeData={storeData} chilexpress={chilexpress} style={style} payment={payment} design={design} integrations={integrations} domain={domain} />
+    <CheckoutPage storeData={storeData} chilexpress={chilexpress} style={style} payment={payment} design={design} integrations={integrations} domain={domain} tenantId={tenantId} />
   )
 }

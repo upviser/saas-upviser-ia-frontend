@@ -190,7 +190,7 @@ export default async function CategoryPage({ params }: { params: { category: str
   const [categories, productsCategory, design, calls, forms, services, storeData, payment, style, integrations, domain] = await Promise.all([categoriesData, productsCategoryData, designData, callsData, formsData, servicesData, storeDataData, paymentData, styleData, integrationsData, domainData])
 
   return (
-    <div className="flex flex-col" style={{ background: design?.categoryPage[0].backgroundType === 'Color' ? design?.categoryPage[0].bgColor : design?.categoryPage[0].backgroundType === 'Degradado' ? `${design?.categoryPage[0].bgType === 'Lineal' ? 'linear' : 'radial'}-gradient(${design?.categoryPage[0].bgType === 'Lineal' ? `${design?.categoryPage[0].bgAngle}deg` : 'circle'}, ${design?.categoryPage[0].bgColor1}, ${design?.categoryPage[0].bgColor2})` : '', backgroundImage: `url("${design?.categoryPage[0].bgImage}")`, backgroundSize: 'cover' }}>
+    <div className="flex flex-col" style={{ backgroundColor: design?.categoryPage[0].bgColor, color: design?.categoryPage[0].textColor }}>
       {
         design?.categoryPage[0].design?.map((content: any, index: any) => {
           if (content.content === 'Carrusel') {
@@ -208,7 +208,7 @@ export default async function CategoryPage({ params }: { params: { category: str
           } else if (content.content === 'Contacto') {
             return <ContactPage key={content.content} info={content.info} index={index} style={style} tenantId={tenantId} />
           } else if (content.content === 'Suscripción') {
-            return <Subscribe key={content.content} info={ content.info } style={style} tenantId={tenantId} />
+            return <Subscribe key={content.content} info={ content.info } style={style} tenantId={tenantId} page={design?.categoryPage[0]} />
           } else if (content.content === 'Lead 1') {
             return <Lead1 key={content.content} content={content} forms={forms} index={index} services={services} style={style} domain={domain} tenantId={tenantId} />
           } else if (content.content === 'Video') {

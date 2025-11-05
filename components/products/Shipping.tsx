@@ -17,9 +17,10 @@ interface Props {
   setDest?: any
   streets?: any
   setStreets?: any
+  bgColor: string
 }
 
-export const Shipping: React.FC<Props> = ({ setShipping, sell, setSell, chilexpress, style, sellRef, dest, setDest, streets, setStreets }) => {
+export const Shipping: React.FC<Props> = ({ setShipping, sell, setSell, chilexpress, style, sellRef, dest, setDest, streets, setStreets, bgColor }) => {
 
   const [regions, setRegions] = useState<Region[]>()
   const [citys, setCitys] = useState<City[]>()
@@ -112,7 +113,7 @@ export const Shipping: React.FC<Props> = ({ setShipping, sell, setSell, chilexpr
     <div className='flex gap-2 w-full flex-col sm:flex-row'>
       <div className='flex flex-col gap-2 w-full sm:w-1/2'>
         <p className='text-sm'>Región</p>
-        <Select selectChange={regionChange} style={style}>
+        <Select bgColor={bgColor} selectChange={regionChange} style={style}>
           <option>Seleccionar Región</option>
           {
           regions !== undefined
@@ -123,7 +124,7 @@ export const Shipping: React.FC<Props> = ({ setShipping, sell, setSell, chilexpr
       </div>
       <div className='flex flex-col gap-2 w-full sm:w-1/2'>
         <p className='text-sm'>Ciudad</p>
-        <Select selectChange={cityChange} style={style}>
+        <Select bgColor={bgColor} selectChange={cityChange} style={style}>
           <option>Seleccionar Ciudad</option>
           {
             citys !== undefined

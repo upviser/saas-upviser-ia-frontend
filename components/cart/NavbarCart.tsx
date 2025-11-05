@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React, { useContext } from 'react'
-import { ICartProduct, ICategory } from '../../interfaces'
+import { Design, ICartProduct, ICategory } from '../../interfaces'
 import { NumberFormat, offer } from '../../utils'
 import CartContext from '../../context/cart/CartContext'
 import Image from 'next/image'
@@ -16,9 +16,10 @@ interface Props {
   cartRef: any
   categories?: ICategory[]
   style: any
+  design: Design | undefined
 }
 
-export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPosition, cartRef, categories, style }) => {
+export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPosition, cartRef, categories, style, design }) => {
 
   const {cart, setCart} = useContext(CartContext)
 
@@ -27,8 +28,10 @@ export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPos
   const user = session?.user as { firstName: string, lastName: string, email: string, _id: string, cart?: ICartProduct[] }
 
   return (
-    <div ref={cartRef} onMouseEnter={() => setCartPc(false)} onMouseLeave={() => setCartPc(true)} onMouseMove={() => setCartPc(true)} className={`ml-auto flex flex-col gap-3 p-4 shadow-md bg-white z-40 w-[360px]`} style={{ height: 'calc(100vh - 49px)' }}>
-      <H3 config='border-b text-center pb-2 font-medium' text='Carrito' />
+    <div ref={cartRef} onMouseEnter={() => setCartPc(false)} onMouseLeave={() => setCartPc(true)} onMouseMove={() => setCartPc(true)} className={`ml-auto flex flex-col gap-3 p-4 z-40 w-[360px]`} style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', height: 'calc(100vh - 49px)', backgroundColor: design?.header?.bgColor && design?.header?.bgColor !== '' ? design?.header.bgColor : '#ffffff', color: design?.header?.textColor && design?.header?.textColor !== '' ? design?.header?.textColor : '#111111' }}>
+      <div className='pb-2' style={{ borderBottom: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }}>
+        <H3 config='text-center font-medium' text='Carrito' />
+      </div>
       {
         cart?.length
           ? <>
@@ -51,7 +54,7 @@ export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPos
                         setTimeout(() => {
                           setCartView('hidden')
                         }, 500)
-                      }}><p className='text-sm lg:text-[16px] text-[#1B1B1B] font-medium dark:text-neutral-100'>{product.name}</p></Link>
+                      }}><p className='text-sm lg:text-[16px] font-medium'>{product.name}</p></Link>
                       <div className='flex gap-1 mb-1'>
                         {
                           product.quantityOffers && product.quantity > 1
@@ -60,7 +63,7 @@ export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPos
                         }
                         {
                           product.beforePrice
-                            ? <span className='text-sm line-through text-[#444444] dark:text-neutral-400'>${NumberFormat(product.beforePrice * product.quantity)}</span>
+                            ? <span className='text-sm line-through'>${NumberFormat(product.beforePrice * product.quantity)}</span>
                             : ''
                         }
                       </div>
@@ -77,11 +80,11 @@ export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPos
                               setCart(JSON.parse(localStorage.getItem('cart')!))
                               if (status === 'authenticated') {
                                 const tenantId = await getClientTenantId()
-await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
-  headers: {
-    'x-tenant-id': tenantId,
-  }
-})
+                                await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+                                  headers: {
+                                    'x-tenant-id': tenantId,
+                                  }
+                                })
                               }
                             }}>-</button>
                             : <button className='pt-1 pb-1 pl-3 pr-2 cursor-not-allowed text-sm' style={{ color: `${style?.primary}99` }}>-</button>
@@ -99,11 +102,11 @@ await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart
                               setCart(JSON.parse(localStorage.getItem('cart')!))
                               if (status === 'authenticated') {
                                 const tenantId = await getClientTenantId()
-await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
-  headers: {
-    'x-tenant-id': tenantId,
-  }
-})
+                                await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+                                  headers: {
+                                    'x-tenant-id': tenantId,
+                                  }
+                                })
                               }
                             }}>+</button>
                             : <button className='pt-1 pb-1 pl-2 pr-3 cursor-not-allowed text-sm' style={{ color: `${style?.primary}99` }}>+</button>
@@ -124,11 +127,11 @@ await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart
                       setCart(products)
                       if (status === 'authenticated') {
                         const tenantId = await getClientTenantId()
-await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
-  headers: {
-    'x-tenant-id': tenantId,
-  }
-})
+                        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+                          headers: {
+                            'x-tenant-id': tenantId,
+                          }
+                        })
                       }
                     } else {
                       let products
@@ -140,11 +143,11 @@ await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart
                       setCart(products)
                       if (status === 'authenticated') {
                         const tenantId = await getClientTenantId()
-await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
-  headers: {
-    'x-tenant-id': tenantId,
-  }
-})
+                        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart: JSON.parse(localStorage.getItem('cart')!) }, {
+                          headers: {
+                            'x-tenant-id': tenantId,
+                          }
+                        })
                       }
                     }
                   }}>
@@ -168,7 +171,7 @@ await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart
                 setTimeout(() => {
                   setCartView('hidden')
                 }, 500)
-              }}><button className='w-full mt-4 underline text-[#444444] dark:text-neutral-400'>Ir al carrito</button></Link>
+              }}><button className='w-full mt-4 underline'>Ir al carrito</button></Link>
             </div>
           </>
           : <>
@@ -180,7 +183,7 @@ await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${user._id}`, { cart
                   setTimeout(() => {
                     setCartView('hidden')
                   }, 500)
-                }} className='border p-1.5 text-center transition-colors duration-200 text-sm lg:text-[16px]' href={`/tienda/${category.slug}`} style={{ borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '' }}>{category.category}</Link>
+                }} className='p-1.5 border text-center transition-colors duration-200 text-sm lg:text-[16px]' href={`/tienda/${category.slug}`} style={{ borderRadius: style?.form === 'Redondeadas' ? `${style?.borderButton}px` : '', border: style?.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }}>{category.category}</Link>
               ))
             }
             <Link href='/tienda'><Button action={() => {

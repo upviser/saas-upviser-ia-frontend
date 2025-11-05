@@ -2,18 +2,19 @@
 import axios from 'axios'
 import { getClientTenantId } from '@/utils'
 import React, { useContext, useEffect, useState } from 'react'
-import { City, Region, IShipping, IStoreData } from '../../interfaces'
+import { City, Region, IShipping, IStoreData, Design } from '../../interfaces'
 import { calcularPaquete, FreeShipping, NumberFormat, offer } from '../../utils'
-import { H2, Select } from '../ui'
+import { Select } from '../ui'
 import CartContext from '@/context/cart/CartContext'
 
 interface Props {
   setShippingCost: any
   style: any
   storeData?: IStoreData
+  design?: Design
 }
 
-export const ShippingCart: React.FC<Props> = ({ setShippingCost, style, storeData }) => {
+export const ShippingCart: React.FC<Props> = ({ setShippingCost, style, storeData, design }) => {
 
   const [regions, setRegions] = useState<Region[]>()
   const [citys, setCitys] = useState<City[]>()
@@ -95,7 +96,7 @@ export const ShippingCart: React.FC<Props> = ({ setShippingCost, style, storeDat
     <div className='flex flex-col gap-4'>
       <h2 className='font-medium text-xl sm:text-3xl'>Calcula los costos de envío</h2>
       <div className='flex flex-col gap-2'>
-        <Select selectChange={regionChange} style={style}>
+        <Select bgColor={design?.cartPage?.detailsColor} selectChange={regionChange} style={style}>
           <option>Seleccionar Región</option>
           {
             regions !== undefined
@@ -105,7 +106,7 @@ export const ShippingCart: React.FC<Props> = ({ setShippingCost, style, storeDat
         </Select>
         {
           citys !== undefined
-          ? <Select selectChange={cityChange} style={style}>
+          ? <Select bgColor={design?.cartPage.detailsColor} selectChange={cityChange} style={style}>
             <option>Seleccionar Ciudad</option>
             {citys.map(city => <option key={city.countyCode}>{city.countyName}</option>)}
           </Select>
@@ -137,9 +138,9 @@ export const ShippingCart: React.FC<Props> = ({ setShippingCost, style, storeDat
                 <div key={service.serviceDescription} className='flex justify-between p-2 border rounded'>
                   <div className='flex gap-2'>
                     <input type='radio' name='shipping' className={service.serviceDescription} value={service.serviceValue} onChange={inputChange} />
-                    <span className='text-sm text-[#444444]'>{service.serviceDescription}</span>
+                    <span className='text-sm'>{service.serviceDescription}</span>
                   </div>
-                  <span className='text-sm text-[#444444]'>${NumberFormat(Number(service.serviceValue))}</span>
+                  <span className='text-sm'>${NumberFormat(Number(service.serviceValue))}</span>
                 </div>
               ))}
             </div>

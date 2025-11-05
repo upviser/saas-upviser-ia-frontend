@@ -206,7 +206,7 @@ export default async function Page({ params }: { params: { page: string } }) {
           } else if (content.content === 'Contacto') {
             return <ContactPage key={content.content} info={content.info} index={index} style={style} tenantId={tenantId} />
           } else if (content.content === 'Suscripción') {
-            return <Subscribe key={content.content} info={content.info} style={style} tenantId={tenantId} />
+            return <Subscribe key={content.content} info={content.info} style={style} tenantId={tenantId} page={page} />
           } else if (content.content === 'Lead 1') {
             return <Lead1 key={content.content} content={content} forms={forms} step={page.step} index={index} services={services} style={style} domain={domain} tenantId={tenantId} />
           } else if (content.content === 'Video') {

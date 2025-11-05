@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { Button, H3, Input } from '../ui'
 import { Shipping } from '../products'
-import { ISell } from '@/interfaces'
+import { Design, ISell } from '@/interfaces'
 import axios from 'axios'
 import { getClientTenantId } from '@/utils'
 
@@ -22,9 +22,10 @@ interface Props {
     sellRef: any
     session: any
     setDest: any
+    design: Design
 }
 
-export const EditShipping: React.FC<Props> = ({ shippingMouse, setShippingOpacity, setShippingView, shippingView, shippingOpacity, setShippingMouse, sell, inputChange, setSell, setShipping, chilexpress, style, sellRef, session, setDest }) => {
+export const EditShipping: React.FC<Props> = ({ shippingMouse, setShippingOpacity, setShippingView, shippingView, shippingOpacity, setShippingMouse, sell, inputChange, setSell, setShipping, chilexpress, style, sellRef, session, setDest, design }) => {
   
   const [loading, setLoading] = useState(false)
   
@@ -37,7 +38,7 @@ export const EditShipping: React.FC<Props> = ({ shippingMouse, setShippingOpacit
           }, 200)
         }
       }} className={`${shippingView} ${shippingOpacity} transition-opacity duration-200 w-full h-full fixed z-50 top-0 px-4 bg-black/30`}>
-        <div onMouseEnter={() => setShippingMouse(true)} onMouseLeave={() => setShippingMouse(false)} className={`${shippingOpacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 m-auto p-6 bg-white flex flex-col gap-4 rounded-xl max-w-[500px] w-full`}>
+        <div onMouseEnter={() => setShippingMouse(true)} onMouseLeave={() => setShippingMouse(false)} className={`${shippingOpacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 m-auto p-6 flex flex-col gap-4 rounded-xl max-w-[500px] w-full`} style={{ backgroundColor: design.checkoutPage.bgColor, color: design.checkoutPage.textColor }}>
           <H3 text='Editar dirección de envío' />
           <div className='flex flex-col gap-2'>
             <p className='text-sm'>Dirección</p>
@@ -51,7 +52,7 @@ export const EditShipping: React.FC<Props> = ({ shippingMouse, setShippingOpacit
             <p className='text-sm'>Detalles</p>
             <Input placeholder='Detalles (Opcional)' name='details' inputChange={inputChange} value={sell.details} style={style} />
           </div>
-          <Shipping setShipping={setShipping} sell={sell} setSell={setSell} sellRef={sellRef} chilexpress={chilexpress} style={style} setDest={setDest} />
+          <Shipping setShipping={setShipping} sell={sell} setSell={setSell} sellRef={sellRef} chilexpress={chilexpress} style={style} setDest={setDest} bgColor={design.checkoutPage.bgColor} />
           <Button action={async (e: any) => {
             e.preventDefault()
             if (!loading) {

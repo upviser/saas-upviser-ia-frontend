@@ -253,10 +253,10 @@ export const ProductInfo: React.FC<Props> = ({ product, tempCartProduct, setTemp
                 <div className={`${infoLoaded ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 flex flex-col gap-2`}>
                   {
                       product.quantityOffers.map(offer => (
-                        <div onClick={() => setTempCartProduct({ ...tempCartProduct, quantity: tempCartProduct.stock ? tempCartProduct.stock >= offer.quantity ? offer.quantity : tempCartProduct.quantity : product.stock >= offer.quantity ? offer.quantity : tempCartProduct.quantity })} key={offer._id} className={`flex gap-4 justify-between p-3 transition-colors duration-150 bg-gray-50 cursor-pointer`} style={{ border: tempCartProduct.quantity === offer.quantity ? `1px solid ${style.primary}` : `1px solid ${style.borderColor}`, borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }}>
+                        <div onClick={() => setTempCartProduct({ ...tempCartProduct, quantity: tempCartProduct.stock ? tempCartProduct.stock >= offer.quantity ? offer.quantity : tempCartProduct.quantity : product.stock >= offer.quantity ? offer.quantity : tempCartProduct.quantity })} key={offer._id} className={`flex gap-4 justify-between p-3 transition-colors duration-150 cursor-pointer`} style={{ border: tempCartProduct.quantity === offer.quantity ? `1px solid ${style.primary}` : `1px solid ${style.borderColor}`, borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }}>
                           <div className='flex flex-col gap-2'>
                             <p>{offer.quantity} unidades</p>
-                            <p className='py-1 px-3 text-sm rounded-full text-white' style={{ backgroundColor: style.primary }}>Ahorra {offer.descount}%</p>
+                            <p className='py-1 px-3 text-sm rounded-full' style={{ backgroundColor: style.primary }}>Ahorra {offer.descount}%</p>
                           </div>
                           <p className='my-auto'>${NumberFormat(Math.round(((product.price * offer.quantity) / 100) * (100 - offer.descount)))}</p>
                         </div>
@@ -281,7 +281,7 @@ export const ProductInfo: React.FC<Props> = ({ product, tempCartProduct, setTemp
             : ''
           }
           <div ref={inf2Ref} className={`${info2Loaded ? 'opacity-1' : 'opacity-0 translate-y-6'} transition-all duration-500 flex flex-col gap-4`}>
-          <div ref={reviewRef} className='border-b pb-2'>
+          <div ref={reviewRef} className='pb-2' style={{ borderBottom: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }}>
             <button onClick={(e: any) => {
               e.preventDefault()
               if (descriptionRotate === '-rotate-90') {
@@ -291,19 +291,19 @@ export const ProductInfo: React.FC<Props> = ({ product, tempCartProduct, setTemp
               }
             }} className='flex gap-2 w-full justify-between'>
               <h5 className='text-[16px] font-medium md:text-[18px]'>Descripción</h5>
-              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" className={`${descriptionRotate} transition-all duration-150 ml-auto text-lg w-4 text-neutral-500`} xmlns="http://www.w3.org/2000/svg"><path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 0 0 302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 0 0 0-50.4z"></path></svg>
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" className={`${descriptionRotate} transition-all duration-150 ml-auto text-lg w-4`} xmlns="http://www.w3.org/2000/svg"><path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 0 0 302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 0 0 0-50.4z"></path></svg>
             </button>
             <div ref={contentRef} style={{ maxHeight: `${descriptionView}px`, overflow: 'hidden', transition: 'max-height 0.3s' }} className={`${descriptionView} transition-all duration-200 flex flex-col gap-2 mt-2`}>
               {product?.description.split('/').map(des => {
-                return <p className='text-[#444444] mb-1 text-sm md:text-[16px]' key={des}>{des}</p>
+                return <p className='mb-1 text-sm md:text-[16px]' key={des}>{des}</p>
               })}
             </div>
           </div>
-          <ShippingPrice style={style} tempCartProduct={tempCartProduct} />
+          <ShippingPrice style={style} tempCartProduct={tempCartProduct} design={design} />
           {
             design.productPage && design.productPage[0].title !== '' && design.productPage[0].text !== ''
               ? (
-                <div className='border-b pb-2'>
+                <div className='pb-2' style={{ border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }}>
                   <button onClick={(e: any) => {
                     e.preventDefault()
                     if (designRotate === '-rotate-90') {
@@ -316,7 +316,7 @@ export const ProductInfo: React.FC<Props> = ({ product, tempCartProduct, setTemp
                     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" className={`${designRotate} transition-all duration-150 ml-auto text-lg w-4 text-neutral-500`} xmlns="http://www.w3.org/2000/svg"><path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 0 0 302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 0 0 0-50.4z"></path></svg>
                   </button>
                   <div ref={designRef} style={{ maxHeight: `${designView}px`, overflow: 'hidden', transition: 'max-height 0.3s' }} className={`${designView} transition-all duration-200 flex flex-col gap-2 mt-2`}>
-                    <p className='text-[#444444] mb-1 text-sm md:text-[16px]'>{design.productPage[0].text}</p>
+                    <p className='mb-1 text-sm md:text-[16px]'>{design.productPage[0].text}</p>
                   </div>
                 </div>
               )
