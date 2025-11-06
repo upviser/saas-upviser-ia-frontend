@@ -10,7 +10,7 @@ import Link from 'next/link'
 
 declare const fbq: Function
 
-export const Lead2 = ({ content, forms, step, index, services, storeData, style, domain, tenantId }: { content: IDesign, forms: IForm[], step?: string, index: any, services: IService[], storeData: IStoreData, style?: any, domain: any, tenantId: string }) => {
+export const Lead2 = ({ content, forms, step, index, services, storeData, style, domain, tenantId, page }: { content: IDesign, forms: IForm[], step?: string, index: any, services: IService[], storeData: IStoreData, style?: any, domain: any, tenantId: string, page?: any }) => {
 
   const [client, setClient] = useState<IClient>({ email: '', tags: forms.find(form => form._id === content.form)?.tags, forms: [{ form: forms.find(form => form._id === content.form)?._id! }] })
   const [message, setMessage] = useState('')
@@ -466,7 +466,7 @@ export const Lead2 = ({ content, forms, step, index, services, storeData, style,
                                       <Input
                                         style={style}
                                         placeholder={label.name}
-                                        bgColor={content.info.image}
+                                        bgColor={content.info.image && content.info.image !== '' ? content.info.image : content.info.background && content.info.background !== '' ? content.info.background : page.bgColor}
                                         value={getClientValue(label.data)} // Usamos la función getClientValue
                                         inputChange={(e: any) => {
                                           if (['firstName', 'lastName', 'email', 'phone'].includes(label.data)) {
@@ -490,6 +490,7 @@ export const Lead2 = ({ content, forms, step, index, services, storeData, style,
                                   {
                                     label.type === 'Selector' && (
                                       <Select
+                                        bgColor={content.info.image && content.info.image !== '' ? content.info.image : content.info.background && content.info.background !== '' ? content.info.background : page.bgColor}
                                         selectChange={(e: any) => {
                                           if (['firstName', 'lastName', 'email', 'phone'].includes(label.data)) {
                                             setClient({ ...client, [label.data]: e.target.value })

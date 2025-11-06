@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Calendar, Input } from '../ui'
+import { Button, Calendar, Input, Select } from '../ui'
 import axios from 'axios'
 import { getClientTenantId } from '@/utils'
 import { usePathname, useRouter } from 'next/navigation'
@@ -53,6 +53,8 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, call
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [popup, setPopup]);
+
+  const getClientValue = (name: string) => clientData[name] || clientData.data?.find(dat => dat.name === name)?.value;
 
   return (
     <div className={`${popup.view} ${popup.opacity} transition-opacity duration-200 w-full h-full top-0 fixed bg-black/30 flex z-50 px-4`} style={{ color: content?.info.textColor ? content?.info.textColor : design.popup?.textColor }}>
@@ -242,29 +244,62 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, call
                                                 forms?.find(form => form._id === design?.popup?.content)?.labels.map(label => (
                                                   <div key={label._id} className="flex flex-col gap-2">
                                                     <p>{label.text !== '' ? label.text : label.name}</p>
-                                                    <Input
-                                                      style={style}
-                                                      placeholder={label.name}
-                                                      value={clientData.data?.find((dat: any) => dat.name === label.name)?.value || clientData[label.data]}
-                                                      inputChange={(e: any) => {
-                                                        if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {
-                                                          setClientData({ ...clientData, [label.data]: e.target.value })
-                                                        } else if (Array.isArray(clientData.data)) {
-                                                          const oldData = [...clientData.data];
-                                                          const existingData = oldData.find(dat => dat.name === label.name);
-                  
-                                                          if (existingData) {
-                                                            existingData.value = e.target.value;
-                                                          } else {
-                                                            oldData.push({ name: label.data, value: e.target.value });
-                                                          }
-                  
-                                                          setClientData({ ...clientData, data: oldData });
-                                                        } else {
-                                                          setClientData({ ...clientData, data: [{ name: label.data, value: e.target.value }] });
-                                                        }
-                                                      }}
-                                                    />
+                                                    {
+                                                      label.type === 'Texto' && (
+                                                        <Input
+                                                          style={style}
+                                                          bgColor={design.popup?.bgColor}
+                                                          placeholder={label.name}
+                                                          value={clientData.data?.find(dat => dat.name === label.name)?.value || clientData[label.data]}
+                                                          inputChange={(e: any) => {
+                                                            if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {
+                                                              setClientData({ ...clientData, [label.data]: e.target.value })
+                                                            } else if (Array.isArray(clientData.data)) {
+                                                              const oldData = [...clientData.data];
+                                                              const existingData = oldData.find(dat => dat.name === label.name);
+                      
+                                                              if (existingData) {
+                                                                existingData.value = e.target.value;
+                                                              } else {
+                                                                oldData.push({ name: label.data, value: e.target.value });
+                                                              }
+                      
+                                                              setClientData({ ...clientData, data: oldData });
+                                                            } else {
+                                                              setClientData({ ...clientData, data: [{ name: label.data, value: e.target.value }] });
+                                                            }
+                                                          }}
+                                                        />
+                                                      )
+                                                    }
+                                                    {
+                                                      label.type === 'Selector' && (
+                                                        <Select
+                                                          bgColor={design.popup?.bgColor}
+                                                          selectChange={(e: any) => {
+                                                            if (['firstName', 'lastName', 'email', 'phone'].includes(label.data)) {
+                                                              setClientData({ ...clientData, [label.data]: e.target.value })
+                                                            } else if (Array.isArray(clientData.data)) {
+                                                              const oldData = [...clientData.data]
+                                                              const existingData = oldData.find(dat => dat.name === label.data)
+                                                              if (existingData) {
+                                                                existingData.value = e.target.value
+                                                              } else {
+                                                                oldData.push({ name: label.data, value: e.target.value })
+                                                              }
+                                                              setClientData({ ...clientData, data: oldData })
+                                                            } else {
+                                                              setClientData({ ...clientData, data: [{ name: label.data, value: e.target.value }] })
+                                                            }
+                                                          }}
+                                                          value={getClientValue(label.data)} // Usamos la función getClientValue
+                                                          style={style}
+                                                        >
+                                                          <option>Seleccionar opción</option>
+                                                          {label.datas?.map(data => <option key={data}>{data}</option>)}
+                                                        </Select>
+                                                      )
+                                                    }
                                                   </div>
                                                 ))
                                               }
@@ -326,7 +361,7 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, call
               )
               : forms.find(form => form._id === cont)
                 ? (
-                  <form ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 flex flex-col gap-4 h-fit m-auto p-6 md:p-8 w-full max-w-[600px]`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', backgroundColor: content?.info.background ? content?.info.background : design.popup?.bgColor ? design.popup?.bgColor : page.bgColor }} onSubmit={async (e: any) => {
+                  <form ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 flex flex-col gap-4 h-fit m-auto p-6 md:p-8 w-full max-w-[600px] max-h-[600px] overflow-y-auto`} style={{ boxShadow: style.design === 'Sombreado' ? `0px 3px 20px 3px ${style.borderColor}10` : '', borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', border: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '', backgroundColor: content?.info.background ? content?.info.background : design.popup?.bgColor ? design.popup?.bgColor : page.bgColor }} onSubmit={async (e: any) => {
                     e.preventDefault()
                     if (!loading) {
                       setLoading(true)
@@ -396,34 +431,66 @@ export const PopupPage: React.FC<Props> = ({ popup, setPopup, cont, design, call
                               forms?.find(form => form._id === cont)?.labels.map(label => (
                                 <div key={label._id} className="flex flex-col gap-2">
                                   <p>{label.text !== '' ? label.text : label.name}</p>
-                                  <Input
-                                    style={style}
-                                    bgColor={content?.info.background ? content?.info.background : design.popup?.bgColor ? design.popup?.bgColor : page.bgColor}
-                                    placeholder={label.name}
-                                    value={clientData.data?.find((dat: any) => dat.name === label.name)?.value || clientData[label.data]}
-                                    inputChange={(e: any) => {
-                                      if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {
-                                        setClientData({ ...clientData, [label.data]: e.target.value })
-                                      } else if (Array.isArray(clientData.data)) {
-                                        const oldData = [...clientData.data];
-                                        const existingData = oldData.find(dat => dat.name === label.name);
-
-                                        if (existingData) {
-                                          existingData.value = e.target.value;
-                                        } else {
-                                          oldData.push({ name: label.data, value: e.target.value });
-                                        }
-
-                                        setClientData({ ...clientData, data: oldData });
-                                      } else {
-                                        setClientData({ ...clientData, data: [{ name: label.data, value: e.target.value }] });
-                                      }
-                                    }}
-                                  />
+                                  {
+                                    label.type === 'Texto' && (
+                                      <Input
+                                        style={style}
+                                        bgColor={design.popup?.bgColor}
+                                        placeholder={label.name}
+                                        value={clientData.data?.find(dat => dat.name === label.name)?.value || clientData[label.data]}
+                                        inputChange={(e: any) => {
+                                          if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {
+                                            setClientData({ ...clientData, [label.data]: e.target.value })
+                                          } else if (Array.isArray(clientData.data)) {
+                                            const oldData = [...clientData.data];
+                                            const existingData = oldData.find(dat => dat.name === label.name);
+    
+                                            if (existingData) {
+                                              existingData.value = e.target.value;
+                                            } else {
+                                              oldData.push({ name: label.data, value: e.target.value });
+                                            }
+    
+                                            setClientData({ ...clientData, data: oldData });
+                                          } else {
+                                            setClientData({ ...clientData, data: [{ name: label.data, value: e.target.value }] });
+                                          }
+                                        }}
+                                      />
+                                    )
+                                  }
+                                  {
+                                    label.type === 'Selector' && (
+                                      <Select
+                                        bgColor={design.popup?.bgColor}
+                                        selectChange={(e: any) => {
+                                          if (['firstName', 'lastName', 'email', 'phone'].includes(label.data)) {
+                                            setClientData({ ...clientData, [label.data]: e.target.value })
+                                          } else if (Array.isArray(clientData.data)) {
+                                            const oldData = [...clientData.data]
+                                            const existingData = oldData.find(dat => dat.name === label.data)
+                                            if (existingData) {
+                                              existingData.value = e.target.value
+                                            } else {
+                                              oldData.push({ name: label.data, value: e.target.value })
+                                            }
+                                            setClientData({ ...clientData, data: oldData })
+                                          } else {
+                                            setClientData({ ...clientData, data: [{ name: label.data, value: e.target.value }] })
+                                          }
+                                        }}
+                                        value={getClientValue(label.data)} // Usamos la función getClientValue
+                                        style={style}
+                                      >
+                                        <option>Seleccionar opción</option>
+                                        {label.datas?.map(data => <option key={data}>{data}</option>)}
+                                      </Select>
+                                    )
+                                  }
                                 </div>
                               ))
                             }
-                            <Button type='submit' config='w-full' style={style} loading={loading}>{forms?.find(form => form._id === cont)?.button}</Button>
+                            <Button type='submit' config='w-full min-h-10' style={style} loading={loading}>{forms?.find(form => form._id === cont)?.button}</Button>
                           </>
                         )
                     }

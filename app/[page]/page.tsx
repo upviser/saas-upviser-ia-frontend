@@ -208,7 +208,7 @@ export default async function Page({ params }: { params: { page: string } }) {
           } else if (content.content === 'Suscripción') {
             return <Subscribe key={content.content} info={content.info} style={style} tenantId={tenantId} page={page} />
           } else if (content.content === 'Lead 1') {
-            return <Lead1 key={content.content} content={content} forms={forms} step={page.step} index={index} services={services} style={style} domain={domain} tenantId={tenantId} />
+            return <Lead1 key={content.content} content={content} forms={forms} step={page.step} index={index} services={services} style={style} domain={domain} tenantId={tenantId} page={page} />
           } else if (content.content === 'Video') {
             return <Video key={content.content} content={content} index={index} storeData={storeData} style={style} />
           } else if (content.content === 'Agendar llamada') {
@@ -220,19 +220,19 @@ export default async function Page({ params }: { params: { page: string } }) {
           } else if (content.content === 'Checkout') {
             return <Checkout key={content.content} content={content} services={services} step={page.step} payment={payment} storeData={storeData} style={style} index={index} integrations={integrations} domain={domain} tenantId={tenantId} />
           } else if (content.content === 'Lead 2') {
-            return <Lead2 key={content.content} content={content} forms={forms} index={index} step={page.step} services={services} storeData={storeData} style={style} domain={domain} tenantId={tenantId} />
+            return <Lead2 key={content.content} content={content} forms={forms} index={index} step={page.step} services={services} storeData={storeData} style={style} domain={domain} tenantId={tenantId} page={page} />
           } else if (content.content === 'Planes') {
             return <Plans key={content.content} content={content} services={services} index={index} payment={payment} style={style} step={page.step} forms={forms} integrations={integrations} domain={domain} />
           } else if (content.content === 'Preguntas frecuentes') {
             return <Faq key={content.content} content={content} services={services} index={index} style={style} />
           } else if (content.content === 'Lead 3') {
-            return <Lead3 key={content.content} content={content} services={services} index={index} style={style} forms={forms} storeData={storeData} step={page.step} domain={domain} tenantId={tenantId} />
+            return <Lead3 key={content.content} content={content} services={services} index={index} style={style} forms={forms} storeData={storeData} step={page.step} domain={domain} tenantId={tenantId} page={page} />
           } else if (content.content === 'Tabla comparativa') {
             return <Table key={content.content} content={content} services={services} index={index} payment={payment} style={style} integrations={integrations} domain={domain} />
           } else if (content.content === 'Bloques') {
             return <Blocks key={content.content} content={content} index={index} style={style} storeData={storeData} />
           } else if (content.content === 'Formulario') {
-            return <Form key={content.content} content={content} index={index} style={style} forms={forms} step={page.step} services={services} domain={domain} tenantId={tenantId} />
+            return <Form key={content.content} content={content} index={index} style={style} forms={forms} step={page.step} services={services} domain={domain} tenantId={tenantId} page={page} />
           } else if (content.content === 'Reseñas') {
             return <Reviews key={content.content} content={content} index={index} />
           } else if (content.content === 'Carrusel de imagenes') {

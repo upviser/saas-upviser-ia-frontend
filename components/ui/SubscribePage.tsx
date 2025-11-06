@@ -67,7 +67,7 @@ export const SubscribePage = ({ info, style, tenantId, page }: { info: IInfo, st
               <>
                 <h2 className='text-center font-medium text-xl lg:text-3xl' style={{ color: info.textColor }}>{info?.title ? info.title : 'Suscribete a nuestra lista'}</h2>
                 <div className='flex gap-2'>
-                  <Input bgColor={info.background && info.background !== '' ? info.background :page?.bgColor} inputChange={inputChange} type='text' placeholder={'Email'} value={subscribeData.email} style={style} />
+                  <Input bgColor={info.background && info.background !== '' ? info.background : page?.bgColor} inputChange={inputChange} type='text' placeholder={'Email'} value={subscribeData.email} style={style} />
                   <ButtonSubmit action={handleSubmit} submitLoading={loading} textButton='Enviar' config='w-28' style={style} />
                 </div>
               </>

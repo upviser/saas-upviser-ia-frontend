@@ -11,7 +11,7 @@ import Image from 'next/image'
 
 declare const fbq: Function
 
-export const Lead1 = ({ content, forms, step, index, services, style, storeData, domain, tenantId }: { content: IDesign, forms: IForm[], step?: string, index: any, services?: IService[], style?: any, storeData?: IStoreData, domain: any, tenantId: string }) => {
+export const Lead1 = ({ content, forms, step, index, services, style, storeData, domain, tenantId, page }: { content: IDesign, forms: IForm[], step?: string, index: any, services?: IService[], style?: any, storeData?: IStoreData, domain: any, tenantId: string, page?: any }) => {
 
   const [client, setClient] = useState<IClient>({ email: '', tags: forms.find(form => form._id === content.form)?.tags, forms: [{ form: forms.find(form => form._id === content.form)?._id! }] })
   const [message, setMessage] = useState('')
@@ -512,7 +512,7 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
                                         <Input
                                           style={style}
                                           placeholder={label.name}
-                                          bgColor={content.info.image}
+                                          bgColor={content.info.image && content.info.image !== '' ? content.info.image : content.info.background && content.info.background !== '' ? content.info.background : page.bgColor}
                                           value={client.data?.find(dat => dat.name === label.name)?.value || client[label.data]}
                                           inputChange={(e: any) => {
                                             if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {
@@ -537,7 +537,7 @@ export const Lead1 = ({ content, forms, step, index, services, style, storeData,
                                   {
                                     label.type === 'Selector'
                                       ? (
-                                        <Select selectChange={(e: any) => {
+                                        <Select bgColor={content.info.image && content.info.image !== '' ? content.info.image : content.info.background && content.info.background !== '' ? content.info.background : page.bgColor} selectChange={(e: any) => {
                                           if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {
                                             setClient({ ...client, [label.data]: e.target.value })
                                           } else if (Array.isArray(client.data)) {

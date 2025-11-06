@@ -8,7 +8,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import axios from 'axios'
 import Cookies from 'js-cookie'
-import { Button, Calendar, Input, LinkButton } from '../ui'
+import { Button, Calendar, Input, LinkButton, Select } from '../ui'
 import { useApiClient } from '@/utils/clientHooks'
 
 interface Props {
@@ -148,6 +148,8 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [popup, setPopup]);
+
+  const getClientValue = (name: string) => clientData[name] || clientData.data?.find(dat => dat.name === name)?.value;
 
   return (
     <>
@@ -322,30 +324,62 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                                               forms?.find(form => form._id === design.popup?.content)?.labels.map(label => (
                                                 <div key={label._id} className="flex flex-col gap-2">
                                                   <p>{label.text !== '' ? label.text : label.name}</p>
-                                                  <Input
-                                                    style={style}
-                                                    bgColor={design.popup?.bgColor}
-                                                    placeholder={label.name}
-                                                    value={clientData.data?.find(dat => dat.name === label.name)?.value || clientData[label.data]}
-                                                    inputChange={(e: any) => {
-                                                      if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {
-                                                        setClientData({ ...clientData, [label.data]: e.target.value })
-                                                      } else if (Array.isArray(clientData.data)) {
-                                                        const oldData = [...clientData.data];
-                                                        const existingData = oldData.find(dat => dat.name === label.name);
-                
-                                                        if (existingData) {
-                                                          existingData.value = e.target.value;
-                                                        } else {
-                                                          oldData.push({ name: label.data, value: e.target.value });
-                                                        }
-                
-                                                        setClientData({ ...clientData, data: oldData });
-                                                      } else {
-                                                        setClientData({ ...clientData, data: [{ name: label.data, value: e.target.value }] });
-                                                      }
-                                                    }}
-                                                  />
+                                                  {
+                                                    label.type === 'Texto' && (
+                                                      <Input
+                                                        style={style}
+                                                        bgColor={design.popup?.bgColor}
+                                                        placeholder={label.name}
+                                                        value={clientData.data?.find(dat => dat.name === label.name)?.value || clientData[label.data]}
+                                                        inputChange={(e: any) => {
+                                                          if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {
+                                                            setClientData({ ...clientData, [label.data]: e.target.value })
+                                                          } else if (Array.isArray(clientData.data)) {
+                                                            const oldData = [...clientData.data];
+                                                            const existingData = oldData.find(dat => dat.name === label.name);
+                    
+                                                            if (existingData) {
+                                                              existingData.value = e.target.value;
+                                                            } else {
+                                                              oldData.push({ name: label.data, value: e.target.value });
+                                                            }
+                    
+                                                            setClientData({ ...clientData, data: oldData });
+                                                          } else {
+                                                            setClientData({ ...clientData, data: [{ name: label.data, value: e.target.value }] });
+                                                          }
+                                                        }}
+                                                      />
+                                                    )
+                                                  }
+                                                  {
+                                                    label.type === 'Selector' && (
+                                                      <Select
+                                                        bgColor={design.popup?.bgColor}
+                                                        selectChange={(e: any) => {
+                                                          if (['firstName', 'lastName', 'email', 'phone'].includes(label.data)) {
+                                                            setClientData({ ...clientData, [label.data]: e.target.value })
+                                                          } else if (Array.isArray(clientData.data)) {
+                                                            const oldData = [...clientData.data]
+                                                            const existingData = oldData.find(dat => dat.name === label.data)
+                                                            if (existingData) {
+                                                              existingData.value = e.target.value
+                                                            } else {
+                                                              oldData.push({ name: label.data, value: e.target.value })
+                                                            }
+                                                            setClientData({ ...clientData, data: oldData })
+                                                          } else {
+                                                            setClientData({ ...clientData, data: [{ name: label.data, value: e.target.value }] })
+                                                          }
+                                                        }}
+                                                        value={getClientValue(label.data)} // Usamos la función getClientValue
+                                                        style={style}
+                                                      >
+                                                        <option>Seleccionar opción</option>
+                                                        {label.datas?.map(data => <option key={data}>{data}</option>)}
+                                                      </Select>
+                                                    )
+                                                  }
                                                 </div>
                                               ))
                                             }

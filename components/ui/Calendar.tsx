@@ -529,7 +529,7 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
                       ? (
                         <div className='flex flex-col gap-2'>
                           <p>Selecciona el tipo</p>
-                          <Select selectChange={(e: any) => setType(e.target.value)} value={type} style={style}>
+                          <Select bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} selectChange={(e: any) => setType(e.target.value)} value={type} style={style}>
                             <option>Selecciona el tipo</option>
                             {
                               call.type.map(typ => <option key={typ}>{typ}</option>)
@@ -546,7 +546,7 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
                         {
                           label.type === 'Selector'
                             ? (
-                              <Select selectChange={(e: any) => {
+                              <Select bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} selectChange={(e: any) => {
                                 if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {
                                   setNewClient({ ...newClient, [label.data]: e.target.value })
                                   clientRef.current = { ...newClient, [label.data]: e.target.value }
@@ -581,7 +581,7 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
                                 }
                                 <Input
                                   style={style}
-                                  bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : page?.bgColor}
+                                  bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor}
                                   placeholder={label.text}
                                   value={newClient.data?.find(dat => dat.name === label.text)?.value || newClient[label.data]}
                                   inputChange={(e: any) => {
@@ -619,19 +619,19 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
                           <>
                             <div className='flex flex-col gap-2'>
                               <p>Dirección</p>
-                              <Input inputChange={(e: any) => setNewClient({ ...newClient, address: e.target.value })} value={newClient.address} placeholder={'Dirección'} style={style} />
+                              <Input bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} inputChange={(e: any) => setNewClient({ ...newClient, address: e.target.value })} value={newClient.address} placeholder={'Dirección'} style={style} />
                             </div>
                             <div className='flex flex-col gap-2'>
                               <p>Detalles</p>
-                              <Input inputChange={(e: any) => setNewClient({ ...newClient, details: e.target.value })} value={newClient.details} placeholder={'Detalles'} style={style} />
+                              <Input bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} inputChange={(e: any) => setNewClient({ ...newClient, details: e.target.value })} value={newClient.details} placeholder={'Detalles'} style={style} />
                             </div>
                             <div className='flex flex-col gap-2'>
                               <p>Ciudad</p>
-                              <Input inputChange={(e: any) => setNewClient({ ...newClient, city: e.target.value })} value={newClient.city} placeholder={'Ciudad'} style={style} />
+                              <Input bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} inputChange={(e: any) => setNewClient({ ...newClient, city: e.target.value })} value={newClient.city} placeholder={'Ciudad'} style={style} />
                             </div>
                             <div className='flex flex-col gap-2'>
                               <p>Región</p>
-                              <Input inputChange={(e: any) => setNewClient({ ...newClient, region: e.target.value })} value={newClient.region} placeholder={'Región'} style={style} />
+                              <Input bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} inputChange={(e: any) => setNewClient({ ...newClient, region: e.target.value })} value={newClient.region} placeholder={'Región'} style={style} />
                             </div>
                           </>
                         )
@@ -641,19 +641,19 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
                           <>
                             <div className='flex flex-col gap-2'>
                               <p>Dirección</p>
-                              <Input inputChange={(e: any) => setNewClient({ ...newClient, address: e.target.value })} value={newClient.address} placeholder={'Dirección'} style={style} />
+                              <Input bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} inputChange={(e: any) => setNewClient({ ...newClient, address: e.target.value })} value={newClient.address} placeholder={'Dirección'} style={style} />
                             </div>
                             <div className='flex flex-col gap-2'>
                               <p>Detalles</p>
-                              <Input inputChange={(e: any) => setNewClient({ ...newClient, details: e.target.value })} value={newClient.details} placeholder={'Detalles'} style={style} />
+                              <Input bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} inputChange={(e: any) => setNewClient({ ...newClient, details: e.target.value })} value={newClient.details} placeholder={'Detalles'} style={style} />
                             </div>
                             <div className='flex flex-col gap-2'>
                               <p>Ciudad</p>
-                              <Input inputChange={(e: any) => setNewClient({ ...newClient, city: e.target.value })} value={newClient.city} placeholder={'Ciudad'} style={style} />
+                              <Input bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} inputChange={(e: any) => setNewClient({ ...newClient, city: e.target.value })} value={newClient.city} placeholder={'Ciudad'} style={style} />
                             </div>
                             <div className='flex flex-col gap-2'>
                               <p>Región</p>
-                              <Input inputChange={(e: any) => setNewClient({ ...newClient, region: e.target.value })} value={newClient.region} placeholder={'Región'} style={style} />
+                              <Input bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} inputChange={(e: any) => setNewClient({ ...newClient, region: e.target.value })} value={newClient.region} placeholder={'Región'} style={style} />
                             </div>
                           </>
                         )

@@ -15,11 +15,12 @@ interface Props {
     services?: IService[]
     domain: any
     tenantId: string
+    page?: any
 }
 
 declare const fbq: Function
 
-export const Form: React.FC<Props> = ({ content, index, style, forms, step, services, domain, tenantId }) => {
+export const Form: React.FC<Props> = ({ content, index, style, forms, step, services, domain, tenantId, page }) => {
   const [question, setQuestion] = useState(-1);
   const contentRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [client, setClient] = useState<IClient>({ email: '', tags: forms?.find(form => form._id === content.form)?.tags, forms: [{ form: forms?.find(form => form._id === content.form)?._id! }] })
@@ -340,7 +341,7 @@ export const Form: React.FC<Props> = ({ content, index, style, forms, step, serv
                                     label.type === 'Texto' && (
                                       <Input
                                         style={style}
-                                        bgColor={content.info.image}
+                                        bgColor={content.info.image && content.info.image !== '' ? content.info.image : content.info.background && content.info.background !== '' ? content.info.background : page.bgColor}
                                         placeholder={label.name}
                                         value={getClientValue(label.data)} // Usamos la función getClientValue
                                         inputChange={(e: any) => {
@@ -365,6 +366,7 @@ export const Form: React.FC<Props> = ({ content, index, style, forms, step, serv
                                   {
                                     label.type === 'Selector' && (
                                       <Select
+                                        bgColor={content.info.image && content.info.image !== '' ? content.info.image : content.info.background && content.info.background !== '' ? content.info.background : page.bgColor}
                                         selectChange={(e: any) => {
                                           if (['firstName', 'lastName', 'email', 'phone'].includes(label.data)) {
                                             setClient({ ...client, [label.data]: e.target.value })

@@ -18,11 +18,12 @@ interface Props {
     step?: string
     domain: any
     tenantId: string
+    page?: any
 }
 
 declare const fbq: Function
 
-export const Lead3: React.FC<Props> = ({ content, index, style, services, forms, storeData, step, domain, tenantId }) => {
+export const Lead3: React.FC<Props> = ({ content, index, style, services, forms, storeData, step, domain, tenantId, page }) => {
   
   const [question, setQuestion] = useState(-1);
   const contentRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -558,7 +559,7 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
                                       <Input
                                         style={style}
                                         placeholder={label.name}
-                                        bgColor={content.info.image}
+                                        bgColor={content.info.image && content.info.image !== '' ? content.info.image : content.info.background && content.info.background !== '' ? content.info.background : page.bgColor}
                                         value={getClientValue(label.data)} // Usamos la función getClientValue
                                         inputChange={(e: any) => {
                                           if (['firstName', 'lastName', 'email', 'phone'].includes(label.data)) {
@@ -582,6 +583,7 @@ export const Lead3: React.FC<Props> = ({ content, index, style, services, forms,
                                   {
                                     label.type === 'Selector' && (
                                       <Select
+                                        bgColor={content.info.image && content.info.image !== '' ? content.info.image : content.info.background && content.info.background !== '' ? content.info.background : page.bgColor}
                                         selectChange={(e: any) => {
                                           if (['firstName', 'lastName', 'email', 'phone'].includes(label.data)) {
                                             setClient({ ...client, [label.data]: e.target.value })
