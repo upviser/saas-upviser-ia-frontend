@@ -28,7 +28,7 @@ export const NavbarCart: React.FC<Props> = ({ setCartView, setCartPc, setCartPos
   const user = session?.user as { firstName: string, lastName: string, email: string, _id: string, cart?: ICartProduct[] }
 
   return (
-    <div ref={cartRef} onMouseEnter={() => setCartPc(false)} onMouseLeave={() => setCartPc(true)} onMouseMove={() => setCartPc(true)} className={`ml-auto flex flex-col gap-3 p-4 z-40 w-[360px]`} style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderBlock}px` : '', height: 'calc(100vh - 49px)', backgroundColor: design?.header?.bgColor && design?.header?.bgColor !== '' ? design?.header.bgColor : '#ffffff', color: design?.header?.textColor && design?.header?.textColor !== '' ? design?.header?.textColor : '#111111' }}>
+    <div ref={cartRef} onMouseEnter={() => setCartPc(false)} onMouseLeave={() => setCartPc(true)} onMouseMove={() => setCartPc(true)} className={`ml-auto flex flex-col gap-3 p-4 z-40 w-[360px]`} style={{ height: 'calc(100vh - 49px)', backgroundColor: design?.header?.bgColor && design?.header?.bgColor !== '' ? design?.header.bgColor : '#ffffff', color: design?.header?.textColor && design?.header?.textColor !== '' ? design?.header?.textColor : '#111111' }}>
       <div className='pb-2' style={{ borderBottom: style.design === 'Borde' ? `1px solid ${style.borderColor}` : '' }}>
         <H3 config='text-center font-medium' text='Carrito' />
       </div>

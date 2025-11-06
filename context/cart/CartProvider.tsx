@@ -4,7 +4,6 @@ import { ICartProduct } from '../../interfaces'
 import CartContext from './CartContext'
 import { useSession } from 'next-auth/react'
 import axios from 'axios'
-import { getClientTenantId } from '@/utils'
 
 const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
@@ -22,8 +21,10 @@ const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const params = new URLSearchParams(url.search)
     const phone = params.get('phone')
     const messengerId = params.get('messengerId');
-    const instagramId = params.get('instagramId');
-    const tenantId = await getClientTenantId()
+    const instagramId = params.get('instagramId');const hostname = window.location.hostname
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tenants`)
+    const tenant = response.data.find((tenant: any) => tenant.domain === hostname)
+    const tenantId = tenant.tenantId
     
     if (phone || messengerId || instagramId) {
       if (phone) {
@@ -71,7 +72,9 @@ const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   useEffect(() => {
-    getCart()
+    if (session?.user._id) {
+      getCart()
+    }
   }, [session])
 
   return (
