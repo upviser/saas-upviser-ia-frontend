@@ -1,7 +1,5 @@
 import React from "react"
 import { AllNavbar } from "."
-import { getServerTenantId } from "@/utils"
-
 
 export const revalidate = 3600
 

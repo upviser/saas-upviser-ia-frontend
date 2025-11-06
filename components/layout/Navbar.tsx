@@ -17,9 +17,10 @@ interface Props {
   style?: any
   categories?: ICategory[]
   products?: IProduct[]
+  tenantId: string
 }
 
-export const Navbar: React.FC<PropsWithChildren<Props>> = ({ children, design, storeData, politics, style, categories, products }) => {
+export const Navbar: React.FC<PropsWithChildren<Props>> = ({ children, design, storeData, politics, style, categories, products, tenantId }) => {
 
   const [menu, setMenu] = useState('-ml-[350px]')
   const [index, setIndex] = useState('hidden')
@@ -381,7 +382,7 @@ export const Navbar: React.FC<PropsWithChildren<Props>> = ({ children, design, s
         <div className={`${accountView} ${accountPosition} transition-all duration-500 w-full -z-10 absolute top-[50px] sm:hidden`} style={{ height: 'calc(100vh - 91px)' }}>
           <div className='w-full px-4 ml-auto mr-auto'>
             <div className='ml-auto h-fit flex w-full 400:w-96'>
-              <AccountLogin account={account} setAccount={setAccount} setAccountPc={setAccountPc} setAccountView={setAccountView} setAccountPosition={setAccountPosition} style={style} design={design} />
+              <AccountLogin account={account} setAccount={setAccount} setAccountPc={setAccountPc} setAccountView={setAccountView} setAccountPosition={setAccountPosition} style={style} design={design} tenantId={tenantId} />
             </div>
             <div onClick={() => {
               setAccountPosition('-mt-[400px]')
@@ -401,7 +402,7 @@ export const Navbar: React.FC<PropsWithChildren<Props>> = ({ children, design, s
         }} className={`hidden ${accountPosition} w-full -z-10 transition-all duration-500 absolute top-[53px] sm:${accountView}`} style={{ height: 'calc(100vh - 91px)' }}>
           <div className='w-[1770px] ml-auto mr-auto'>
             <div className='ml-auto h-fit flex w-full 400:w-96'>
-              <AccountLogin account={account} setAccount={setAccount} setAccountPc={setAccountPc} setAccountView={setAccountView} setAccountPosition={setAccountPosition} style={style} design={design} />
+              <AccountLogin account={account} setAccount={setAccount} setAccountPc={setAccountPc} setAccountView={setAccountView} setAccountPosition={setAccountPosition} style={style} design={design} tenantId={tenantId} />
             </div>
           </div>
         </div>

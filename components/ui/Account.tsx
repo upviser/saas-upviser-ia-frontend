@@ -17,9 +17,10 @@ interface Props {
     setAccountPosition: any
     style?: any
     design: Design | undefined
+    tenantId: string
 }
 
-export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountPc, setAccountView, setAccountPosition, style, design }) => {
+export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountPc, setAccountView, setAccountPosition, style, design, tenantId }) => {
 
   const [login, setLogin] = useState({
     email: '',
@@ -66,7 +67,6 @@ export const AccountLogin: React.FC<Props> = ({ account, setAccount, setAccountP
     e.preventDefault()
     setRegisterLoading(true)
     setError('')
-    const tenantId = await getClientTenantId()
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/register`, register, {
       headers: {
         'x-tenant-id': tenantId,

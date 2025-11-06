@@ -467,7 +467,7 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
             </div>
           )
           : (
-            <Navbar design={design} storeData={storeData} politics={politics} style={style} categories={categories} products={products}>
+            <Navbar design={design} storeData={storeData} politics={politics} style={style} categories={categories} products={products} tenantId={tenantId}>
               <div className="h-[58px] sm:h-[54px]" />
               { children }
             </Navbar>
