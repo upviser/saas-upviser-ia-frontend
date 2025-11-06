@@ -38,7 +38,6 @@ declare const fbq: Function
 
 export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design, storeData, funnels, politics, calls, forms, payment, services, style, categories, products, integrations, domain, tenantId }) => {
 
-  const { apiClient } = useApiClient()
   const [load, setLoad] = useState(false)
   const [popup, setPopup] = useState({ view: 'hidden', opacity: 'opacity-0', mouse: false })
   const [message, setMessage] = useState('')
@@ -250,9 +249,13 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                                       return
                                     }
 
-                                    await apiClient.post('/clients', clientData)
+                                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/clients`, clientData, {
+                                      headers: {
+                                        'x-tenant-id': tenantId
+                                      }
+                                    })
                                     const newEventId = new Date().getTime().toString()
-                                    await apiClient.post('/lead', {
+                                    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/lead`, {
                                       firstName: clientData.firstName,
                                       lastName: clientData.lastName,
                                       email: clientData.email,
@@ -263,6 +266,10 @@ export const AllNavbar: React.FC<PropsWithChildren<Props>> = ({ children, design
                                       fbp: Cookies.get('_fbp'),
                                       page: pathname,
                                       eventId: newEventId
+                                    }, {
+                                      headers: {
+                                        'x-tenant-id': tenantId
+                                      }
                                     })
                                     if (typeof fbq === 'function') {
                                       fbq('track', 'Lead', {

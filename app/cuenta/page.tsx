@@ -2,7 +2,7 @@
 import { Table } from "@/components/design"
 import { Button, H1, H2, H3, Input, ShippingAccount, Spinner } from "@/components/ui"
 import { ISell } from "@/interfaces"
-import { NumberFormat, getClientTenantId } from "@/utils"
+import { NumberFormat } from "@/utils"
 import axios from "axios"
 import { signOut, useSession } from "next-auth/react"
 import { useEffect, useRef, useState } from "react"
@@ -23,6 +23,10 @@ export default function Page () {
 
   const popupRef = useRef<any>(null);
   const popupRef2 = useRef<any>(null);
+
+  useEffect(() => {
+    setAccount(session?.user)
+  }, [session])
 
   const getSells = async () => {
     setLoading(true)
@@ -150,16 +154,15 @@ export default function Page () {
             e.preventDefault()
             if (!loadingEdit) {
               setLoadingEdit(true)
-              const tenantId = await getClientTenantId()
               await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/account/${account._id}`, account, {
                 headers: {
-                  'x-tenant-id': tenantId,
+                  'x-tenant-id': account.tenantId,
                 }
               })
               const { _id, ...accountClient } = account
               await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/client/${account.email}`, accountClient, {
                 headers: {
-                  'x-tenant-id': tenantId,
+                  'x-tenant-id': account.tenantId,
                 }
               })
               await signOut()
