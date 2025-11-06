@@ -199,7 +199,6 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
   }, [])
 
   const inputChange = async (e: any) => {
-    e.preventDefault()
     setSell({ ...sell, [e.target.name]: e.target.value, buyOrder: `${storeData?.name ? storeData.name : 'ORDEN'}${Math.floor(Math.random() * 10000) + 1}` })
     sellRef.current = { ...sell, [e.target.name]: e.target.value, buyOrder: `${storeData?.name ? storeData.name : 'ORDEN'}${Math.floor(Math.random() * 10000) + 1}` }
     if (e.target.name === 'pay' && e.target.value === 'WebPay Plus') {
@@ -220,7 +219,11 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
         products = products.concat({ title: product.name, unit_price: product.price, quantity: product.quantity })
       })
       products = products.concat({ title: 'Envío', unit_price: Number(sell.shipping), quantity: 1 })
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/mercado-pago-create`, products)
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/mercado-pago-create`, products, {
+        headers: {
+          'x-tenant-id': tenantId
+        }
+      })
       setLink(res.data.init_point)
     }
   }
@@ -234,7 +237,7 @@ export const CheckoutPage: React.FC<Props> = ({ storeData, chilexpress, style, p
               <EditData design={design} contactMouse={contactMouse} setContactOpacity={setContactOpacity} setContactView={setContactView} contactView={contactView} contactOpacity={contactOpacity} setContactMouse={setContactMouse} inputChange={inputChange} sell={sell} style={style} session={session} />
               <EditShipping shippingMouse={shippingMouse} setShippingOpacity={setShippingOpacity} setShippingView={setShippingView} shippingView={shippingView} shippingOpacity={shippingOpacity} setShippingMouse={setShippingMouse} sell={sell} inputChange={inputChange} setSell={setSell} setShipping={setShipping} chilexpress={chilexpress} style={style} sellRef={sellRef} session={session} setDest={setDest} design={design} />
               <ResumePhone cart={cart} sell={sell} style={style} design={design} setSell={setSell} coupon={coupon} setCoupon={setCoupon} sellRef={sellRef} />
-              <div className='mt-28 flex p-4 xl:mt-0'>
+              <div className='mt-[95px] flex p-4 xl:mt-0'>
                 <form className='w-[1280px] m-auto block xl:flex' id='formBuy'>
                   <div className='w-full flex flex-col gap-6 pr-0 xl:w-7/12 xl:pr-8'>
                     {

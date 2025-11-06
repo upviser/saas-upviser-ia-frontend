@@ -1,11 +1,11 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { IPost } from '@/interfaces'
+import { Design, IPost } from '@/interfaces'
 import Link from 'next/link'
 import { H1 } from '../ui'
 
-const PagePost = ({ post, posts, style }: { post: IPost, posts: IPost[], style?: any }) => {
+const PagePost = ({ post, posts, style, design }: { post: IPost, posts: IPost[], style?: any, design: Design }) => {
 
   const [postsFiltered, setPostsFiltered] = useState<IPost[]>([])
 
@@ -19,7 +19,7 @@ const PagePost = ({ post, posts, style }: { post: IPost, posts: IPost[], style?:
   }, [posts])
 
   return (
-    <div className="w-full px-4 py-8 flex">
+    <div className="w-full px-4 py-8 flex" style={{ backgroundColor: design.pages.find(page => page.page === 'Blog')?.bgColor, color: design.pages.find(page => page.page === 'Blog')?.textColor }}>
       <div className="w-[1280px] m-auto flex flex-col gap-8 1280:flex-row">
         <div className={`flex flex-col gap-4 w-full ${postsFiltered.length ? '' : 'm-auto'} 1280:w-2/3`}>
           {

@@ -1,5 +1,5 @@
 import PagePost from "@/components/blog/PagePost"
-import { IPost } from "@/interfaces"
+import { Design, IPost } from "@/interfaces"
 import { Metadata } from "next"
 import { getServerTenantId } from "@/utils"
 import { headers } from 'next/headers'
@@ -26,6 +26,16 @@ async function fetchPosts (tenantId: string) {
 
 async function fetchStyle (tenantId: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
+    next: { revalidate: 3600 },
+    headers: {
+      'x-tenant-id': tenantId,
+    }
+  })
+  return res.json()
+}
+
+async function fetchDesign (tenantId: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
     next: { revalidate: 3600 },
     headers: {
       'x-tenant-id': tenantId,
@@ -73,9 +83,11 @@ export default async function Page ({ params }: { params: { post: string } }) {
 
   const styleData = fetchStyle(tenantId)
 
-  const [post, posts, style] = await Promise.all([postData, postsData, styleData])
+  const designData = fetchDesign(tenantId)
+
+  const [post, posts, style, design] = await Promise.all([postData, postsData, styleData, designData])
 
   return (
-    <PagePost post={post} posts={posts} style={style} />
+    <PagePost post={post} posts={posts} style={style} design={design} />
   )
 }

@@ -126,7 +126,7 @@ export const ShippingPrice: React.FC<Props> = ({ style, tempCartProduct, design 
             <span>Envíos express:</span>
             {FreeShipping.map(cityFree => {
               if (cityFree === city) {
-                return <div className='flex justify-between p-2 border rounded-md' key={cityFree}>
+                return <div className='flex justify-between p-2' style={{ border: `1px solid ${style.borderColor}`, borderRadius: `${style.borderButton}px` }} key={cityFree}>
                   <span className='text-sm'>Envío gratis en 24 a 48 horas</span>
                   <span className='text-sm'>$0</span>
                 </div>
@@ -135,8 +135,8 @@ export const ShippingPrice: React.FC<Props> = ({ style, tempCartProduct, design 
             })}
             <span>Chilexpress:</span>
             {shipping.map(service => (
-              <div key={service.serviceDescription} className='flex justify-between p-2 border rounded-md'>
-                <span className='text-sm text-[#444444]'>{service.serviceDescription}</span>
+              <div key={service.serviceDescription} className='flex justify-between p-2'  style={{ border: `1px solid ${style.borderColor}`, borderRadius: `${style.borderButton}px` }}>
+                <span className='text-sm'>{service.serviceDescription}</span>
                 <span className='text-sm'>${NumberFormat(Number(service.serviceValue))}</span>
               </div>
             ))}

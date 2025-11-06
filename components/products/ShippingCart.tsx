@@ -121,12 +121,12 @@ export const ShippingCart: React.FC<Props> = ({ setShippingCost, style, storeDat
               <span>Envíos express:</span>
               {FreeShipping.map(cityFree => {
                 if (cityFree === city) {
-                  return <div className='flex justify-between p-2 border rounded' key={cityFree}>
+                  return <div className='flex justify-between p-2' style={{ border: `1px solid ${style.borderColor}`, borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }} key={cityFree}>
                     <div className='flex gap-2'>
                       <input type='radio' name='shipping' className='envio express' value={0} onChange={inputChange} />
-                      <span className='text-sm text-[#444444]'>Envío gratis en 24 a 48 horas</span>
+                      <span className='text-sm'>Envío gratis en 24 a 48 horas</span>
                     </div>
-                    <span className='text-sm text-[#444444]'>$0</span>
+                    <span className='text-sm'>$0</span>
                   </div>
                 }
                 return null
@@ -135,7 +135,7 @@ export const ShippingCart: React.FC<Props> = ({ setShippingCost, style, storeDat
             <div className='flex flex-col gap-2'>
               <span className='mt-1'>Chilexpress:</span>
               {shipping.map(service => (
-                <div key={service.serviceDescription} className='flex justify-between p-2 border rounded'>
+                <div key={service.serviceDescription} className='flex justify-between p-2' style={{ border: `1px solid ${style.borderColor}`, borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '' }}>
                   <div className='flex gap-2'>
                     <input type='radio' name='shipping' className={service.serviceDescription} value={service.serviceValue} onChange={inputChange} />
                     <span className='text-sm'>{service.serviceDescription}</span>

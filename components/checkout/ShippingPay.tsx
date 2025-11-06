@@ -31,7 +31,6 @@ export const ShippingPay: React.FC<Props> = ({ shipping, sell, inputChange, setS
                   storeData.locations?.length && storeData.locations.find(location => location.commercial)
                     ? (
                       <button className='flex gap-2 justify-between p-2' name='shipping' onClick={(e: any) => {
-                        e.preventDefault()
                         setSell({ ...sell, shippingMethod: 'Entrega en el local', shipping: 0, shippingState: 'No empaquetado' })
                         sellRef.current = { ...sell, shippingMethod: 'Entrega en el local', shipping: 0, shippingState: 'No empaquetado' }
                       }} style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '', border: `1px solid ${style.borderColor}` }}>
@@ -50,7 +49,6 @@ export const ShippingPay: React.FC<Props> = ({ shipping, sell, inputChange, setS
                 {
                   shipping.map(item => (
                     <button className='flex gap-2 justify-between p-2' name='shipping' value={item.serviceDescription} onClick={(e: any) => {
-                      e.preventDefault()
                       setServiceTypeCode(item.serviceTypeCode)
                       serviceTypeCodeRef.current = item.serviceTypeCode
                       let total = sell.cart.reduce((bef, curr) => curr.quantityOffers?.length ? bef + offer(curr) : bef + curr.price * curr.quantity, 0)
@@ -71,19 +69,19 @@ export const ShippingPay: React.FC<Props> = ({ shipping, sell, inputChange, setS
                         <input type='radio' onChange={() => {
                           setServiceTypeCode(item.serviceTypeCode)
                           serviceTypeCodeRef.current = item.serviceTypeCode
-                          let total = sell.cart.reduce((bef, curr) => curr.quantityOffers?.length ? bef + offer(curr) : bef + curr.price * curr.quantity, 0) + item.serviceValue
+                          let total = sell.cart.reduce((bef, curr) => curr.quantityOffers?.length ? bef + offer(curr) : bef + curr.price * curr.quantity, 0)
                           if (coupon?.discountType === 'Porcentaje') {
-                            if (coupon.minimumAmount < (sell.total - sell.shipping) || !coupon.minimumAmount) {
-                              total = (((sell.total - sell.shipping) / 100) * (100 - coupon.value)) + item.serviceValue
+                            if (coupon.minimumAmount < sell.cart.reduce((bef, curr) => curr.quantityOffers?.length ? bef + offer(curr) : bef + curr.price * curr.quantity, 0) || !coupon.minimumAmount) {
+                              total = ((sell.cart.reduce((bef, curr) => curr.quantityOffers?.length ? bef + offer(curr) : bef + curr.price * curr.quantity, 0) / 100) * (100 - coupon.value))
                             }
                           } else if (coupon?.discountType === 'Valor') {
-                            if (coupon.minimumAmount < (sell.total - sell.shipping) || !coupon.minimumAmount) {
-                              total = sell.total - sell.shipping - coupon.value + item.serviceValue
+                            if (coupon.minimumAmount < sell.cart.reduce((bef, curr) => curr.quantityOffers?.length ? bef + offer(curr) : bef + curr.price * curr.quantity, 0) || !coupon.minimumAmount) {
+                              total = sell.cart.reduce((bef, curr) => curr.quantityOffers?.length ? bef + offer(curr) : bef + curr.price * curr.quantity, 0) - coupon.value
                             }
                           }
-                          setSell({ ...sell, shippingMethod: item.serviceDescription, shipping: item.serviceValue, shippingState: 'No empaquetado', total: total })
-                          sellRef.current = { ...sell, shippingMethod: item.serviceDescription, shipping: item.serviceValue, shippingState: 'No empaquetado', total: total }
-                          initializationRef.current = { amount: total }
+                          setSell({ ...sell, shippingMethod: item.serviceDescription, shipping: item.serviceValue, shippingState: 'No empaquetado', total: total + Number(item.serviceValue) })
+                          sellRef.current = { ...sell, shippingMethod: item.serviceDescription, shipping: item.serviceValue, shippingState: 'No empaquetado', total: total + Number(item.serviceValue) }
+                          initializationRef.current = { amount: total + Number(item.serviceValue) }
                         }} checked={sell.shippingMethod === item.serviceDescription} />
                         <p className='text-sm mt-auto mb-auto'>{item.serviceDescription}</p>
                       </div>
@@ -106,7 +104,7 @@ export const ShippingPay: React.FC<Props> = ({ shipping, sell, inputChange, setS
                   payment.mercadoPago.active && payment.mercadoPago.accessToken !== '' && payment.mercadoPago.publicKey !== ''
                     ? (
                       <button className='flex gap-2 p-2' name='pay' value='MercadoPago' onClick={inputChange} style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '', border: `1px solid ${style.borderColor}` }}>
-                        <input type='radio' name='pay' value='MercadoPago' onChange={inputChange} checked={sell.pay === 'MercadoPago'} />
+                        <input type='radio' name='pay' value='MercadoPago' onClick={inputChange} checked={sell.pay === 'MercadoPago'} />
                         <button name='pay' value='MercadoPago' onClick={inputChange} className='text-sm'>Tarjeta de Credito o Debito</button>
                       </button>
                     )
@@ -116,7 +114,7 @@ export const ShippingPay: React.FC<Props> = ({ shipping, sell, inputChange, setS
                   payment.transbank.active && payment.transbank.commerceCode !== '' && payment.transbank.apiKey !== ''
                     ? (
                       <button className='flex gap-2 p-2' name='pay' value='WebPay Plus' onClick={inputChange} style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '', border: `1px solid ${style.borderColor}` }}>
-                        <input type='radio' name='pay' value='WebPay Plus' onChange={inputChange} checked={sell.pay === 'WebPay Plus'} />
+                        <input type='radio' name='pay' value='WebPay Plus' onClick={inputChange} checked={sell.pay === 'WebPay Plus'} />
                         <button name='pay' value='WebPay Plus' onClick={inputChange} className='text-sm'>WebPay Plus</button>
                       </button>
                     )
@@ -126,7 +124,7 @@ export const ShippingPay: React.FC<Props> = ({ shipping, sell, inputChange, setS
                   payment.mercadoPago.active && payment.mercadoPago.accessToken !== '' && payment.mercadoPago.publicKey !== ''
                     ? (
                       <button className='flex gap-2 p-2' name='pay' value='MercadoPagoPro' onClick={inputChange} style={{ borderRadius: style.form === 'Redondeadas' ? `${style.borderButton}px` : '', border: `1px solid ${style.borderColor}` }}>
-                        <input type='radio' name='pay' value='MercadoPagoPro' onChange={inputChange} checked={sell.pay === 'MercadoPagoPro'} />
+                        <input type='radio' name='pay' value='MercadoPagoPro' onClick={inputChange} checked={sell.pay === 'MercadoPagoPro'} />
                         <button name='pay' value='MercadoPagoPro' onClick={inputChange} className='text-sm'>MercadoPago</button>
                       </button>
                     )

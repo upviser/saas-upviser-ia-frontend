@@ -31,14 +31,14 @@ export const ResumePhone = ({ cart, sell, style, design, setSell, coupon, setCou
         }
       }}>{<svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" className={`${rotate} transition-all duration-150 m-auto w-4 text-lg text-neutral-500`} xmlns="http://www.w3.org/2000/svg"><path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 0 0 302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 0 0 0-50.4z"></path></svg>} resumen del pedido</button>
       <div ref={detailsRef} className={`mb-2`} style={{ maxHeight: `${details}px`, overflow: 'hidden', transition: 'max-height 0.5s' }}>
-        <div className='border-b mb-2 flex flex-col gap-2 pb-1'>
+        <div className='mb-2 flex flex-col gap-2 pb-1' style={{ borderBottom: `1px solid ${style.borderColor}` }}>
           <H2 text='Carrito' />
           {
             cart?.length !== 0
               ? cart?.map(product => (
                 <div className='flex gap-2 justify-between mb-2' key={product._id}>
                   <div className='flex gap-2'>
-                    <Image className='w-20 h-20 m-auto border rounded-md p-1' src={product.image!} alt={product.name} width={80} height={80} />
+                    <Image className='w-20 h-20 m-auto p-1' style={{ border: `1px solid ${style.borderColor}`, borderRadius: `${style.borderButton}px` }} src={product.image!} alt={product.name} width={80} height={80} />
                     <div className='mt-auto mb-auto'>
                       <span className='font-medium'>{product.name}</span>
                       <span className='block'>Cantidad: {product.quantity}</span>
@@ -62,10 +62,10 @@ export const ResumePhone = ({ cart, sell, style, design, setSell, coupon, setCou
               : ''
           }
         </div>
-        <div className='pb-3 border-b flex flex-col gap-2'>
+        <div className='pb-3 flex flex-col gap-2' style={{ borderBottom: `1px solid ${style.borderColor}` }}>
           <H2 text='Cupon de descuento' />
           <div className='flex gap-2'>
-            <Input inputChange={(e: any) => {
+            <Input bgColor={design.checkoutPage.bgColor} inputChange={(e: any) => {
               setSell({ ...sell, coupon: e.target.value })
               sellRef.current = { ...sell, coupon: e.target.value }
             }} value={sell.coupon} type={'text'} placeholder={'Cupon'} style={style} />
@@ -96,7 +96,7 @@ export const ResumePhone = ({ cart, sell, style, design, setSell, coupon, setCou
             }} style={style} loading={loading} config='min-w-28'>Agregar</Button>
           </div>
         </div>
-        <div className='mt-2 mb-2 pb-2 border-b'>
+        <div className='mt-2 mb-2 pb-2' style={{ borderBottom: `1px solid ${style.borderColor}` }}>
           <div className='flex gap-2 justify-between mb-1'>
             <span className='text-[14px]'>Subtotal</span>
             <span className='text-[14px]'>${NumberFormat(sell.total - sell.shipping)}</span>
