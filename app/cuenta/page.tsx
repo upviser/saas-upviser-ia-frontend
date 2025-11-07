@@ -20,6 +20,7 @@ export default function Page () {
   const [loadingEdit, setLoadingEdit] = useState(false)
   const [sell, setSell] = useState<ISell>()
   const [popup2, setPopup2] = useState({ view: 'hidden', opacity: 'opacity-0', mouse: false })
+  const [accountPage, setAccountPage] = useState({ bgColor: '', textColor: '' })
 
   const popupRef = useRef<any>(null);
   const popupRef2 = useRef<any>(null);
@@ -31,26 +32,28 @@ export default function Page () {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/tenants`)
     const tenant = response.data.find((tenant: any) => tenant.domain === hostname)
     const tenantId = tenant.tenantId
-    console.log(tenantId)
+    const respo = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/design`, {
+      headers: {
+        'x-tenant-id': tenantId
+      }
+    })
+    setAccountPage(respo.data.accountPage)
     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sells-client/${session?.user?.email}`, {
       headers: {
         'x-tenant-id': tenantId,
       }
     })
-    console.log(res.data)
     setSells(res.data)
     const resp = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/style`, {
       headers: {
         'x-tenant-id': tenantId,
       }
     })
-    console.log(resp.data)
     setStyle(resp.data)
     setLoading(false)
   }
 
   useEffect(() => {
-    console.log(session)
     if (session?.user) {
       getSells()
     }
@@ -124,39 +127,39 @@ export default function Page () {
                 </div>
               </div>
               <div className={`${popup.view} ${popup.opacity} transition-opacity duration-200 w-full h-full top-0 fixed bg-black/30 flex z-50 px-4`}>
-                <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`max-w-[600px] ${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 w-full p-6 md:p-8 max-h-[600px] overflow-y-auto bg-white m-auto flex flex-col gap-4`} style={{ boxShadow: style?.design === 'Sombreado' ? `0px 3px 20px 3px ${style?.borderColor}10` : '', borderRadius: style?.form === 'Redondeadas' ? `${style?.borderBlock}px` : '', border: style?.design === 'Borde' ? `1px solid ${style?.borderColor}` : '' }}>
+                <div ref={popupRef} onMouseEnter={() => setPopup({ ...popup, mouse: true })} onMouseLeave={() => setPopup({ ...popup, mouse: false })} className={`max-w-[600px] ${popup.opacity === 'opacity-1' ? 'scale-1' : 'scale-90'} transition-transform duration-200 w-full p-6 md:p-8 max-h-[600px] overflow-y-auto m-auto flex flex-col gap-4`} style={{ boxShadow: style?.design === 'Sombreado' ? `0px 3px 20px 3px ${style?.borderColor}10` : '', borderRadius: style?.form === 'Redondeadas' ? `${style?.borderBlock}px` : '', border: style?.design === 'Borde' ? `1px solid ${style?.borderColor}` : '', backgroundColor: accountPage.bgColor, color: accountPage.textColor }}>
                   <p className="font-medium text-lg">Editar datos</p>
                   <p className="font-medium">Datos de contacto</p>
                   <div className="flex flex-col gap-2">
                     <p>Nombre</p>
-                    <Input inputChange={(e: any) => setAccount({ ...account, firstName: e.target.value })} value={account?.firstName} placeholder={"Nombre"} style={style} />
+                    <Input bgColor={accountPage.bgColor} inputChange={(e: any) => setAccount({ ...account, firstName: e.target.value })} value={account?.firstName} placeholder={"Nombre"} style={style} />
                   </div>
                   <div className="flex flex-col gap-2">
                     <p>Apellido</p>
-                    <Input inputChange={(e: any) => setAccount({ ...account, lastName: e.target.value })} value={account?.lastName} placeholder={"Apellido"} style={style} />
+                    <Input bgColor={accountPage.bgColor} inputChange={(e: any) => setAccount({ ...account, lastName: e.target.value })} value={account?.lastName} placeholder={"Apellido"} style={style} />
                   </div>
                   <div className="flex flex-col gap-2">
                     <p>Email</p>
-                    <Input inputChange={(e: any) => setAccount({ ...account, email: e.target.value })} value={account?.email} placeholder={"Email"} style={style} />
+                    <Input bgColor={accountPage.bgColor} inputChange={(e: any) => setAccount({ ...account, email: e.target.value })} value={account?.email} placeholder={"Email"} style={style} />
                   </div>
                   <div className="flex flex-col gap-2">
                     <p>Teléfono</p>
-                    <Input inputChange={(e: any) => setAccount({ ...account, phone: e.target.value })} value={account?.phone} placeholder={"Teléfono"} style={style} />
+                    <Input bgColor={accountPage.bgColor} inputChange={(e: any) => setAccount({ ...account, phone: e.target.value })} value={account?.phone} placeholder={"Teléfono"} style={style} />
                   </div>
                   <p className="font-medium">Dirección</p>
                   <div className="flex flex-col gap-2">
                     <p>Dirección</p>
-                    <Input inputChange={(e: any) => setAccount({ ...account, address: e.target.value })} value={account?.address} placeholder={"Dirección"} style={style} />
+                    <Input bgColor={accountPage.bgColor} inputChange={(e: any) => setAccount({ ...account, address: e.target.value })} value={account?.address} placeholder={"Dirección"} style={style} />
                   </div>
                   <div className="flex flex-col gap-2">
                     <p>Número</p>
-                    <Input inputChange={(e: any) => setAccount({ ...account, number: e.target.value })} value={account?.number} placeholder={"Número"} style={style} />
+                    <Input bgColor={accountPage.bgColor} inputChange={(e: any) => setAccount({ ...account, number: e.target.value })} value={account?.number} placeholder={"Número"} style={style} />
                   </div>
                   <div className="flex flex-col gap-2">
                     <p>Detalles</p>
-                    <Input inputChange={(e: any) => setAccount({ ...account, details: e.target.value })} value={account?.details} placeholder={"Detalles"} style={style} />
+                    <Input bgColor={accountPage.bgColor} inputChange={(e: any) => setAccount({ ...account, details: e.target.value })} value={account?.details} placeholder={"Detalles"} style={style} />
                   </div>
-                  <ShippingAccount account={account} setAccount={setAccount} style={style} />
+                  <ShippingAccount account={account} setAccount={setAccount} style={style} accountPage={accountPage} />
                   <Button action={async(e: any) => {
                     e.preventDefault()
                     if (!loadingEdit) {
@@ -182,7 +185,7 @@ export default function Page () {
                   }} style={style} config="w-full min-h-10" loading={loadingEdit}>Editar datos</Button>
                 </div>
               </div>
-              <div className='flex px-4 py-4 md:py-8 w-full'>
+              <div className='flex px-4 py-4 md:py-8 w-full' style={{ backgroundColor: accountPage?.bgColor, color: accountPage?.textColor }}>
                 <div className='m-auto w-full max-w-[1280px] flex gap-6 flex-col'>
                   <H1 text="Cuenta" />
                   <div className="flex flex-col gap-6 md:flex-row">

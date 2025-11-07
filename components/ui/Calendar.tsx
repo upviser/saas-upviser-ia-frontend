@@ -546,7 +546,7 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
                         {
                           label.type === 'Selector'
                             ? (
-                              <Select bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor} selectChange={(e: any) => {
+                              <Select bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content?.info?.background && content.info.background !== '' ? content.info.background : page?.bgColor} selectChange={(e: any) => {
                                 if (label.data === 'firstName' || label.data === 'lastName' || label.data === 'email' || label.data === 'phone') {
                                   setNewClient({ ...newClient, [label.data]: e.target.value })
                                   clientRef.current = { ...newClient, [label.data]: e.target.value }
@@ -581,7 +581,7 @@ export const Calendar: React.FC<CalendarProps> = ({ newClient, setNewClient, tag
                                 }
                                 <Input
                                   style={style}
-                                  bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content.info.background && content.info.background !== '' ? content.info.background : page?.bgColor}
+                                  bgColor={content?.info.image ? content?.info.image : popup?.bgColor ? popup.bgColor : content?.info?.background && content.info.background !== '' ? content.info.background : page?.bgColor}
                                   placeholder={label.text}
                                   value={newClient.data?.find(dat => dat.name === label.text)?.value || newClient[label.data]}
                                   inputChange={(e: any) => {

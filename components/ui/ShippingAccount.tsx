@@ -9,9 +9,10 @@ interface Props {
   account: any
   setAccount: any
   style: any
+  accountPage?: any
 }
 
-export const ShippingAccount: React.FC<Props> = ({ account, setAccount, style }) => {
+export const ShippingAccount: React.FC<Props> = ({ account, setAccount, style, accountPage }) => {
 
   const [regions, setRegions] = useState<Region[]>()
   const [citys, setCitys] = useState<City[]>()
@@ -58,7 +59,7 @@ export const ShippingAccount: React.FC<Props> = ({ account, setAccount, style })
     <div className='flex gap-2 w-full flex-col sm:flex-row'>
       <div className='flex flex-col gap-2 w-full sm:w-1/2'>
         <p className='text-sm'>Región</p>
-        <Select selectChange={regionChange} style={style} value={account?.region}>
+        <Select bgColor={accountPage.bgColor} selectChange={regionChange} style={style} value={account?.region}>
           <option>Seleccionar Región</option>
           {
           regions !== undefined
@@ -69,7 +70,7 @@ export const ShippingAccount: React.FC<Props> = ({ account, setAccount, style })
       </div>
       <div className='flex flex-col gap-2 w-full sm:w-1/2'>
         <p className='text-sm'>Ciudad</p>
-        <Select selectChange={cityChange} style={style} value={account?.city}>
+        <Select bgColor={accountPage.bgColor} selectChange={cityChange} style={style} value={account?.city}>
           <option>Seleccionar Ciudad</option>
           {
             citys !== undefined
