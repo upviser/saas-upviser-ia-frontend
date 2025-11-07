@@ -32,8 +32,27 @@ const PagePost = ({ post, posts, style, design }: { post: IPost, posts: IPost[],
           <div className='flex flex-col gap-2 mt-2'>
             <p className='font-medium'>Compartir</p>
             <div className='flex gap-2'>
-              <Link href='https://facebook.com/'>Facebook</Link>
-              <Link href='https://twitter.com'>Twitter</Link>
+              <Link
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Facebook
+              </Link>
+              <Link
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Twitter
+              </Link>
+              <Link
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(post.title + ' ' + window.location.href)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                WhatsApp
+              </Link>
             </div>
           </div>
         </div>
