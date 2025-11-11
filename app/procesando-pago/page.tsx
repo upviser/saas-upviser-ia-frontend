@@ -66,8 +66,8 @@ export default function PayProcess () {
               const meetingEvent = JSON.parse(localStorage.getItem('meetingEvent')!)
               fbq('track', 'schedule', { ...meetingEvent }, { eventID: meetingEvent.eventID })
             }
-            socket.emit('newNotification', { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).nameMeeting, url: '/reuniones', view: false })
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).nameMeeting, url: '/reuniones', view: false }, {
+            socket.emit('newNotification', { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).call, url: '/reuniones', view: false })
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).call, url: '/reuniones', view: false }, {
               headers: {
                 'x-tenant-id': tenantId,
               }
@@ -182,8 +182,8 @@ export default function PayProcess () {
               const meetingEvent = JSON.parse(localStorage.getItem('meetingEvent')!)
               fbq('track', 'schedule', { ...meetingEvent }, { eventID: meetingEvent.eventID })
             }
-            socket.emit('newNotification', { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).nameMeeting, url: '/reuniones', view: false })
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).nameMeeting, url: '/reuniones', view: false }, {
+            socket.emit('newNotification', { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).call, url: '/reuniones', view: false })
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/notification`, { title: 'Nueva reunion agendada:', description: JSON.parse(localStorage.getItem('meetingData')!).call, url: '/reuniones', view: false }, {
               headers: {
                 'x-tenant-id': tenantId,
               }
