@@ -257,14 +257,14 @@ export default async function CategoryPage({ params }: { params: { category: str
             return (
               <div key={content.content} className="w-full flex">
                 <div className={`${category.image ? 'h-64 xl:h-80 2xl:h-96 text-white' : 'py-20'} w-full max-w-[1360px] m-auto flex flex-col gap-4`}>
-                  <div className="m-auto flex flex-col gap-4">
+                  <div className="m-auto flex flex-col gap-4 z-10">
                     <H1 text={category.category} config="text-center font-semibold" />
                     <p className="text-center">{category.description}</p>
                   </div>
                 </div>
                 {
                   category.banner
-                    ? <Image className={`absolute -z-10 w-full object-cover h-64 xl:h-80 2xl:h-96`} src={category.banner} alt='Banner categoria' width={1920} height={1080} />
+                    ? <Image className={`absolute w-full object-cover h-64 xl:h-80 2xl:h-96`} src={category.banner} alt='Banner categoria' width={1920} height={1080} />
                     : ''
                 }
               </div>
